@@ -1,0 +1,36 @@
+%{
+
+#include "y.tab.h"
+#include "types.h"
+
+
+void yyerror(char *s);
+    
+%}
+
+%%
+
+[a-zA-Z] { yylval.symbol = new Symbol(); yylval.symbol->value = yytext; return SYMBOL; }
+
+"->" { return TRANSITION_OP; }
+"\n" { return NEWLINE; }
+
+"rule" { return RULE; }
+"axiom" { return AXIOM; }
+
+[\t ] { }
+
+. { return yytext[0]; };
+
+%%
+
+int yywrap() 
+{
+    // This is a place where one can append more text if it would be needed, quit for now
+    return 1;
+}
+
+void yyerror(char *s) 
+{
+	printf("Parse failed %s\n", s);
+}

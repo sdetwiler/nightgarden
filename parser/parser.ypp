@@ -1,0 +1,151 @@
+%{
+
+#include <stdio.h>
+#include <string.h>
+
+#include "types.h"
+#include "lsystem.h"
+
+//#define DEBUG_PARSER
+
+int yylex(void);
+void yyerror(char *s);
+
+%}
+%union {
+/*    float     value;
+	char* identifier; */
+
+	class Rule*        rule;
+	class Predicate*   predicate;
+	class Result*      result;
+	class SymbolList*  symbolList;
+	class Symbol*      symbol;
+
+}
+/*
+%token <value> INTEGER 
+%token <value> FLOAT
+ 
+%token <identifier> IDENTIFIER
+*/
+
+%token <symbol> SYMBOL
+%token TRANSITION_OP
+%token NEWLINE
+%token AXIOM
+%token RULE
+
+/*
+%type <value> expr
+%type <value> number
+*/
+
+%type <rule>        rule
+%type <predicate>   predicate
+%type <result>      result
+%type <symbolList>  symbol_list
+
+
+%destructor { delete $$; } SYMBOL
+
+%left '+' '-'
+%left '*' '/'
+
+%%
+
+start : expr
+	| start expr
+
+expr: rule
+	| axiom
+	| NEWLINE
+
+
+axiom :
+	AXIOM symbol_list eol
+	{
+		#ifdef DEBUG_PARSER
+		printf("axiom %s\n", $2->symbolList->toString().c_str());
+		#endif
+		
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.setAxiom($2);
+	}
+
+rule :
+	RULE predicate TRANSITION_OP result eol
+	{
+		#ifdef DEBUG_PARSER
+		printf("%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		#endif
+		
+		$$ = new Rule();
+		$$->predicate = $2;
+		$$->result = $4;
+		
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.addRule($$);
+	}
+
+predicate :
+	SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to SYMBOL %s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->symbol = $1;
+	}
+
+result :
+	symbol_list
+	{
+		#ifdef DEBUG_PARSER
+		printf("result to symbol_list\n");
+		#endif
+		
+		$$ = new Result();
+		$$->symbolList = $1;
+	}
+
+symbol_list:
+	symbol_list SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("symbol_list to symbol_List SYMBOL %s\n", $2->value.c_str());
+		#endif
+		
+		$$->symbols.push_back($2);
+	}
+
+	| SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("symbol_list to SYMBOL %s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new SymbolList();
+		$$->symbols.push_back($1);
+	}
+
+
+
+eol : NEWLINE
+
+/*
+calc : expr { printf("%f\n", $1);}
+
+expr : number { $$ = $1; }
+| expr '*' expr { $$ = $1 * $3; }
+| expr '/' expr { $$ = $1 / $3; }
+| expr '+' expr { $$ = $1 + $3; }
+| expr '-' expr { $$ = $1 - $3; }
+
+number : INTEGER { $$ = $1; }
+| FLOAT { $$ = $1; }
+| IDENTIFIER { if(strncmp($1, "pi", 2)==0) $$ = 3.1415926; else $$ = 0.0; free($1); }
+ */
+
+%%
