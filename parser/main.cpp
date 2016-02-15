@@ -18,7 +18,7 @@ int main(int argc, const char * argv[]) {
 //	char const* testString = "A->BCDEFG\nB->XYZ\n";
 
 	// TODO: FIXME
-	char const* filename = "/Users/steve/projects/parser/data/test.ls";
+	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
 	std::ifstream infile(filename);
 	if(!infile.is_open())
 	{

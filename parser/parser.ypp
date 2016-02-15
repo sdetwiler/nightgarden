@@ -32,6 +32,10 @@ void yyerror(char *s);
 
 %token <symbol> SYMBOL
 %token TRANSITION_OP
+
+%token LT
+%token GT
+
 %token NEWLINE
 %token AXIOM
 %token RULE
@@ -98,6 +102,44 @@ predicate :
 		$$ = new Predicate();
 		$$->symbol = $1;
 	}
+
+	| SYMBOL LT SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to SYMBOL LT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->symbol = $3;
+		$$->prev = $1;
+
+	}
+
+	| SYMBOL GT SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to SYMBOL GT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->symbol = $1;
+		$$->next = $3;
+		
+	}
+
+	| SYMBOL LT SYMBOL GT SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to SYMBOL LT SYMBOL GT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str(), $5->value.c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->prev = $1;
+		$$->symbol = $3;
+		$$->next = $5;
+		
+	}
+
 
 result :
 	symbol_list

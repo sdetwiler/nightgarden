@@ -119,12 +119,12 @@ SymbolList const* LSystem::getState()
 	return mState;
 }
 
-Rule const* LSystem::getRuleForSymbol(Symbol const& s)
+Rule const* LSystem::getRuleForSymbol(Symbol const* prev, Symbol const* symbol, Symbol const* next)
 {
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		Rule const* curr = (*i);
-		if(*(curr->predicate->symbol) == s)
+		if(curr->predicate->doesMatch(prev, symbol, next))
 		{
 			return curr;
 		}
@@ -138,14 +138,35 @@ void LSystem::step()
 {
 	SymbolList* output = new SymbolList;
 	
+	Symbol* prev = nullptr;
+	Symbol* next = nullptr;
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
-		Symbol* s = (*i);
-		Rule const* rule = getRuleForSymbol(*s); // TODO: Context aware evaluation...
+		Symbol* symbol = (*i);
+
+		// Peek at the next symbol.
+		SymbolVec::const_iterator peek = i+1;
+		if(peek !=mState->symbols.end())
+		{
+			next = *peek;
+		}
+		else
+		{
+			next = nullptr;
+		}
+		
+		Rule const* rule = getRuleForSymbol(prev, symbol, next);
 		if(rule)
 		{
 			*(output)+= *(rule->result->symbolList);
 		}
+		// If no rule is found that matches the current symbol, append the original symbol to the output.
+		else
+		{
+			*(output)+= *symbol;
+		}
+		
+		prev = symbol;
 	}
 	
 	if(mState)

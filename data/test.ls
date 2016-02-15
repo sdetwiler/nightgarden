@@ -1,4 +1,4 @@
-axiom AA
+axiom baaaaaaaa
 
-rule A->AB
-rule B->B
+rule b < a -> b
+rule b -> a

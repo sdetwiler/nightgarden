@@ -46,10 +46,7 @@ private:
 	
 	SymbolList* mState;
 	
-	Rule const* getRuleForSymbol(Symbol const& s);
-
-
-	
+	Rule const* getRuleForSymbol(Symbol const* prev, Symbol const* symbol, Symbol const* next);
 };
 
 

@@ -44,6 +44,11 @@ public:
 	{
 		return value == rhs.value;
 	}
+
+	bool operator!=(Symbol const& rhs) const
+	{
+		return value != rhs.value;
+	}
 };
 
 
@@ -98,6 +103,14 @@ public:
 		
 		return *this;
 	}
+
+	SymbolList& operator+=(Symbol const& rhs)
+	{
+		symbols.push_back(new Symbol(rhs));
+		
+		return *this;
+	}
+
 };
 
 
@@ -106,10 +119,14 @@ class Predicate
 {
 public:
 	Symbol* symbol;
+	Symbol* prev;	// Previous symbol for context-sensitive evaluation.
+	Symbol* next;	// Next symbol for context-sensitive evaluation.
 	
 	Predicate()
 	{
 		symbol = nullptr;
+		prev = nullptr;
+		next = nullptr;
 	}
 	
 	~Predicate()
@@ -118,18 +135,80 @@ public:
 		{
 			delete symbol;
 		}
+		
+		if(prev)
+		{
+			delete prev;
+		}
+		
+		if(next)
+		{
+			delete next;
+		}
 	}
 	
 	std::string toString() const
 	{
+		std::string s;
+		
+		if(prev)
+		{
+			s+= prev->toString();
+			s+= "<";
+		}
+		
 		if(symbol)
 		{
-			return symbol->toString();
+			s+=symbol->toString();
 		}
-		else
+
+		if(next)
 		{
-			return "null";
+			s+= ">";
+			s+= next->toString();
 		}
+		
+		return s;
+	}
+	
+	bool doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol)
+	{
+		if(prev)
+		{
+			if(prevSymbol)
+			{
+				if(*prev != *prevSymbol)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if(next)
+		{
+			if(nextSymbol)
+			{
+				if(*next != *nextSymbol)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		if(*symbol != *currSymbol)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 };
 
