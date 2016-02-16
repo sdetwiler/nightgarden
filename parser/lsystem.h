@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include <vector>
+#include <map>
 #include "types.h"
 
 
@@ -27,11 +28,14 @@ public:
 	
 	void setAxiom(SymbolList* axiom);
 	
-	void parse(char const* input);
+	bool parse(char const* input);
 
 	void addRule(Rule* rule);
-
 	void dumpRules();
+
+	void addVariable(Variable* variable);
+	void dumpVariables();
+	
 	
 	void clear();
 	
@@ -41,6 +45,10 @@ public:
 private:
 	typedef std::vector< Rule* > RuleVec;
 	RuleVec mRules;
+
+	typedef std::map< std::string, Variable* > StringVariableMap;
+	StringVariableMap mVariables;
+	
 	
 	SymbolList* mAxiom;
 	

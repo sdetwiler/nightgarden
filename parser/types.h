@@ -13,6 +13,52 @@
 #include <string>
 #include <vector>
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+class Variable
+{
+public:
+	std::string name;
+	float value;
+	
+	Variable()
+	{
+		
+	}
+	
+	Variable(Variable const& rhs)
+	{
+		name = rhs.name;
+		value = rhs.value;
+	}
+	
+	~Variable()
+	{
+		
+	}
+	
+	std::string toString() const
+	{
+		std::string s;
+		s+= name;
+		s+= ": ";
+		s+= std::to_string(value);
+		return s;
+	}
+	
+	bool operator==(Variable const& rhs) const
+	{
+		return value == rhs.value;
+	}
+	
+	bool operator!=(Variable const& rhs) const
+	{
+		return value != rhs.value;
+	}
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 class Symbol
 {

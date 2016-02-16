@@ -46,16 +46,24 @@ LSystem& LSystem::getInstance()
 	return *singleton;
 }
 
-void LSystem::parse(char const* input)
+bool LSystem::parse(char const* input)
 {
 	
 	YY_BUFFER_STATE buf;
 	
 	buf = yy_scan_string(input);
 	
-	yyparse();
+	int ret = yyparse();
 	
 	yy_delete_buffer(buf);
+
+	if(ret)
+	{
+//		std::cout << "yyparse returns " << ret << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -66,7 +74,6 @@ void LSystem::setAxiom(SymbolList *axiom)
 		delete mAxiom;
 	}
 	
-	std::cout << "setAxiom" << std::endl;
 	mAxiom = axiom;
 	if(mState)
 	{
@@ -78,7 +85,6 @@ void LSystem::setAxiom(SymbolList *axiom)
 
 void LSystem::addRule(Rule* rule)
 {
-	std::cout << "addRule" << std::endl;
 	mRules.push_back(rule);
 }
 
@@ -90,15 +96,34 @@ void LSystem::dumpRules()
 	}
 }
 
+void LSystem::addVariable(Variable* variable)
+{
+	mVariables[variable->name] = variable;
+}
+
+void LSystem::dumpVariables()
+{
+	for(StringVariableMap::iterator i = mVariables.begin(); i!=mVariables.end(); ++i)
+	{
+		std::cout << i->second->toString() << std::endl;
+	}
+}
+
+
 void LSystem::clear()
 {
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		delete (*i);
 	}
-	
 	mRules.clear();
-	
+
+	for(StringVariableMap::iterator i = mVariables.begin(); i!=mVariables.end(); ++i)
+	{
+		delete i->second;
+	}
+	mVariables.clear();
+
 	if(mAxiom)
 	{
 		delete mAxiom;

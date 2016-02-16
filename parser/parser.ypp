@@ -16,11 +16,13 @@ void yyerror(char *s);
 /*    float     value;
 	char* identifier; */
 
+	float num_float;
 	class Rule*        rule;
 	class Predicate*   predicate;
 	class Result*      result;
 	class SymbolList*  symbolList;
 	class Symbol*      symbol;
+	class Variable*    variable;
 
 }
 /*
@@ -30,31 +32,39 @@ void yyerror(char *s);
 %token <identifier> IDENTIFIER
 */
 
+%token <num_float> FLOAT
 %token <symbol> SYMBOL
-%token TRANSITION_OP
+%token <variable> VARIABLE
+
+%token TRANSITION
 
 %token LT
 %token GT
+%token ASSIGN
 
 %token NEWLINE
 %token AXIOM
 %token RULE
+%token VAR
+
 
 /*
 %type <value> expr
 %type <value> number
 */
 
+%type <variable>    variable
 %type <rule>        rule
 %type <predicate>   predicate
 %type <result>      result
 %type <symbolList>  symbol_list
 
-
 %destructor { delete $$; } SYMBOL
 
+/*
 %left '+' '-'
 %left '*' '/'
+*/
 
 %%
 
@@ -63,6 +73,7 @@ start : expr
 
 expr: rule
 	| axiom
+	| variable
 	| NEWLINE
 
 
@@ -70,15 +81,29 @@ axiom :
 	AXIOM symbol_list eol
 	{
 		#ifdef DEBUG_PARSER
-		printf("axiom %s\n", $2->symbolList->toString().c_str());
+		printf("axiom %s\n", $2->toString().c_str());
 		#endif
 		
 		LSystem& lsystem = LSystem::getInstance();
 		lsystem.setAxiom($2);
 	}
 
+
+variable :
+	VAR symbol_list FLOAT eol
+	{
+		#ifdef DEBUG_PARSER
+		printf("variable to VAR VARIABLE FLOAT %s %f\n", $2->toString().c_str(), $3);
+		#endif
+		$$ = new Variable();
+		$$->name = $2->toString();
+		$$->value = $3;
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.addVariable($$);
+	}
+
 rule :
-	RULE predicate TRANSITION_OP result eol
+	RULE predicate TRANSITION result eol
 	{
 		#ifdef DEBUG_PARSER
 		printf("%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());

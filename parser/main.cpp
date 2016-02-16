@@ -40,32 +40,31 @@ int main(int argc, const char * argv[]) {
 	}
 		
 	LSystem& lsystem = LSystem::getInstance();
-	lsystem.parse(data.c_str());
-	
-	lsystem.dumpRules();
-	
-	
-	
-	SymbolList const* state;
-	
-	state = lsystem.getState();
-	std::cout << state->toString() << std::endl;
-	
-
-	for(int i=0; i<4; ++i)
+	if(lsystem.parse(data.c_str()))
 	{
-		lsystem.step();
-		state = lsystem.getState();
+		lsystem.dumpVariables();
+		lsystem.dumpRules();
 		
+		
+		
+		SymbolList const* state;
+		
+		state = lsystem.getState();
 		std::cout << state->toString() << std::endl;
+		
+		
+		for(int i=0; i<4; ++i)
+		{
+			lsystem.step();
+			state = lsystem.getState();
+			
+			std::cout << state->toString() << std::endl;
+		}
+		
+		
+		lsystem.clear();
 	}
 	
-	
-	
-	
-	
-	
-	lsystem.clear();
 	
     return 0;
 }

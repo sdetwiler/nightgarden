@@ -10,17 +10,25 @@ void yyerror(char *s);
 
 %%
 
+[-+]?[0-9]*\.?[0-9]* { yylval.num_float = atof(yytext); return FLOAT; }
+
+
 [a-zA-Z] { yylval.symbol = new Symbol(); yylval.symbol->value = yytext; return SYMBOL; }
 
-"->" { return TRANSITION_OP; }
+
+
+"->" { return TRANSITION; }
 
 "<" { return LT; }
 ">" { return GT; }
+
+"=" { return ASSIGN; }
 
 "\n" { return NEWLINE; }
 
 "rule" { return RULE; }
 "axiom" { return AXIOM; }
+"var" { return VAR; }
 
 [\t ] { }
 
