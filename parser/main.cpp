@@ -50,15 +50,20 @@ int main(int argc, const char * argv[]) {
 		SymbolList const* state;
 		
 		state = lsystem.getState();
-		std::cout << state->toString() << std::endl;
+		if(state)
+		{
+			std::cout << state->toString() << std::endl;
+		}
 		
 		
 		for(int i=0; i<4; ++i)
 		{
 			lsystem.step();
 			state = lsystem.getState();
-			
-			std::cout << state->toString() << std::endl;
+			if(state)
+			{
+				std::cout << state->toString() << std::endl;
+			}
 		}
 		
 		

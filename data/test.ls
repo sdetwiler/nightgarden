@@ -2,5 +2,5 @@ var pi 3.14
 
 axiom baaaaaaaa
 
-rule b < a -> b
+rule b(x,y) < a -> b(x+1, y)
 rule b -> a

@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
-
+#include <limits>
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
 class Variable
@@ -26,6 +26,7 @@ public:
 	Variable()
 	{
 		constant = false;
+		value = std::numeric_limits<float>::quiet_NaN();
 	}
 	
 	Variable(Variable const& rhs)
@@ -44,12 +45,15 @@ public:
 	{
 		std::string s;
 		s+= name;
+		s+= ": ";
 		if(constant)
 		{
 			s+="(constant)";
 		}
-		s+= ": ";
-		s+= std::to_string(value);
+		else
+		{
+			s+= std::to_string(value);
+		}
 		return s;
 	}
 	
@@ -64,32 +68,121 @@ public:
 	}
 };
 
+////////////////////////////////////////////////////////////////////////////////
+typedef std::vector< Variable* > VariableVec;
+class VariableList
+{
+public:
+	VariableVec variables;
+	
+	
+	VariableList()
+	{
+	}
+	
+	VariableList(VariableList const& rhs)
+	{
+		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
+		{
+			Variable* s = new Variable(*(*i));
+			variables.push_back(s);
+		}
+		
+	}
+	
+	~VariableList()
+	{
+		for(VariableVec::iterator i = variables.begin(); i!=variables.end(); ++i)
+		{
+			delete (*i);
+		}
+	}
+	
+	std::string toString() const
+	{
+		std::string s;
+		for(VariableVec::const_iterator i = variables.begin(); i!=variables.end(); ++i)
+		{
+			if(s.length())
+			{
+				s+= ",";
+			}
+			s+= (*i)->toString();
+		}
+		
+		return s;
+	}
+	
+	VariableList& operator+=(VariableList const& rhs)
+	{
+		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
+		{
+			variables.push_back(new Variable(*(*i)));
+		}
+		
+		
+		return *this;
+	}
+	
+	VariableList& operator+=(Variable const& rhs)
+	{
+		variables.push_back(new Variable(rhs));
+		
+		return *this;
+	}
+	
+};
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class Symbol
 {
 public:
 	std::string value;
+	VariableList* variables; // (parameters)
 	// TODO parameters...
 	
 	Symbol()
 	{
-		
+		variables = nullptr;
 	}
 	
 	Symbol(Symbol const& rhs)
 	{
 		value = rhs.value;
+		if(rhs.variables)
+		{
+			variables = new VariableList(*(rhs.variables));
+		}
+		else
+		{
+			variables = nullptr;
+		}
 	}
 	
 	~Symbol()
 	{
+		if(variables)
+		{
+			delete variables;
+		}
 		
 	}
 	
 	std::string toString() const
 	{
-		return value;
+		std::string s;
+		s+= value;
+		if(variables && variables->variables.size())
+		{
+			s+= "(";
+			
+			s+= variables->toString();
+			
+			s+= ")";
+		}
+		return s;
 	}
 	
 	bool operator==(Symbol const& rhs) const
@@ -339,66 +432,6 @@ public:
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-typedef std::vector< Variable* > VariableVec;
-class VariableList
-{
-public:
-	VariableVec variables;
-	
-	
-	VariableList()
-	{
-	}
-	
-	VariableList(VariableList const& rhs)
-	{
-		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
-		{
-			Variable* s = new Variable(*(*i));
-			variables.push_back(s);
-		}
-		
-	}
-	
-	~VariableList()
-	{
-		for(VariableVec::iterator i = variables.begin(); i!=variables.end(); ++i)
-		{
-			delete (*i);
-		}
-	}
-	
-	std::string toString() const
-	{
-		std::string s;
-		for(VariableVec::const_iterator i = variables.begin(); i!=variables.end(); ++i)
-		{
-			s+= (*i)->toString();
-		}
-		
-		return s;
-	}
-	
-	VariableList& operator+=(VariableList const& rhs)
-	{
-		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
-		{
-			variables.push_back(new Variable(*(*i)));
-		}
-		
-		
-		return *this;
-	}
-	
-	VariableList& operator+=(Variable const& rhs)
-	{
-		variables.push_back(new Variable(rhs));
-		
-		return *this;
-	}
-	
-};
 
 
 

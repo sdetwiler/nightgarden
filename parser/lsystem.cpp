@@ -161,6 +161,11 @@ Rule const* LSystem::getRuleForSymbol(Symbol const* prev, Symbol const* symbol, 
 
 void LSystem::step()
 {
+	if(!mState)
+	{
+		return;
+	}
+	
 	SymbolList* output = new SymbolList;
 	
 	Symbol* prev = nullptr;

@@ -6,7 +6,7 @@
 #include "types.h"
 #include "lsystem.h"
 
-//#define DEBUG_PARSER
+// #define DEBUG_PARSER
 
 int yylex(void);
 void yyerror(char *s);
@@ -102,11 +102,13 @@ axiom :
 variable_dec :
 	VAR variable FLOAT
 	{
-		#ifdef DEBUG_PARSER
-		printf("variable_dec to VAR VARIABLE FLOAT %s %f\n", $2->toString().c_str(), $3);
-		#endif
 		$$ = $2;
 		$$->value = $3;
+
+		#ifdef DEBUG_PARSER
+		printf("variable_dec to VAR VARIABLE FLOAT\n\t%s %f\n", $2->toString().c_str(), $3);
+		#endif
+
 		LSystem& lsystem = LSystem::getInstance();
 		lsystem.addVariable($$);
 	}
@@ -137,7 +139,7 @@ predicate :
 	symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to SYMBOL %s\n", $1->value.c_str());
+		printf("predicate to symbol\n\t%s\n", $1->value.c_str());
 		#endif
 		
 		$$ = new Predicate();
@@ -147,31 +149,29 @@ predicate :
 	| symbol LT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to SYMBOL LT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str());
+		printf("predicate to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
 		$$ = new Predicate();
-		$$->symbol = $3;
 		$$->prev = $1;
-
+		$$->symbol = $3;
 	}
 
 	| symbol GT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to SYMBOL GT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str());
+		printf("predicate to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
 		$$ = new Predicate();
 		$$->symbol = $1;
 		$$->next = $3;
-		
 	}
 
 	| symbol LT symbol GT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to SYMBOL LT SYMBOL GT SYMBOL %s\n", $1->value.c_str(), $3->value.c_str(), $5->value.c_str());
+		printf("predicate to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
 		#endif
 		
 		$$ = new Predicate();
@@ -187,13 +187,17 @@ predicate :
 variable_list :
 	variable_list COMMA variable
 	{
+		#ifdef DEBUG_PARSER
+		printf("variable_list to variable_list COMMA variable\n\tlist:[%s] variable:[%s]\n", $1->toString().c_str(), $3->toString().c_str());
+		#endif
+
 		$$->variables.push_back($3);
 	}
 
 	| variable
 	{
 		#ifdef DEBUG_PARSER
-		printf("expr_list to variable %s\n", $1->toString().c_str());
+		printf("variable_list to variable\n\t%s\n", $1->toString().c_str());
 		#endif
 		
 		$$ = new VariableList();
@@ -205,11 +209,20 @@ symbol :
 	SYMBOL LP variable_list RP
 	{
 		$$ = $1;
+		$$->variables = $3;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
+		#endif
 	}
 
 	| SYMBOL
 	{
 		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to SYMBOL\n\tsymbol:[%s]\n", $1->toString().c_str());
+		#endif
 	}
 
 
@@ -228,7 +241,7 @@ symbol_list :
 	symbol_list SYMBOL
 	{
 		#ifdef DEBUG_PARSER
-		printf("symbol_list to symbol_List SYMBOL %s\n", $2->value.c_str());
+		printf("symbol_list to symbol_List SYMBOL\n\t%s\n", $2->value.c_str());
 		#endif
 		
 		$$->symbols.push_back($2);
@@ -237,7 +250,7 @@ symbol_list :
 	| SYMBOL
 	{
 		#ifdef DEBUG_PARSER
-		printf("symbol_list to SYMBOL %s\n", $1->value.c_str());
+		printf("symbol_list to SYMBOL\n\t%s\n", $1->value.c_str());
 		#endif
 		
 		$$ = new SymbolList();
