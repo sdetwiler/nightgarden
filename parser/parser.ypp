@@ -81,14 +81,14 @@ void yyerror(char *s);
 start : statement
 	| start statement
 
-statement : rule
-	| axiom
-	| variable_dec
+statement : rule eol
+	| axiom eol
+	| variable_dec eol
 	| NEWLINE
 
 
 axiom :
-	AXIOM symbol_list eol
+	AXIOM symbol_list
 	{
 		#ifdef DEBUG_PARSER
 		printf("axiom %s\n", $2->toString().c_str());
@@ -100,7 +100,7 @@ axiom :
 
 
 variable_dec :
-	VAR variable FLOAT eol
+	VAR variable FLOAT
 	{
 		#ifdef DEBUG_PARSER
 		printf("variable_dec to VAR VARIABLE FLOAT %s %f\n", $2->toString().c_str(), $3);
@@ -119,7 +119,7 @@ variable :
 	}
 
 rule :
-	RULE predicate TRANSITION result eol
+	RULE predicate TRANSITION result
 	{
 		#ifdef DEBUG_PARSER
 		printf("%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
@@ -224,7 +224,7 @@ result :
 		$$->symbolList = $1;
 	}
 
-symbol_list:
+symbol_list :
 	symbol_list SYMBOL
 	{
 		#ifdef DEBUG_PARSER
@@ -243,8 +243,6 @@ symbol_list:
 		$$ = new SymbolList();
 		$$->symbols.push_back($1);
 	}
-
-
 
 eol : NEWLINE
 
