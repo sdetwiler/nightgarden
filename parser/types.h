@@ -21,16 +21,18 @@ class Variable
 public:
 	std::string name;
 	float value;
+	bool constant;
 	
 	Variable()
 	{
-		
+		constant = false;
 	}
 	
 	Variable(Variable const& rhs)
 	{
 		name = rhs.name;
 		value = rhs.value;
+		constant = rhs.constant;
 	}
 	
 	~Variable()
@@ -42,6 +44,10 @@ public:
 	{
 		std::string s;
 		s+= name;
+		if(constant)
+		{
+			s+="(constant)";
+		}
 		s+= ": ";
 		s+= std::to_string(value);
 		return s;
@@ -328,6 +334,70 @@ public:
 		
 		return s;
 	}
+};
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+typedef std::vector< Variable* > VariableVec;
+class VariableList
+{
+public:
+	VariableVec variables;
+	
+	
+	VariableList()
+	{
+	}
+	
+	VariableList(VariableList const& rhs)
+	{
+		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
+		{
+			Variable* s = new Variable(*(*i));
+			variables.push_back(s);
+		}
+		
+	}
+	
+	~VariableList()
+	{
+		for(VariableVec::iterator i = variables.begin(); i!=variables.end(); ++i)
+		{
+			delete (*i);
+		}
+	}
+	
+	std::string toString() const
+	{
+		std::string s;
+		for(VariableVec::const_iterator i = variables.begin(); i!=variables.end(); ++i)
+		{
+			s+= (*i)->toString();
+		}
+		
+		return s;
+	}
+	
+	VariableList& operator+=(VariableList const& rhs)
+	{
+		for(VariableVec::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
+		{
+			variables.push_back(new Variable(*(*i)));
+		}
+		
+		
+		return *this;
+	}
+	
+	VariableList& operator+=(Variable const& rhs)
+	{
+		variables.push_back(new Variable(rhs));
+		
+		return *this;
+	}
+	
 };
 
 
