@@ -6,7 +6,7 @@
 #include "types.h"
 #include "lsystem.h"
 
-// #define DEBUG_PARSER
+//#define DEBUG_PARSER
 
 int yylex(void);
 void yyerror(char *s);
@@ -25,6 +25,8 @@ void yyerror(char *s);
 	class Variable*    variable;
 
 	class VariableList* variableList;
+	
+	char* str;
 
 }
 /*
@@ -37,6 +39,8 @@ void yyerror(char *s);
 %token <num_float> FLOAT
 %token <symbol>    SYMBOL
 %token <variable>  VARIABLE
+%token <str> STRING
+%token <str> ADD
 
 %token TRANSITION
 
@@ -48,6 +52,7 @@ void yyerror(char *s);
 %token LT
 %token GT
 %token ASSIGN
+
 
 %token NEWLINE
 %token AXIOM
@@ -67,14 +72,19 @@ void yyerror(char *s);
 %type <result>      result
 %type <symbol>      symbol
 %type <symbolList>  symbol_list
+%type <symbol>      result_symbol
+%type <symbolList>  result_symbol_list
 %type <variableList> variable_list;
+%type <str> expr;
+%type <str> operator;
+
 
 %destructor { delete $$; } SYMBOL
 
-/*
-%left '+' '-'
+
+%left ADD '-'
 %left '*' '/'
-*/
+
 
 %%
 
@@ -124,7 +134,7 @@ rule :
 	RULE predicate TRANSITION result
 	{
 		#ifdef DEBUG_PARSER
-		printf("%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
 		#endif
 		
 		$$ = new Rule();
@@ -226,17 +236,6 @@ symbol :
 	}
 
 
-result :
-	symbol_list
-	{
-		#ifdef DEBUG_PARSER
-		printf("result to symbol_list\n");
-		#endif
-		
-		$$ = new Result();
-		$$->symbolList = $1;
-	}
-
 symbol_list :
 	symbol_list SYMBOL
 	{
@@ -257,20 +256,117 @@ symbol_list :
 		$$->symbols.push_back($1);
 	}
 
+
+
+
+
+result :
+result_symbol_list
+{
+	#ifdef DEBUG_PARSER
+	printf("result to result_symbol_list\n");
+	#endif
+	
+	$$ = new Result();
+	$$->symbolList = $1;
+}
+
+
+
+
+
+
+result_symbol_list :
+	result_symbol_list result_symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol_list to result_symbol_List result_symbol\n\t%s\n", $2->value.c_str());
+		#endif
+		
+		$$->symbols.push_back($2);
+	}
+
+	| result_symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol_list to result_symbol\n\t%s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new SymbolList();
+		$$->symbols.push_back($1);
+	}
+
+
+result_symbol :
+	SYMBOL LP expr RP
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3);
+		#endif
+		$$ = $1;
+		$$->expressions.push_back(std::string($3));
+	}
+
+	| SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to SYMBOL\n\t%s\n", $1->value.c_str());
+		#endif
+		$$ = $1;
+	}
+
+
+
+
+
 eol : NEWLINE
 
-/*
-calc : expr { printf("%f\n", $1);}
+/* Really don't like this... */
 
-expr : number { $$ = $1; }
-| expr '*' expr { $$ = $1 * $3; }
-| expr '/' expr { $$ = $1 / $3; }
-| expr '+' expr { $$ = $1 + $3; }
-| expr '-' expr { $$ = $1 - $3; }
+expr :
+	expr operator expr
+	{
+		#ifdef DEBUG_PARSER
+		printf("expr to MUL expr\n\t%s %s\n", $1, $3);
+		#endif
 
-number : INTEGER { $$ = $1; }
-| FLOAT { $$ = $1; }
-| IDENTIFIER { if(strncmp($1, "pi", 2)==0) $$ = 3.1415926; else $$ = 0.0; free($1); }
- */
+		char buf[512];
+		snprintf(buf, sizeof(buf), "%s %s %s", $1, $2, $3);
+		$$ = strdup(buf);
+		free($1);
+		free($2);
+		free($3);
+	}
+	| FLOAT
+	{
+		char buf[512];
+		snprintf(buf, sizeof(buf), "%f", $1);
+		$$ = strdup(buf);
+	}
 
+	| SYMBOL
+	{
+		$$ = strdup($1->toString().c_str());
+	}
+
+operator :
+	'*'
+	{
+		$$ = strdup("*");
+	}
+
+	| '/'
+	{
+		$$ = strdup("/");
+	}
+
+	| '-'
+	{
+		$$ = strdup("-");
+	}
+
+	| '+'
+	{
+		$$ = strdup("+");
+	}
 %%

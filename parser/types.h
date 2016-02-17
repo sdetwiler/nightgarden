@@ -143,6 +143,9 @@ public:
 	VariableList* variables; // (parameters)
 	// TODO parameters...
 	
+	typedef std::vector< std::string > StringVec;
+	StringVec expressions;
+	
 	Symbol()
 	{
 		variables = nullptr;
@@ -182,6 +185,26 @@ public:
 			
 			s+= ")";
 		}
+
+		if(expressions.size())
+		{
+			std::string exp;
+			for(StringVec::const_iterator i = expressions.begin(); i!=expressions.end(); ++i)
+			{
+				if(exp.length())
+				{
+					exp+= ", ";
+				}
+				exp+= (*i);
+			}
+			
+			s+= "(";
+			s+= exp;
+			s+= ")";
+		}
+		
+		
+		
 		return s;
 	}
 	
@@ -232,7 +255,7 @@ public:
 		std::string s;
 		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
 		{
-			s+= (*i)->value;
+			s+= (*i)->toString();
 		}
 		
 		return s;

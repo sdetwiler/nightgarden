@@ -10,7 +10,7 @@ void yyerror(char *s);
 
 %%
 
-[-+]?[0-9]*\.?[0-9]* { yylval.num_float = atof(yytext); return FLOAT; }
+[-]?[0-9]*\.?[0-9]* { yylval.num_float = atof(yytext); return FLOAT; }
 
 
 [a-zA-Z] { yylval.symbol = new Symbol(); yylval.symbol->value = yytext; return SYMBOL; }
@@ -25,6 +25,8 @@ void yyerror(char *s);
 "(" { return LP; }
 ")" { return RP; }
 
+
+
 "\n" { return NEWLINE; }
 
 "rule" { return RULE; }
@@ -32,6 +34,7 @@ void yyerror(char *s);
 "var" { return VAR; }
 
 [\t ] { }
+
 
 . { return yytext[0]; };
 
@@ -45,5 +48,5 @@ int yywrap()
 
 void yyerror(char *s) 
 {
-	printf("Parse failed %s\n", s);
+	printf("%s: %s\n", s, yytext);
 }
