@@ -26,7 +26,7 @@ public:
 	
 	static LSystem& getInstance();
 	
-	void setAxiom(SymbolList* axiom);
+	void setAxiom(Result* axiom);
 	
 	bool parse(char const* input);
 
@@ -50,7 +50,7 @@ private:
 	StringVariableMap mVariables;
 	
 	
-	SymbolList* mAxiom;
+	Result* mAxiom;
 	
 	SymbolList* mState;
 	

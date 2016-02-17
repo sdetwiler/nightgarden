@@ -1,1 +1,4 @@
-rule b(x,y) < a -> b(x + 1.2 * 6, y)b(x,y+2)
+axiom b(2,3)aaaaaaaa
+
+rule b(x,y) < a -> b(x+1, y)
+rule b(x,y) -> a(x,y)

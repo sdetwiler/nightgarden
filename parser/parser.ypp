@@ -6,7 +6,7 @@
 #include "types.h"
 #include "lsystem.h"
 
-#define DEBUG_PARSER
+// #define DEBUG_PARSER
 
 int yylex(void);
 void yyerror(char *s);
@@ -90,7 +90,7 @@ statement : rule eol
 
 
 axiom :
-	AXIOM symbol_list
+	AXIOM result
 	{
 		#ifdef DEBUG_PARSER
 		printf("axiom %s\n", $2->toString().c_str());
@@ -253,19 +253,15 @@ symbol_list :
 
 
 result :
-result_symbol_list
-{
-	#ifdef DEBUG_PARSER
-	printf("result to result_symbol_list\n");
-	#endif
-	
-	$$ = new Result();
-	$$->symbolList = $1;
-}
-
-
-
-
+	result_symbol_list
+	{
+		#ifdef DEBUG_PARSER
+		printf("result to result_symbol_list\n");
+		#endif
+		
+		$$ = new Result();
+		$$->symbolList = $1;
+	}
 
 
 result_symbol_list :

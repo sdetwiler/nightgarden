@@ -507,6 +507,18 @@ public:
 		symbolList = nullptr;
 	}
 	
+	Result(Result const& rhs)
+	{
+		if(rhs.symbolList)
+		{
+			symbolList = new SymbolList(*rhs.symbolList);
+		}
+		else
+		{
+			symbolList = nullptr;
+		}
+	}
+	
 	~Result()
 	{
 		if(symbolList)
@@ -564,6 +576,31 @@ public:
 		s+= result->toString();
 		
 		return s;
+	}
+	
+	SymbolList* evaluate(Symbol* s) const
+	{
+		std::cout << "Rule::evaluate" << std::endl
+					<< "rule: " << this->toString() << std::endl
+					<< "smbl: " << s->toString() << std::endl;
+		
+		
+		// If the predicate's symbol has attached variables...
+		if(predicate->symbol->variables)
+		{
+			
+			// Map variable names in rule to values in symbol.
+			for(VariableVec::iterator vi = predicate->symbol->variables->variables.begin(); vi!= predicate->symbol->variables->variables.end(); ++vi)
+			{
+				std::cout << (*vi)->name << std::endl;
+			}
+			
+		}
+		
+		SymbolList* res = new SymbolList(*(result->symbolList));
+		
+		std::cout << "rslt: " << res->toString() << std::endl << std::endl;
+		return res;
 	}
 };
 

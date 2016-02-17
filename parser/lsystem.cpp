@@ -67,7 +67,7 @@ bool LSystem::parse(char const* input)
 }
 
 
-void LSystem::setAxiom(SymbolList *axiom)
+void LSystem::setAxiom(Result* axiom)
 {
 	if(mAxiom)
 	{
@@ -79,7 +79,7 @@ void LSystem::setAxiom(SymbolList *axiom)
 	{
 		delete mState;
 	}
-	mState = new SymbolList(*mAxiom);
+	mState = new SymbolList(*(mAxiom->symbolList));
 }
 
 
@@ -90,10 +90,13 @@ void LSystem::addRule(Rule* rule)
 
 void LSystem::dumpRules()
 {
+	std::cout << "LSystem::dumpRules" << std::endl;
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		std::cout << (*i)->toString() << std::endl;
 	}
+	std::cout << std::endl;
+	
 }
 
 void LSystem::addVariable(Variable* variable)
@@ -103,10 +106,12 @@ void LSystem::addVariable(Variable* variable)
 
 void LSystem::dumpVariables()
 {
+	std::cout << "LSystem::dumpVariables" << std::endl;
 	for(StringVariableMap::iterator i = mVariables.begin(); i!=mVariables.end(); ++i)
 	{
 		std::cout << i->second->toString() << std::endl;
 	}
+	std::cout << std::endl;
 }
 
 
@@ -188,7 +193,9 @@ void LSystem::step()
 		Rule const* rule = getRuleForSymbol(prev, symbol, next);
 		if(rule)
 		{
-			*(output)+= *(rule->result->symbolList);
+			SymbolList* result = rule->evaluate(symbol);
+			*(output)+= *result;
+			delete result;
 		}
 		// If no rule is found that matches the current symbol, append the original symbol to the output.
 		else
