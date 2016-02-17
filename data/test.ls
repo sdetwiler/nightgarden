@@ -1,1 +1,1 @@
-rule b(x,y) < a -> b(x + 1.2 * 6)b
+rule b(x,y) < a -> b(x + 1.2 * 6, y)b(x,y+2)

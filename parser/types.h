@@ -134,6 +134,118 @@ public:
 };
 
 
+////////////////////////////////////////////////////////////////////////////////
+
+class Expression
+{
+public:
+	std::string value;
+	
+	Expression()
+	{
+	}
+	
+	Expression(Expression const& rhs)
+	{
+		value = rhs.value;
+	}
+	
+	~Expression()
+	{
+		
+	}
+	
+	std::string toString() const
+	{
+		return value;
+	}
+	
+	bool operator==(Expression const& rhs) const
+	{
+		return value == rhs.value;
+	}
+	
+	bool operator!=(Expression const& rhs) const
+	{
+		return value != rhs.value;
+	}
+	
+	Expression& operator+=(Expression const& rhs)
+	{
+		value+=rhs.value;
+		
+		return *this;
+	}
+	
+};
+
+////////////////////////////////////////////////////////////////////////////////
+typedef std::vector< Expression* > ExpressionVec;
+class ExpressionList
+{
+public:
+	ExpressionVec expressions;
+	
+	
+	ExpressionList()
+	{
+	}
+	
+	ExpressionList(ExpressionList const& rhs)
+	{
+		for(ExpressionVec::const_iterator i = rhs.expressions.begin(); i!=rhs.expressions.end(); ++i)
+		{
+			Expression* s = new Expression(*(*i));
+			expressions.push_back(s);
+		}
+		
+	}
+	
+	~ExpressionList()
+	{
+		for(ExpressionVec::iterator i = expressions.begin(); i!=expressions.end(); ++i)
+		{
+			delete (*i);
+		}
+	}
+	
+	std::string toString() const
+	{
+		std::string s;
+		for(ExpressionVec::const_iterator i = expressions.begin(); i!=expressions.end(); ++i)
+		{
+			if(s.length())
+			{
+				s+= ",";
+			}
+			s+= (*i)->value;
+		}
+		
+		return s;
+	}
+	
+	ExpressionList& operator+=(ExpressionList const& rhs)
+	{
+		for(ExpressionVec::const_iterator i = rhs.expressions.begin(); i!=rhs.expressions.end(); ++i)
+		{
+			expressions.push_back(new Expression(*(*i)));
+		}
+		
+		
+		return *this;
+	}
+	
+	ExpressionList& operator+=(Expression const& rhs)
+	{
+		expressions.push_back(new Expression(rhs));
+		
+		return *this;
+	}
+	
+};
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class Symbol
@@ -143,12 +255,12 @@ public:
 	VariableList* variables; // (parameters)
 	// TODO parameters...
 	
-	typedef std::vector< std::string > StringVec;
-	StringVec expressions;
+	ExpressionList* expressions;
 	
 	Symbol()
 	{
 		variables = nullptr;
+		expressions = nullptr;
 	}
 	
 	Symbol(Symbol const& rhs)
@@ -162,6 +274,15 @@ public:
 		{
 			variables = nullptr;
 		}
+		if(rhs.expressions)
+		{
+			expressions = new ExpressionList(*(rhs.expressions));
+		}
+		else
+		{
+			expressions = nullptr;
+		}
+
 	}
 	
 	~Symbol()
@@ -170,7 +291,10 @@ public:
 		{
 			delete variables;
 		}
-		
+		if(expressions)
+		{
+			delete expressions;
+		}
 	}
 	
 	std::string toString() const
@@ -186,20 +310,11 @@ public:
 			s+= ")";
 		}
 
-		if(expressions.size())
+		if(expressions && expressions->expressions.size())
 		{
-			std::string exp;
-			for(StringVec::const_iterator i = expressions.begin(); i!=expressions.end(); ++i)
-			{
-				if(exp.length())
-				{
-					exp+= ", ";
-				}
-				exp+= (*i);
-			}
 			
 			s+= "(";
-			s+= exp;
+			s+= expressions->toString();
 			s+= ")";
 		}
 		
