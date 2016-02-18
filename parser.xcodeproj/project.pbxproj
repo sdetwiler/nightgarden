@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0F5C141C759DE500B93191 /* expression_parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = AA8F2DF91C75958F006E6752 /* expression_parser.ypp */; };
+		AA0F5C151C759DE800B93191 /* expression_tokenizer.lpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8F2DF81C75958F006E6752 /* expression_tokenizer.lpp */; };
 		AA5E05151C6F9921008F90BB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E05141C6F9921008F90BB /* main.cpp */; };
-		AA5E05201C6F9975008F90BB /* parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051D1C6F9975008F90BB /* parser.ypp */; };
-		AA5E05211C6F9975008F90BB /* tokenizer.lpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051E1C6F9975008F90BB /* tokenizer.lpp */; };
+		AA5E05201C6F9975008F90BB /* rules_parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051D1C6F9975008F90BB /* rules_parser.ypp */; };
+		AA5E05211C6F9975008F90BB /* rules_tokenizer.lpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051E1C6F9975008F90BB /* rules_tokenizer.lpp */; };
 		AA5E05271C726585008F90BB /* lsystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E05251C726585008F90BB /* lsystem.cpp */; };
 /* End PBXBuildFile section */
 
@@ -28,12 +30,14 @@
 /* Begin PBXFileReference section */
 		AA5E05111C6F9921008F90BB /* parser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = parser; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA5E05141C6F9921008F90BB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		AA5E051D1C6F9975008F90BB /* parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = parser.ypp; sourceTree = "<group>"; };
-		AA5E051E1C6F9975008F90BB /* tokenizer.lpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = tokenizer.lpp; sourceTree = "<group>"; };
+		AA5E051D1C6F9975008F90BB /* rules_parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = rules_parser.ypp; sourceTree = "<group>"; };
+		AA5E051E1C6F9975008F90BB /* rules_tokenizer.lpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = rules_tokenizer.lpp; sourceTree = "<group>"; };
 		AA5E05231C703E3D008F90BB /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		AA5E05251C726585008F90BB /* lsystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lsystem.cpp; sourceTree = "<group>"; };
 		AA5E05261C726585008F90BB /* lsystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lsystem.h; sourceTree = "<group>"; };
 		AA5E05291C727013008F90BB /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
+		AA8F2DF81C75958F006E6752 /* expression_tokenizer.lpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = expression_tokenizer.lpp; sourceTree = "<group>"; };
+		AA8F2DF91C75958F006E6752 /* expression_parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = expression_parser.ypp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +71,10 @@
 		AA5E05131C6F9921008F90BB /* parser */ = {
 			isa = PBXGroup;
 			children = (
-				AA5E051D1C6F9975008F90BB /* parser.ypp */,
-				AA5E051E1C6F9975008F90BB /* tokenizer.lpp */,
+				AA8F2DF81C75958F006E6752 /* expression_tokenizer.lpp */,
+				AA8F2DF91C75958F006E6752 /* expression_parser.ypp */,
+				AA5E051E1C6F9975008F90BB /* rules_tokenizer.lpp */,
+				AA5E051D1C6F9975008F90BB /* rules_parser.ypp */,
 				AA5E05231C703E3D008F90BB /* types.h */,
 				AA5E05261C726585008F90BB /* lsystem.h */,
 				AA5E05251C726585008F90BB /* lsystem.cpp */,
@@ -133,10 +139,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0F5C151C759DE800B93191 /* expression_tokenizer.lpp in Sources */,
 				AA5E05151C6F9921008F90BB /* main.cpp in Sources */,
 				AA5E05271C726585008F90BB /* lsystem.cpp in Sources */,
-				AA5E05211C6F9975008F90BB /* tokenizer.lpp in Sources */,
-				AA5E05201C6F9975008F90BB /* parser.ypp in Sources */,
+				AA5E05211C6F9975008F90BB /* rules_tokenizer.lpp in Sources */,
+				AA0F5C141C759DE500B93191 /* expression_parser.ypp in Sources */,
+				AA5E05201C6F9975008F90BB /* rules_parser.ypp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,6 +191,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				YACC_GENERATED_FILE_STEM = InputFileStem;
 			};
 			name = Debug;
 		};
@@ -219,6 +228,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				YACC_GENERATED_FILE_STEM = InputFileStem;
 			};
 			name = Release;
 		};
@@ -255,6 +265,7 @@
 				AA5E051A1C6F9921008F90BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

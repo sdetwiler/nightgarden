@@ -1,19 +1,21 @@
 %{
 
-#include "y.tab.h"
+#include "expression_parser.tab.h"
 #include "types.h"
 
 
-void yyerror(char *s);
+void expression_error(char *s);
     
 %}
 
+%option prefix="expression_"
+
 %%
 
-[-]?[0-9]*\.?[0-9]* { yylval.num_float = atof(yytext); return FLOAT; }
+[-]?[0-9]*\.?[0-9]* { expression_lval.num_float = atof(yytext); return FLOAT; }
 
 
-[a-zA-Z] { yylval.symbol = new Symbol(); yylval.symbol->value = yytext; return SYMBOL; }
+[a-zA-Z] { expression_lval.symbol = new Symbol(); expression_lval.symbol->value = yytext; return SYMBOL; }
 
 
 "->" { return TRANSITION; }
@@ -46,7 +48,7 @@ int yywrap()
     return 1;
 }
 
-void yyerror(char *s) 
+void expression_error(char *s)
 {
 	printf("%s: %s\n", s, yytext);
 }

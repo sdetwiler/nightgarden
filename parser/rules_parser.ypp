@@ -12,6 +12,11 @@ int yylex(void);
 void yyerror(char *s);
 
 %}
+
+%name-prefix="rules_"
+
+
+
 %union {
 	class Rule*           rule;
 	class Predicate*      predicate;

@@ -9,16 +9,23 @@
 #include "lsystem.h"
 #include <iostream>
 
-#include "y.tab.h"
+#include "rules_parser.tab.h"
 
 // Parser forward declarations.
 #ifndef FLEXINT_H
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
-YY_BUFFER_STATE  yy_scan_string(const char *s);
+YY_BUFFER_STATE  rules__scan_string(const char *s);
+void rules__delete_buffer(YY_BUFFER_STATE buf);
 
-int yyparse();
-void yy_delete_buffer(YY_BUFFER_STATE buf);
+int rules_parse();
+
+
+
+YY_BUFFER_STATE  expression__scan_string(const char *s);
+void expression__delete_buffer(YY_BUFFER_STATE buf);
+
+int expression_parse();
 
 #endif
 
@@ -51,11 +58,11 @@ bool LSystem::parse(char const* input)
 	
 	YY_BUFFER_STATE buf;
 	
-	buf = yy_scan_string(input);
+	buf = rules__scan_string(input);
 	
-	int ret = yyparse();
+	int ret = rules_parse();
 	
-	yy_delete_buffer(buf);
+	rules__delete_buffer(buf);
 
 	if(ret)
 	{

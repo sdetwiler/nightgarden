@@ -1,0 +1,392 @@
+%{
+
+#include <stdio.h>
+#include <string.h>
+
+#include "types.h"
+#include "lsystem.h"
+
+// #define DEBUG_PARSER
+
+int yylex(void);
+void yyerror(char *s);
+
+%}
+
+%name-prefix="expression_"
+
+
+
+%union {
+	class Rule*           rule;
+	class Predicate*      predicate;
+	class Result*         result;
+	class SymbolList*     symbolList;
+	class Symbol*         symbol;
+	class VariableList*   variableList;
+	class Variable*       variable;
+	class ExpressionList* expressionList;
+	class Expression*     expression;
+
+	float                 num_float;
+	char*                 str;
+}
+
+%token <num_float>   FLOAT
+%token <symbol>      SYMBOL
+%token <variable>    VARIABLE
+%token <str>         STRING
+%token <str>         ADD
+
+%token TRANSITION
+
+%token COMMA
+
+%token LP
+%token RP
+
+%token LT
+%token GT
+%token ASSIGN
+
+
+%token NEWLINE
+%token AXIOM
+%token RULE
+%token VAR
+
+
+/*
+%type <value> expr
+%type <value> number
+*/
+
+%type <variable>        variable_dec
+%type <variable>        variable
+%type <rule>            rule
+%type <predicate>       predicate
+%type <result>          result
+%type <symbol>          symbol
+%type <symbolList>      symbol_list
+%type <symbol>          result_symbol
+%type <symbolList>      result_symbol_list
+%type <variableList>    variable_list;
+%type <expression>      expr;
+%type <expressionList>  expr_list;
+%type <str>             operator;
+
+
+%destructor { delete $$; } SYMBOL
+
+
+%left ADD '-'
+%left '*' '/'
+
+
+%%
+
+start : statement
+	| start statement
+
+statement : rule eol
+	| axiom eol
+	| variable_dec eol
+	| NEWLINE
+
+
+axiom :
+	AXIOM result
+	{
+		#ifdef DEBUG_PARSER
+		printf("axiom %s\n", $2->toString().c_str());
+		#endif
+		
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.setAxiom($2);
+	}
+
+
+variable_dec :
+	VAR variable FLOAT
+	{
+		$$ = $2;
+		$$->value = $3;
+
+		#ifdef DEBUG_PARSER
+		printf("variable_dec to VAR VARIABLE FLOAT\n\t%s %f\n", $2->toString().c_str(), $3);
+		#endif
+
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.addVariable($$);
+	}
+
+variable :
+	symbol_list
+	{
+		$$ = new Variable();
+		$$->name = $1->toString();
+	}
+
+rule :
+	RULE predicate TRANSITION result
+	{
+		#ifdef DEBUG_PARSER
+		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		#endif
+		
+		$$ = new Rule();
+		$$->predicate = $2;
+		$$->result = $4;
+		
+		LSystem& lsystem = LSystem::getInstance();
+		lsystem.addRule($$);
+	}
+
+predicate :
+	symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to symbol\n\t%s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->symbol = $1;
+	}
+
+	| symbol LT symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->prev = $1;
+		$$->symbol = $3;
+	}
+
+	| symbol GT symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->symbol = $1;
+		$$->next = $3;
+	}
+
+	| symbol LT symbol GT symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
+		#endif
+		
+		$$ = new Predicate();
+		$$->prev = $1;
+		$$->symbol = $3;
+		$$->next = $5;
+		
+	}
+
+
+
+
+variable_list :
+	variable_list COMMA variable
+	{
+		#ifdef DEBUG_PARSER
+		printf("variable_list to variable_list COMMA variable\n\tlist:[%s] variable:[%s]\n", $1->toString().c_str(), $3->toString().c_str());
+		#endif
+
+		$$->variables.push_back($3);
+	}
+
+	| variable
+	{
+		#ifdef DEBUG_PARSER
+		printf("variable_list to variable\n\t%s\n", $1->toString().c_str());
+		#endif
+		
+		$$ = new VariableList();
+		$$->variables.push_back($1);
+	}
+
+
+symbol :
+	SYMBOL LP variable_list RP
+	{
+		$$ = $1;
+		$$->variables = $3;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
+		#endif
+	}
+
+	| SYMBOL
+	{
+		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to SYMBOL\n\tsymbol:[%s]\n", $1->toString().c_str());
+		#endif
+	}
+
+
+symbol_list :
+	symbol_list SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("symbol_list to symbol_List SYMBOL\n\t%s\n", $2->value.c_str());
+		#endif
+		
+		$$->symbols.push_back($2);
+	}
+
+	| SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("symbol_list to SYMBOL\n\t%s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new SymbolList();
+		$$->symbols.push_back($1);
+	}
+
+
+
+
+
+result :
+	result_symbol_list
+	{
+		#ifdef DEBUG_PARSER
+		printf("result to result_symbol_list\n");
+		#endif
+		
+		$$ = new Result();
+		$$->symbolList = $1;
+	}
+
+
+result_symbol_list :
+	result_symbol_list result_symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol_list to result_symbol_List result_symbol\n\t%s\n", $2->value.c_str());
+		#endif
+		
+		$$->symbols.push_back($2);
+	}
+
+	| result_symbol
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol_list to result_symbol\n\t%s\n", $1->value.c_str());
+		#endif
+		
+		$$ = new SymbolList();
+		$$->symbols.push_back($1);
+	}
+
+
+result_symbol :
+	SYMBOL LP expr_list RP
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3);
+		#endif
+		$$ = $1;
+		$$->expressions = $3;
+	}
+
+	| SYMBOL
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to SYMBOL\n\t%s\n", $1->value.c_str());
+		#endif
+		$$ = $1;
+	}
+
+
+
+
+
+eol : NEWLINE
+
+/* Really don't like this... */
+
+expr_list :
+	expr_list COMMA expr
+	{
+		#ifdef DEBUG_PARSER
+		printf("expr to expr COMMA expr\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		#endif
+
+
+		$$->expressions.push_back($3);
+	}
+	| expr
+	{
+		#ifdef DEBUG_PARSER
+		printf("expr to expr\n\t%s\n", $1->toString().c_str());
+		#endif
+
+		$$ = new ExpressionList();
+		$$->expressions.push_back($1);
+	}
+
+expr :
+	expr operator expr
+	{
+		#ifdef DEBUG_PARSER
+		printf("expr to expr operator expr\n\t%s %s %s\n", $1->toString().c_str(), $2, $3->toString().c_str());
+		#endif
+
+		// Hrm...
+		$$ = new Expression();
+		(*$$)+= *$1;
+		$$->value+= $2;
+		(*$$)+= *$3;
+		
+		delete $1;
+		free($2);
+		delete $3;
+	}
+	| FLOAT
+	{
+		#ifdef DEBUG_PARSER
+		printf("expr to FLOAT\n\t%f\n", $1);
+		#endif
+
+		$$ = new Expression();
+		$$->value = std::to_string($1);
+	}
+
+	| SYMBOL
+	{
+		$$ = new Expression();
+		$$->value = $1->toString();
+	}
+
+operator :
+	'*'
+	{
+		$$ = strdup("*");
+	}
+
+	| '/'
+	{
+		$$ = strdup("/");
+	}
+
+	| '-'
+	{
+		$$ = strdup("-");
+	}
+
+	| '+'
+	{
+		$$ = strdup("+");
+	}
+%%
