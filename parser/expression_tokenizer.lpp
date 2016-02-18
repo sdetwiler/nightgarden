@@ -12,31 +12,14 @@ void expression_error(char *s);
 
 %%
 
-[-]?[0-9]*\.?[0-9]* { expression_lval.num_float = atof(yytext); return FLOAT; }
 
+[0-9]+\.[0-9]* { expression_lval.value = atof(yytext); return FLOAT; }
 
-[a-zA-Z] { expression_lval.symbol = new Symbol(); expression_lval.symbol->value = yytext; return SYMBOL; }
+[0-9]+ { expression_lval.value = atof(yytext); return INTEGER; }
 
+[a-zA-Z]+ { expression_lval.identifier = strdup(yytext); return IDENTIFIER; }
 
-"->" { return TRANSITION; }
-"," { return COMMA; }
-
-"<" { return LT; }
-">" { return GT; }
-
-"(" { return LP; }
-")" { return RP; }
-
-
-
-"\n" { return NEWLINE; }
-
-"rule" { return RULE; }
-"axiom" { return AXIOM; }
-"var" { return VAR; }
-
-[\t ] { }
-
+[\n\t ] { }
 
 . { return yytext[0]; };
 
