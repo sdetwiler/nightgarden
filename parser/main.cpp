@@ -63,11 +63,13 @@ int main(int argc, const char * argv[]) {
 			state = lsystem.getState();
 			if(state)
 			{
-				std::cout << "Curr State" << std::endl;
-				std::cout << state->toString() << std::endl;
+//				std::cout << "Curr State" << std::endl;
+//				std::cout << state->toString() << std::endl;
 			}
 		}
 		
+		std::cout << "Final State" << std::endl;
+		std::cout << state->toString() << std::endl;
 		
 		lsystem.clear();
 	}
