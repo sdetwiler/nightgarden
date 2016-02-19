@@ -15,17 +15,11 @@
 #ifndef FLEXINT_H
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
+
 YY_BUFFER_STATE  rules__scan_string(const char *s);
 void rules__delete_buffer(YY_BUFFER_STATE buf);
 
 int rules_parse();
-
-
-
-YY_BUFFER_STATE  expression__scan_string(const char *s);
-void expression__delete_buffer(YY_BUFFER_STATE buf);
-
-int expression_parse();
 
 #endif
 
@@ -108,16 +102,13 @@ void LSystem::dumpRules()
 
 void LSystem::addVariable(Variable* variable)
 {
-	mVariables[variable->name] = variable;
+	mVariables.variables[variable->name] = variable;
 }
 
 void LSystem::dumpVariables()
 {
 	std::cout << "LSystem::dumpVariables" << std::endl;
-	for(StringVariableMap::iterator i = mVariables.begin(); i!=mVariables.end(); ++i)
-	{
-		std::cout << i->second->toString() << std::endl;
-	}
+	std::cout << mVariables.toString() << std::endl;
 	std::cout << std::endl;
 }
 
@@ -130,10 +121,6 @@ void LSystem::clear()
 	}
 	mRules.clear();
 
-	for(StringVariableMap::iterator i = mVariables.begin(); i!=mVariables.end(); ++i)
-	{
-		delete i->second;
-	}
 	mVariables.clear();
 
 	if(mAxiom)
@@ -149,6 +136,11 @@ void LSystem::clear()
 	}
 }
 
+
+VariableMap const& LSystem::getGlobalVariables()
+{
+	return mVariables;
+}
 
 
 SymbolList const* LSystem::getState()
@@ -200,7 +192,7 @@ void LSystem::step()
 		Rule const* rule = getRuleForSymbol(prev, symbol, next);
 		if(rule)
 		{
-			SymbolList* result = rule->evaluate(symbol);
+			SymbolList* result = rule->evaluate(prev, symbol, next);
 			*(output)+= *result;
 			delete result;
 		}

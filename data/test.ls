@@ -1,4 +1,9 @@
-axiom b(2,3)aaaaaaaa
 
-rule b(x,y) < a -> b(x+1, y)
-rule b(x,y) -> a(x,y)
+axiom b(1)aaaaaaaa
+
+rule b(x) < a -> b(x*2)
+rule b -> a
+
+
+
+

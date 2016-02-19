@@ -14,6 +14,7 @@
 #include <vector>
 #include <map>
 #include "types.h"
+#include "rule.h"
 
 
 class LSystem
@@ -35,7 +36,7 @@ public:
 
 	void addVariable(Variable* variable);
 	void dumpVariables();
-	
+	VariableMap const& getGlobalVariables();
 	
 	void clear();
 	
@@ -46,9 +47,7 @@ private:
 	typedef std::vector< Rule* > RuleVec;
 	RuleVec mRules;
 
-	typedef std::map< std::string, Variable* > StringVariableMap;
-	StringVariableMap mVariables;
-	
+	VariableMap mVariables;
 	
 	Result* mAxiom;
 	

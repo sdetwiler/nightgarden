@@ -12,8 +12,11 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <limits>
 #include <iostream>
+
+#include "expression.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 class Variable
@@ -134,50 +137,9 @@ public:
 };
 
 
-////////////////////////////////////////////////////////////////////////////////
 
-class Expression
-{
-public:
-	std::string value;
-	
-	Expression()
-	{
-	}
-	
-	Expression(Expression const& rhs)
-	{
-		value = rhs.value;
-	}
-	
-	~Expression()
-	{
-		
-	}
-	
-	std::string toString() const
-	{
-		return value;
-	}
-	
-	bool operator==(Expression const& rhs) const
-	{
-		return value == rhs.value;
-	}
-	
-	bool operator!=(Expression const& rhs) const
-	{
-		return value != rhs.value;
-	}
-	
-	Expression& operator+=(Expression const& rhs)
-	{
-		value+=rhs.value;
-		
-		return *this;
-	}
-	
-};
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 typedef std::vector< Expression* > ExpressionVec;
@@ -303,7 +265,7 @@ public:
 		s+= value;
 		if(variables && variables->variables.size())
 		{
-			s+= "(";
+			s+= ":v(";
 			
 			s+= variables->toString();
 			
@@ -313,7 +275,7 @@ public:
 		if(expressions && expressions->expressions.size())
 		{
 			
-			s+= "(";
+			s+= ":e(";
 			s+= expressions->toString();
 			s+= ")";
 		}
@@ -541,69 +503,114 @@ public:
 };
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
-class Rule
+typedef std::map< std::string, Variable* > StringVariableMap;
+
+class VariableMap
 {
 public:
-	Predicate* predicate;
-	Result* result;
-
-	Rule()
+	StringVariableMap variables;
+	
+	
+	VariableMap()
 	{
-		predicate = nullptr;
-		result = nullptr;
 	}
 	
-	~Rule()
+	VariableMap(VariableMap const& rhs)
 	{
-		if(predicate)
+		for(StringVariableMap::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
 		{
-			delete predicate;
+			Variable* v = new Variable(*(i->second));
+			variables[v->name] = v;
 		}
-		
-		if(result)
+	}
+	
+	~VariableMap()
+	{
+		clear();
+	}
+	
+	void clear()
+	{
+		for(StringVariableMap::iterator i = variables.begin(); i!=variables.end(); ++i)
 		{
-			delete result;
+			delete i->second;
 		}
 	}
 	
 	std::string toString() const
 	{
 		std::string s;
-		
-		s+= predicate->toString();
-		s+= "->";
-		s+= result->toString();
+		for(StringVariableMap::const_iterator i = variables.begin(); i!=variables.end(); ++i)
+		{
+			if(s.length())
+			{
+				s+= ",";
+			}
+			s+= (i->second)->toString();
+		}
 		
 		return s;
 	}
 	
-	SymbolList* evaluate(Symbol* s) const
+	VariableMap& operator+=(VariableMap const& rhs)
 	{
-		std::cout << "Rule::evaluate" << std::endl
-					<< "rule: " << this->toString() << std::endl
-					<< "smbl: " << s->toString() << std::endl;
-		
-		
-		// If the predicate's symbol has attached variables...
-		if(predicate->symbol->variables)
+		for(StringVariableMap::const_iterator i = rhs.variables.begin(); i!=rhs.variables.end(); ++i)
 		{
-			
-			// Map variable names in rule to values in symbol.
-			for(VariableVec::iterator vi = predicate->symbol->variables->variables.begin(); vi!= predicate->symbol->variables->variables.end(); ++vi)
-			{
-				std::cout << (*vi)->name << std::endl;
-			}
-			
+			Variable* v = new Variable(*(i->second));
+			variables[v->name] = v;
 		}
 		
-		SymbolList* res = new SymbolList(*(result->symbolList));
 		
-		std::cout << "rslt: " << res->toString() << std::endl << std::endl;
-		return res;
+		return *this;
+	}
+	
+	VariableMap& operator+=(Variable const& rhs)
+	{
+		Variable* v = new Variable(rhs);
+		variables[v->name] = v;
+		
+		return *this;
+	}
+	
+	
+	size_t addToMap(VariableList* variables, Symbol* s, size_t idx=0)
+	{
+		for(VariableVec::iterator vi = variables->variables.begin(); vi!= variables->variables.end(); ++vi)
+		{
+			std::cout << (*vi)->name << "=" << (*vi)->value << std::endl;
+			Variable* variable = new Variable(*(*vi));
+			if(s->expressions)
+			{
+				if(idx < s->expressions->expressions.size())
+				{
+					Expression* e = s->expressions->expressions.at(idx);
+					
+					if(e->eval(this, variable))
+					{
+						this->variables[variable->name] = variable;
+					}
+					else
+					{
+						std::cout << "Failed to evaluate expression " << e->toString() << std::endl << "With scope " << toString() << std::endl;
+					}
+				}
+				else
+				{
+					std::cout << "no expressions at idx " << idx << " for " << s->toString() << std::endl << "only has " << s->expressions->expressions.size() << " expressions" << std::endl;
+				}
+			}
+			else
+			{
+				std::cout << "no expresions" << std::endl;
+			}
+			++idx;
+		}
+		
+		return idx;
 	}
 };
-
 
 
 
