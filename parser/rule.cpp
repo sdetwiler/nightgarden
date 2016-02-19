@@ -88,15 +88,7 @@ SymbolList* Rule::evaluate(Symbol* prev, Symbol* s, Symbol* next) const
 				if(e->eval(&scope, &v))
 				{
 					e->value = std::to_string(v.value);
-
-					if(!s->variables)
-					{
-						s->variables = new VariableList();
-					}
-					(*s->variables)+= v;
 				}
-
-
 			}
 		}
 	}
