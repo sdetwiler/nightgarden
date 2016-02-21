@@ -12,6 +12,8 @@ void rules_error(char *s);
 
 %%
 
+#.* { return COMMENT; }
+
 [0-9]*\.?[0-9]* { rules_lval.num_float = atof(yytext); return FLOAT; }
 
 

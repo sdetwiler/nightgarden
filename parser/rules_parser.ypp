@@ -38,6 +38,7 @@ void yyerror(char *s);
 %token <variable>    VARIABLE
 %token <str>         STRING
 
+%token COMMENT
 
 %token TRANSITION
 %token COLON
@@ -97,6 +98,7 @@ statement : rule eol
 	| axiom eol
 	| variable_dec eol
 	| NEWLINE
+	| COMMENT
 
 
 axiom :
