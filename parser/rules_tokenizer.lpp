@@ -30,6 +30,7 @@ void rules_error(char *s);
 "(" { return LP; }
 ")" { return RP; }
 
+[\[\]\*&!/\'^|{}] { rules_lval.symbol = new Symbol(); rules_lval.symbol->isOperator=true; rules_lval.symbol->value = yytext; return SYMBOL; }
 
 
 "\n" { return NEWLINE; }

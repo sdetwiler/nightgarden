@@ -214,19 +214,21 @@ class Symbol
 {
 public:
 	std::string value;
-	VariableList* variables; // (parameters)
-	// TODO parameters...
+	bool isOperator;
 	
+	VariableList* variables; // (parameters)
 	ExpressionList* expressions;
 	
 	Symbol()
 	{
+		isOperator = false;
 		variables = nullptr;
 		expressions = nullptr;
 	}
 	
 	Symbol(Symbol const& rhs)
 	{
+		isOperator = rhs.isOperator;
 		value = rhs.value;
 		if(rhs.variables)
 		{

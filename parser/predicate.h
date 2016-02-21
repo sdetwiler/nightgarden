@@ -22,14 +22,14 @@ public:
 	Symbol* symbol;
 	Symbol* prev;	// Previous symbol for context-sensitive evaluation.
 	Symbol* next;	// Next symbol for context-sensitive evaluation.
-	Expression* condition;
+	Expression* condition; // Condition that must be true for predicate to match symbol sequence.
+
 	Predicate();
 	~Predicate();
 	
 	std::string toString() const;
 	bool doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol);
 	VariableMap* createScope(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol) const;
-
 };
 
 

@@ -51,8 +51,6 @@ void yyerror(char *s);
 %token GT
 %token GTE
 
-%token ASSIGN
-
 
 %token NEWLINE
 %token AXIOM

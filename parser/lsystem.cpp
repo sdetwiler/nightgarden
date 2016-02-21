@@ -180,33 +180,56 @@ void LSystem::step()
 	Symbol* next = nullptr;
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
-		Symbol* symbol = (*i);
-
-		// Peek at the next symbol.
-		SymbolVec::const_iterator peek = i+1;
-		if(peek !=mState->symbols.end())
-		{
-			next = *peek;
-		}
-		else
-		{
-			next = nullptr;
-		}
+		int branchDepth = 0;
 		
-		Rule const* rule = getRuleForSymbol(prev, symbol, next);
-		if(rule)
+		Symbol* symbol = (*i);
+		if(symbol->value == "[")
 		{
-			SymbolList* result = rule->evaluate(prev, symbol, next);
-			*(output)+= *result;
-			delete result;
+			++branchDepth;
+			*(output)+= *symbol;
+			continue;
 		}
-		// If no rule is found that matches the current symbol, append the original symbol to the output.
-		else
+		else if(symbol->value == "]")
+		{
+			--branchDepth;
+			*(output)+= *symbol;
+			continue;
+		}
+		else if(symbol->isOperator)
 		{
 			*(output)+= *symbol;
+			continue;
 		}
-		
-		prev = symbol;
+
+		if(branchDepth<=1)	// SCD Not totally sure about this approach to deal with prev and next in branching structures.
+		{
+			// Peek at the next symbol.
+			SymbolVec::const_iterator peek = i+1;
+			if(peek !=mState->symbols.end())
+			{
+				next = *peek;
+			}
+			else
+			{
+				next = nullptr;
+			}
+			
+			Rule const* rule = getRuleForSymbol(prev, symbol, next);
+			if(rule)
+			{
+				SymbolList* result = rule->evaluate(prev, symbol, next);
+				*(output)+= *result;
+				delete result;
+			}
+			// If no rule is found that matches the current symbol, append the original symbol to the output.
+			else
+			{
+				std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
+				*(output)+= *symbol;
+			}
+			
+			prev = symbol;
+		}
 	}
 	
 	if(mState)
