@@ -21,6 +21,12 @@ void expression_error(char *s);
 
 [\n\t ] { }
 
+"<" { return LT; }
+"<=" { return LTE; }
+">" { return GT; }
+">=" { return GTE; }
+
+
 . { return yytext[0]; };
 
 %%

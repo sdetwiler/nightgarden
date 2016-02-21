@@ -66,7 +66,6 @@ std::string Predicate::toString() const
 	{
 		s+= " : ";
 		s+= condition->toString();
-		s+= " ";
 	}
 	
 	return s;
