@@ -20,9 +20,12 @@ void rules_error(char *s);
 
 "->" { return TRANSITION; }
 "," { return COMMA; }
+":" { return COLON; }
 
 "<" { return LT; }
+"<=" { return LTE; }
 ">" { return GT; }
+">=" { return GTE; }
 
 "(" { return LP; }
 ")" { return RP; }

@@ -15,6 +15,7 @@
 		AA5E05201C6F9975008F90BB /* rules_parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051D1C6F9975008F90BB /* rules_parser.ypp */; };
 		AA5E05211C6F9975008F90BB /* rules_tokenizer.lpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E051E1C6F9975008F90BB /* rules_tokenizer.lpp */; };
 		AA5E05271C726585008F90BB /* lsystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5E05251C726585008F90BB /* lsystem.cpp */; };
+		AABA0E771C7937CD005974B5 /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABA0E751C7937CD005974B5 /* predicate.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +45,8 @@
 		AA5E05291C727013008F90BB /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		AA8F2DF81C75958F006E6752 /* expression_tokenizer.lpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = expression_tokenizer.lpp; sourceTree = "<group>"; };
 		AA8F2DF91C75958F006E6752 /* expression_parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = expression_parser.ypp; sourceTree = "<group>"; };
+		AABA0E751C7937CD005974B5 /* predicate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = predicate.cpp; sourceTree = "<group>"; };
+		AABA0E761C7937CD005974B5 /* predicate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = predicate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +92,8 @@
 				AA2241FA1C763AF200348366 /* rule.h */,
 				AA2241FC1C76888C00348366 /* expression.cpp */,
 				AA2241FD1C76888C00348366 /* expression.h */,
+				AABA0E751C7937CD005974B5 /* predicate.cpp */,
+				AABA0E761C7937CD005974B5 /* predicate.h */,
 			);
 			path = parser;
 			sourceTree = "<group>";
@@ -152,6 +157,7 @@
 				AA0F5C151C759DE800B93191 /* expression_tokenizer.lpp in Sources */,
 				AA5E05151C6F9921008F90BB /* main.cpp in Sources */,
 				AA5E05271C726585008F90BB /* lsystem.cpp in Sources */,
+				AABA0E771C7937CD005974B5 /* predicate.cpp in Sources */,
 				AA5E05211C6F9975008F90BB /* rules_tokenizer.lpp in Sources */,
 				AA0F5C141C759DE500B93191 /* expression_parser.ypp in Sources */,
 				AA5E05201C6F9975008F90BB /* rules_parser.ypp in Sources */,

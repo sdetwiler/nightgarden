@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "types.h"
+#include "predicate.h"
 #include "lsystem.h"
 
 // #define DEBUG_PARSER
@@ -39,14 +40,17 @@ void yyerror(char *s);
 %token <str>         ADD
 
 %token TRANSITION
-
+%token COLON
 %token COMMA
 
 %token LP
 %token RP
 
 %token LT
+%token LTE
 %token GT
+%token GTE
+
 %token ASSIGN
 
 
@@ -65,15 +69,17 @@ void yyerror(char *s);
 %type <variable>        variable
 %type <rule>            rule
 %type <predicate>       predicate
+%type <predicate>       predicate_symbols
 %type <result>          result
 %type <symbol>          symbol
 %type <symbolList>      symbol_list
 %type <symbol>          result_symbol
 %type <symbolList>      result_symbol_list
-%type <variableList>    variable_list;
-%type <expression>      expr;
-%type <expressionList>  expr_list;
-%type <str>             operator;
+%type <variableList>    variable_list
+%type <expression>		condition_expr
+%type <expression>      expr
+%type <expressionList>  expr_list
+%type <str>             operator
 
 
 %destructor { delete $$; } SYMBOL
@@ -131,7 +137,7 @@ rule :
 	RULE predicate TRANSITION result
 	{
 		#ifdef DEBUG_PARSER
-		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		printf("rule to RULE predicate TRANSITION result\n%s %s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
 		#endif
 		
 		$$ = new Rule();
@@ -142,11 +148,22 @@ rule :
 		lsystem.addRule($$);
 	}
 
-predicate :
+predicate:
+	predicate_symbols condition_expr
+	{
+		#ifdef DEBUG_PARSER
+		printf("predicate to predicate_symbols condition_expr\n%s %s -> %s\n", $1->to_string().c_str(), $2->toString().c_str());
+		#endif
+		
+		$$ = $1;
+		$$->condition = $2;
+	}
+
+predicate_symbols :
 	symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to symbol\n\t%s\n", $1->value.c_str());
+		printf("predicate_symbols to symbol\n\t%s\n", $1->value.c_str());
 		#endif
 		
 		$$ = new Predicate();
@@ -156,7 +173,7 @@ predicate :
 	| symbol LT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		printf("predicate_symbols to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
 		$$ = new Predicate();
@@ -178,7 +195,7 @@ predicate :
 	| symbol LT symbol GT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
+		printf("predicate_symbols to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
 		#endif
 		
 		$$ = new Predicate();
@@ -189,6 +206,15 @@ predicate :
 	}
 
 
+condition_expr :
+	/* empty */
+	{
+		$$ = nullptr;
+	}
+	| COLON expr
+	{
+		$$ = $2;
+	}
 
 
 variable_list :
@@ -389,4 +415,22 @@ operator :
 	{
 		$$ = strdup("+");
 	}
+	| GT
+	{
+		$$ = strdup(">");
+	}
+	| LT
+	{
+		$$ = strdup("<");
+	}
+	| GTE
+	{
+		$$ = strdup(">=");
+	}
+	| LTE
+	{
+		$$ = strdup("<=");
+	}
+
+
 %%

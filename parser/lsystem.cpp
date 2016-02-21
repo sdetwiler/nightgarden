@@ -7,6 +7,8 @@
 //
 
 #include "lsystem.h"
+#include "predicate.h"
+
 #include <iostream>
 
 #include "rules_parser.tab.h"
@@ -153,6 +155,8 @@ Rule const* LSystem::getRuleForSymbol(Symbol const* prev, Symbol const* symbol, 
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		Rule const* curr = (*i);
+		
+		
 		if(curr->predicate->doesMatch(prev, symbol, next))
 		{
 			return curr;

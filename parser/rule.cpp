@@ -9,6 +9,7 @@
 #include "rule.h"
 #include "types.h"
 #include "lsystem.h"
+#include "predicate.h"
 
 Rule::Rule()
 {
@@ -34,14 +35,11 @@ std::string Rule::toString() const
 	std::string s;
 	
 	s+= predicate->toString();
-	s+= "->";
+	s+= " -> ";
 	s+= result->toString();
 	
 	return s;
 }
-
-
-
 
 
 SymbolList* Rule::evaluate(Symbol* prev, Symbol* s, Symbol* next) const
@@ -50,28 +48,9 @@ SymbolList* Rule::evaluate(Symbol* prev, Symbol* s, Symbol* next) const
 	<< "rule: " << this->toString() << std::endl
 	<< "smbl: " << s->toString() << std::endl;
 	
+	VariableMap* scope = predicate->createScope(prev,s, next);
 	
-	VariableMap scope(LSystem::getInstance().getGlobalVariables());
-
-	// If the predicate's symbol has attached variables...
-	size_t idx=0;
-	if(predicate->prev && predicate->prev->variables)
-	{
-		idx = scope.addToMap(predicate->prev->variables, prev, idx);
-	}
-	if(predicate->symbol && predicate->symbol->variables)
-	{
-		idx = scope.addToMap(predicate->symbol->variables, s, idx);
-	}
-	if(predicate->next && predicate->next->variables)
-	{
-		idx = scope.addToMap(predicate->symbol->variables, next, idx);
-	}
-	
-	
-//	std::cout << "scope" << std::endl << scope.toString() << std::endl << std::endl;
 	SymbolList* res = new SymbolList(*(result->symbolList));
-	
 	
 	// For every symbol in the symbol list, evaluate their expressions using the computed scope.
 	for(SymbolVec::iterator i = res->symbols.begin(); i!=res->symbols.end(); ++i)
@@ -85,15 +64,13 @@ SymbolList* Rule::evaluate(Symbol* prev, Symbol* s, Symbol* next) const
 				
 				Variable v;
 
-				if(e->eval(&scope, &v))
+				if(e->eval(scope, &v))
 				{
 					e->value = std::to_string(v.value);
 				}
 			}
 		}
 	}
-
-	
 	
 	std::cout << "rslt: " << res->toString() << std::endl << std::endl;
 	return res;

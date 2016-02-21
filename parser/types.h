@@ -265,7 +265,7 @@ public:
 		s+= value;
 		if(variables && variables->variables.size())
 		{
-			s+= ":v(";
+			s+= "(";
 			
 			s+= variables->toString();
 			
@@ -275,7 +275,7 @@ public:
 		if(expressions && expressions->expressions.size())
 		{
 			
-			s+= ":e(";
+			s+= "(";
 			s+= expressions->toString();
 			s+= ")";
 		}
@@ -358,104 +358,6 @@ public:
 
 };
 
-
-////////////////////////////////////////////////////////////////////////////////
-class Predicate
-{
-public:
-	Symbol* symbol;
-	Symbol* prev;	// Previous symbol for context-sensitive evaluation.
-	Symbol* next;	// Next symbol for context-sensitive evaluation.
-	
-	Predicate()
-	{
-		symbol = nullptr;
-		prev = nullptr;
-		next = nullptr;
-	}
-	
-	~Predicate()
-	{
-		if(symbol)
-		{
-			delete symbol;
-		}
-		
-		if(prev)
-		{
-			delete prev;
-		}
-		
-		if(next)
-		{
-			delete next;
-		}
-	}
-	
-	std::string toString() const
-	{
-		std::string s;
-		
-		if(prev)
-		{
-			s+= prev->toString();
-			s+= "<";
-		}
-		
-		if(symbol)
-		{
-			s+=symbol->toString();
-		}
-
-		if(next)
-		{
-			s+= ">";
-			s+= next->toString();
-		}
-		
-		return s;
-	}
-	
-	bool doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol)
-	{
-		if(prev)
-		{
-			if(prevSymbol)
-			{
-				if(*prev != *prevSymbol)
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		if(next)
-		{
-			if(nextSymbol)
-			{
-				if(*next != *nextSymbol)
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		
-		if(*symbol != *currSymbol)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -575,7 +477,7 @@ public:
 	}
 	
 	
-	size_t addToMap(VariableList* variables, Symbol* s, size_t idx=0)
+	size_t addToMap(VariableList* variables, Symbol const* s, size_t idx=0)
 	{
 		for(VariableVec::iterator vi = variables->variables.begin(); vi!= variables->variables.end(); ++vi)
 		{
