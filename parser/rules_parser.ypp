@@ -37,7 +37,7 @@ void yyerror(char *s);
 %token <symbol>      SYMBOL
 %token <variable>    VARIABLE
 %token <str>         STRING
-%token <str>         ADD
+
 
 %token TRANSITION
 %token COLON
@@ -45,6 +45,9 @@ void yyerror(char *s);
 
 %token LP
 %token RP
+
+%token ADD
+%token SUB
 
 %token LT
 %token LTE
@@ -78,13 +81,11 @@ void yyerror(char *s);
 %type <expression>      expr
 %type <expressionList>  expr_list
 %type <str>             operator
-
+%type <num_float>		number
 
 %destructor { delete $$; } SYMBOL
 
 
-%left ADD '-'
-%left '*' '/'
 
 
 %%
@@ -111,13 +112,13 @@ axiom :
 
 
 variable_dec :
-	VAR variable FLOAT
+	VAR variable number
 	{
 		$$ = $2;
 		$$->value = $3;
 
 		#ifdef DEBUG_PARSER
-		printf("variable_dec to VAR VARIABLE FLOAT\n\t%s %f\n", $2->toString().c_str(), $3);
+		printf("variable_dec to VAR VARIABLE number\n\t%s %f\n", $2->toString().c_str(), $3);
 		#endif
 
 		LSystem& lsystem = LSystem::getInstance();
@@ -131,11 +132,25 @@ variable :
 		$$->name = $1->toString();
 	}
 
+number :
+	FLOAT
+	{
+		$$=$1;
+	}
+	| ADD FLOAT
+	{
+		$$=$2;
+	}
+	| SUB FLOAT
+	{
+		$$=-$2;
+	}
+
 rule :
 	RULE predicate TRANSITION result
 	{
 		#ifdef DEBUG_PARSER
-		printf("rule to RULE predicate TRANSITION result\n%s %s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
 		#endif
 		
 		$$ = new Rule();
@@ -150,7 +165,7 @@ predicate:
 	predicate_symbols condition_expr
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to predicate_symbols condition_expr\n%s %s -> %s\n", $1->to_string().c_str(), $2->toString().c_str());
+		printf("predicate to predicate_symbols condition_expr\n%s -> %s\n", $1->toString().c_str(), $2?$2->toString().c_str():"");
 		#endif
 		
 		$$ = $1;
@@ -318,7 +333,7 @@ result_symbol :
 	SYMBOL LP expr_list RP
 	{
 		#ifdef DEBUG_PARSER
-		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3);
+		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3->toString().c_str());
 		#endif
 		$$ = $1;
 		$$->expressions = $3;
@@ -330,6 +345,25 @@ result_symbol :
 		printf("result_symbol to SYMBOL\n\t%s\n", $1->value.c_str());
 		#endif
 		$$ = $1;
+	}
+
+	| ADD
+	{
+		
+		$$ = new Symbol(); $$->value = "+";
+		
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to ADD\n\tsymbol:[%s]\n", $$->toString().c_str());
+		#endif
+	}
+	| SUB
+	{
+		
+		$$ = new Symbol(); $$->value = "-";
+		
+		#ifdef DEBUG_PARSER
+		printf("resut_symbol to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
+		#endif
 	}
 
 
@@ -377,10 +411,10 @@ expr :
 		free($2);
 		delete $3;
 	}
-	| FLOAT
+	| number
 	{
 		#ifdef DEBUG_PARSER
-		printf("expr to FLOAT\n\t%f\n", $1);
+		printf("expr to number\n\t%f\n", $1);
 		#endif
 
 		$$ = new Expression();
@@ -404,12 +438,12 @@ operator :
 		$$ = strdup("/");
 	}
 
-	| '-'
+	| SUB
 	{
 		$$ = strdup("-");
 	}
 
-	| '+'
+	| ADD
 	{
 		$$ = strdup("+");
 	}

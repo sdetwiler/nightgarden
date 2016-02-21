@@ -224,7 +224,7 @@ void LSystem::step()
 			// If no rule is found that matches the current symbol, append the original symbol to the output.
 			else
 			{
-				std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
+				// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
 				*(output)+= *symbol;
 			}
 			
