@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  test.cpp
 //  parser
 //
 //  Created by Stephen Detwiler on 2/13/16.
@@ -11,8 +11,9 @@
 #include "lsystem.h"
 
 
-int main(int argc, const char * argv[]) {
-	std::cout << "Hello, World!\n";
+int parser_test()
+{
+	std::cout << "parser_test: Hello, World!\n";
 	
 	
 //	char const* testString = "A->BCDEFG\nB->XYZ\n";
