@@ -10,6 +10,7 @@
 #include "predicate.h"
 
 #include <iostream>
+#include <stack>
 
 #include "rules_parser.tab.h"
 
@@ -150,14 +151,15 @@ SymbolList const* LSystem::getState()
 	return mState;
 }
 
-Rule const* LSystem::getRuleForSymbol(Symbol const* prev, Symbol const* symbol, Symbol const* next)
+
+Rule const* LSystem::getRuleForSymbol(SymbolVec const& context, Symbol const* symbol, Symbol const* next)
 {
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		Rule const* curr = (*i);
 		
 		
-		if(curr->predicate->doesMatch(prev, symbol, next))
+		if(curr->predicate->doesMatch(context, symbol, next))
 		{
 			return curr;
 		}
@@ -166,70 +168,95 @@ Rule const* LSystem::getRuleForSymbol(Symbol const* prev, Symbol const* symbol, 
 	return nullptr;
 }
 
-
 void LSystem::step()
 {
 	if(!mState)
 	{
 		return;
 	}
-	
 	SymbolList* output = new SymbolList;
-	
-	Symbol* prev = nullptr;
-	Symbol* next = nullptr;
+
+	//typedef std::stack<Symbol*> SymbolStack;
+	// Not as efficient as using a stack<> but ...
+	SymbolVec context;
+	SymbolVec branches;
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
-		int branchDepth = 0;
-		
 		Symbol* symbol = (*i);
+
+		// If a push branch symbol...
 		if(symbol->value == "[")
 		{
-			++branchDepth;
+			// Add the symbol to the output.
 			*(output)+= *symbol;
-			continue;
+
+			// Store the current head of the context in the branches vector.
+			if(context.size())
+			{
+				branches.insert(branches.begin(), context.front());
+			}
 		}
+		
+		// If a pop branch symbol...
 		else if(symbol->value == "]")
 		{
-			--branchDepth;
+			// Add the symbol to the output.
 			*(output)+= *symbol;
-			continue;
+
+			// Get and pop location of the last branch and rewind the context back to that point.
+			Symbol* b = branches.front();
+			branches.erase(branches.begin());
+			while(context.size())
+			{
+				if(b == context.front())
+				{
+					break;
+				}
+				context.erase(context.begin());
+			}
 		}
+		
 		else if(symbol->isOperator)
 		{
 			*(output)+= *symbol;
 			continue;
 		}
+		
 
-		if(branchDepth<=1)	// SCD Not totally sure about this approach to deal with prev and next in branching structures.
+		// HACK: Only one lookahead symbol currently provided.
+		// Peek at the next symbol.
+		Symbol* next = nullptr;
+		SymbolVec::const_iterator peek = i+1;
+		while(peek != mState->symbols.end())
 		{
-			// Peek at the next symbol.
-			SymbolVec::const_iterator peek = i+1;
-			if(peek !=mState->symbols.end())
+			if((*peek)->isOperator || (*peek)->value != "[" || (*peek)->value != "]")
+			{
+				++peek;
+			}
+			else
 			{
 				next = *peek;
+				break;
 			}
-			else
-			{
-				next = nullptr;
-			}
-			
-			Rule const* rule = getRuleForSymbol(prev, symbol, next);
-			if(rule)
-			{
-				SymbolList* result = rule->evaluate(prev, symbol, next);
-				*(output)+= *result;
-				delete result;
-			}
-			// If no rule is found that matches the current symbol, append the original symbol to the output.
-			else
-			{
-				// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
-				*(output)+= *symbol;
-			}
-			
-			prev = symbol;
 		}
+		
+		
+		Rule const* rule = getRuleForSymbol(context, symbol, next);
+		if(rule)
+		{
+			SymbolList* result = rule->evaluate(context, symbol, next);
+			*(output)+= *result;
+			delete result;
+		}
+		// If no rule is found that matches the current symbol, append the original symbol to the output.
+		else
+		{
+			// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
+			*(output)+= *symbol;
+		}
+		
+		// Add the current symbol to the context.
+		context.insert(context.begin(), symbol);
 	}
 	
 	if(mState)
@@ -238,5 +265,5 @@ void LSystem::step()
 	}
 	
 	mState = output;
-	
 }
+

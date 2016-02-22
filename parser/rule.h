@@ -13,12 +13,15 @@
 #include <string>
 #include <map>
 
+#include "types.h"
+#include "expression.h"
+#include "predicate.h"
 
-class Predicate;
-class Result;
-class SymbolList;
-class Symbol;
-class Expression;
+//class Predicate;
+//class Result;
+//class SymbolList;
+//class Symbol;
+//class Expression;
 
 ////////////////////////////////////////////////////////////////////////////////
 class Rule
@@ -33,7 +36,7 @@ public:
 	
 	std::string toString() const;
 	
-	SymbolList* evaluate(Symbol* prev, Symbol* s, Symbol* next) const;
+	SymbolList* evaluate(SymbolVec const& context, Symbol* s, Symbol* next) const;
 };
 
 

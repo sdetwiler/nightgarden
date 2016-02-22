@@ -42,13 +42,13 @@ std::string Rule::toString() const
 }
 
 
-SymbolList* Rule::evaluate(Symbol* prev, Symbol* s, Symbol* next) const
+SymbolList* Rule::evaluate(SymbolVec const& context, Symbol* s, Symbol* next) const
 {
 	std::cout << "Rule::evaluate" << std::endl
 	<< "rule: " << this->toString() << std::endl
 	<< "smbl: " << s->toString() << std::endl;
 	
-	VariableMap* scope = predicate->createScope(prev,s, next);
+	VariableMap* scope = predicate->createScope(context, s, next);
 	
 	SymbolList* res = new SymbolList(*(result->symbolList));
 	

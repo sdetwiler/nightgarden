@@ -10,10 +10,12 @@
 #define predicate_h
 
 #include <string>
+#include "types.h"
+#include "expression.h"
 
-class Symbol;
-class Expression;
-class VariableMap;
+//class Symbol;
+//class Expression;
+//class VariableMap;
 
 ////////////////////////////////////////////////////////////////////////////////
 class Predicate
@@ -28,8 +30,8 @@ public:
 	~Predicate();
 	
 	std::string toString() const;
-	bool doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol);
-	VariableMap* createScope(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol) const;
+	bool doesMatch(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol);
+	VariableMap* createScope(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const;
 };
 
 

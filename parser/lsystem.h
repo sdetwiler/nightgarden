@@ -52,7 +52,7 @@ private:
 	
 	SymbolList* mState;
 	
-	Rule const* getRuleForSymbol(Symbol const* prev, Symbol const* symbol, Symbol const* next);
+	Rule const* getRuleForSymbol(SymbolVec const& context, Symbol const* symbol, Symbol const* next);
 };
 
 

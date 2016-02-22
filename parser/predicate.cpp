@@ -71,13 +71,15 @@ std::string Predicate::toString() const
 	return s;
 }
 
-bool Predicate::doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol)
+bool Predicate::doesMatch(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol)
 {
+	// TODO: Multisymbol predicate previous components that can evaluate against the computed context.
 	if(prev)
 	{
-		if(prevSymbol)
+		if(context.size())
 		{
-			if(*prev != *prevSymbol)
+			// The immediate predecessor to the current symbol is at the front of the context.
+			if(*prev != *context.front())
 			{
 				return false;
 			}
@@ -111,8 +113,8 @@ bool Predicate::doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Sy
 	
 	if(condition)
 	{
-
-		VariableMap* scope = createScope(prevSymbol, currSymbol, nextSymbol);
+		
+		VariableMap* scope = createScope(context, currSymbol, nextSymbol);
 		Variable ret;
 		if(condition->eval(scope, &ret))
 		{
@@ -128,14 +130,15 @@ bool Predicate::doesMatch(Symbol const* prevSymbol, Symbol const* currSymbol, Sy
 			std::cout << "condition expression eval failed for " << condition->toString() << std::endl << "scope: " << scope->toString() << std::endl;
 			delete scope;
 		}
-
+		
 	}
 	
 	return true;
 }
 
 
-VariableMap* Predicate::createScope(Symbol const* prevSymbol, Symbol const* currSymbol, Symbol const* nextSymbol) const
+
+VariableMap* Predicate::createScope(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const
 {
 	// The predicate defines variable names contained in the current scope.
 	// The prev, curr and next symbols contains expressions that set the
@@ -148,6 +151,12 @@ VariableMap* Predicate::createScope(Symbol const* prevSymbol, Symbol const* curr
 	size_t idx=0;
 	if(prev && prev->variables)
 	{
+		// TODO multi symbol previous components...
+		Symbol* prevSymbol = nullptr;
+		if(context.size())
+		{
+			prevSymbol = context.front();
+		}
 		idx = scope->addToMap(prev->variables, prevSymbol, idx);
 	}
 	if(symbol && symbol->variables)
