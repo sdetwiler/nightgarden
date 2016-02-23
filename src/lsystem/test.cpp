@@ -72,7 +72,11 @@ int parser_test()
 		std::cout << "Final State" << std::endl;
 		std::cout << state->toString() << std::endl;
 		
-		lsystem.clear();
+		//lsystem.clear();
+	}
+	else
+	{
+		std::cout << "Failed to parse lsystem from file." << std::endl;
 	}
 	
 	

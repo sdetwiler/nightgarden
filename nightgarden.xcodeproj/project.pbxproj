@@ -99,6 +99,7 @@
 		AAB08EB21C7BC5C600B3777D /* rules_tokenizer.lpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = rules_tokenizer.lpp; sourceTree = "<group>"; };
 		AAB08EB31C7BC5C600B3777D /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		AAB08EB41C7BC5C600B3777D /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		AAB08EC01C7BEDD000B3777D /* test.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.ls; sourceTree = "<group>"; };
 		C4AA7A45B234DB9D2E95880A /* matrix3x3.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = matrix3x3.h; path = ../of_v0.9.2_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/matrix3x3.h; sourceTree = SOURCE_ROOT; };
 		D0F9286B8FFE57CE16170DFE /* metadata.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = metadata.h; path = ../of_v0.9.2_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/metadata.h; sourceTree = SOURCE_ROOT; };
 		D35A90F1F62472A5CB014E3D /* IOSystem.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = IOSystem.hpp; path = ../of_v0.9.2_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/IOSystem.hpp; sourceTree = SOURCE_ROOT; };
@@ -238,6 +239,14 @@
 			path = lsystem;
 			sourceTree = "<group>";
 		};
+		AAB08EBF1C7BEDD000B3777D /* data */ = {
+			isa = PBXGroup;
+			children = (
+				AAB08EC01C7BEDD000B3777D /* test.ls */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
 		B77F1220F7C30BFF6034CC97 /* Compiler */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +284,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				AAB08EBF1C7BEDD000B3777D /* data */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
