@@ -2,16 +2,33 @@
 #include "lsystem.h"
 #include "types.h"
 
-int parser_test();
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	parser_test();
+	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
+	if(LSystem::getInstance().load(filename))
+	{
+		mCurrSteps = 0;
+		mMaxSteps = 4;
+		mLastStepTime = 0;
+		mStepInterval = .25;
+	}
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
-
+void ofApp::update()
+{
+	if(mCurrSteps < mMaxSteps)
+	{
+		float now = ofGetElapsedTimef();
+		if(now-mStepInterval > mLastStepTime)
+		{
+			mLastStepTime = now;
+			LSystem::getInstance().step();
+			++mCurrSteps;
+		}
+	}
 }
 
 //--------------------------------------------------------------
