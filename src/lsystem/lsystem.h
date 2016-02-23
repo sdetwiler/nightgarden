@@ -28,6 +28,7 @@ public:
 	
 	void setAxiom(Result* axiom);
 	
+	bool load(char const* filename);
 	bool parse(char const* input);
 
 	void addRule(Rule* rule);

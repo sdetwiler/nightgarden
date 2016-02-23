@@ -10,6 +10,7 @@
 #include "predicate.h"
 
 #include <iostream>
+#include <fstream>
 #include <stack>
 
 #include "rules_parser.tab.h"
@@ -48,6 +49,33 @@ LSystem& LSystem::getInstance()
 	}
 	
 	return *singleton;
+}
+
+bool LSystem::load(char const* filename)
+{
+//	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
+	std::ifstream infile(filename);
+	if(!infile.is_open())
+	{
+		std::cout << "Failed to open " << filename << std::endl;
+		return -1;
+	}
+	std::string data;
+	std::string line;
+	while(std::getline(infile, line))
+	{
+		data+=line;
+		data+="\n";
+	}
+	
+	if(infile.bad())
+	{
+		std::cout << "Error while reading from " << filename << std::endl;
+		return -1;
+	}
+	
+	LSystem& lsystem = LSystem::getInstance();
+	return lsystem.parse(data.c_str());
 }
 
 bool LSystem::parse(char const* input)
