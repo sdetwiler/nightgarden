@@ -26,5 +26,7 @@ class ofApp : public ofBaseApp{
 	int mCurrSteps;
 	float mLastStepTime;
 	float mStepInterval;
+	
+	float r;
 		
 };

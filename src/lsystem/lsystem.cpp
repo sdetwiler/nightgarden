@@ -232,15 +232,23 @@ void LSystem::step()
 			*(output)+= *symbol;
 
 			// Get and pop location of the last branch and rewind the context back to that point.
-			Symbol* b = branches.front();
-			branches.erase(branches.begin());
-			while(context.size())
+			if(branches.size() == 0)
 			{
-				if(b == context.front())
+				std::cout << "Mismatch square brackets";
+				context.clear();
+			}
+			else
+			{
+				Symbol* b = branches.front();
+				branches.erase(branches.begin());
+				while(context.size())
 				{
-					break;
+					if(b == context.front())
+					{
+						break;
+					}
+					context.erase(context.begin());
 				}
-				context.erase(context.begin());
 			}
 		}
 		

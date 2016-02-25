@@ -10,10 +10,12 @@ void ofApp::setup(){
 	if(LSystem::getInstance().load(filename))
 	{
 		mCurrSteps = 0;
-		mMaxSteps = 4;
+		mMaxSteps = 5;
 		mLastStepTime = 0;
-		mStepInterval = .25;
+		mStepInterval = 0;
 	}
+	
+	r=0;
 }
 
 //--------------------------------------------------------------
@@ -27,7 +29,16 @@ void ofApp::update()
 			mLastStepTime = now;
 			LSystem::getInstance().step();
 			++mCurrSteps;
+
+			SymbolList const* state = LSystem::getInstance().getState();
+			std::cout << state->toString() << std::endl;
 		}
+	}
+	
+	r+=1;
+	if(r>360)
+	{
+		r = 0;
 	}
 }
 
@@ -58,17 +69,24 @@ void ofApp::draw()
 	
 	// Match openframeworks rendering context.
 	delta*=-1;
-	ofTranslate(w/2, h);
+	ofTranslate(w/2, h*.75);
 	ofRotate(180);
+	ofRotate(r,0,1,0);
 
 	
 	SymbolList const* state = LSystem::getInstance().getState();
+
 	if(state)
 	{
 		for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
 		{
 			Symbol* s = *i;
 			if(s->value == "F")
+			{
+				ofDrawLine(0,0,0,n);
+				ofTranslate(0,n);
+			}
+			if(s->value == "f")
 			{
 				ofDrawLine(0,0,0,n);
 				ofTranslate(0,n);
@@ -85,11 +103,34 @@ void ofApp::draw()
 			}
 			else if(s->value == "+")
 			{
-				ofRotate(delta);
+//				ofRotate(delta);
+				ofRotate(delta, 0,0,1);
+
 			}
 			else if(s->value == "-")
 			{
-				ofRotate(-delta);
+//				ofRotate(-delta);
+				ofRotate(-delta, 0,0,1);
+			}
+			else if(s->value == "&")
+			{
+				ofRotate(-delta, 1,0,0);
+			}
+			else if(s->value == "^")
+			{
+				ofRotate(delta, 1,0,0);
+			}
+			else if(s->value == "/")
+			{
+				ofRotate(-delta, 0,1,0);
+			}
+			else if(s->value == "\\")
+			{
+				ofRotate(delta, 0,1,0);
+			}
+			else if(s->value == "|")
+			{
+				ofRotate(180, 0,0,1);
 			}
 			
 		}
