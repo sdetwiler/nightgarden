@@ -91,7 +91,14 @@ void ofApp::draw()
 				ofDrawLine(0,0,0,n);
 				ofTranslate(0,n);
 			}
+			else if(s->value == "{")
+			{
+			}
 			
+			else if(s->value == "}")
+			{
+			}
+
 			else if(s->value == "[")
 			{
 				ofPushMatrix();

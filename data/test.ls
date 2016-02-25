@@ -50,24 +50,25 @@
 # rule b(x) < a : x>=3 ->b(x)
 # rule b -> a
 
-var n 15
-var delta 22.5
-axiom A
-rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
-rule F -> S/////F
-rule S -> F L
-rule L -> ['''^^{-f+f+f-|-f+f+f}]
+# Bush
+#var n 15
+#var delta 22.5
+#axiom A
+#rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
+#rule F -> S/////F
+#rule S -> F L
+#rule L -> ['''^^{-f+f+f-|-f+f+f}]
 
 
 # Figure 1.26 A Plant
-#var n 10
-#var delta 18
-#axiom P
-#rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
-#rule I -> FS[//&&L][//^^L]FS
-#rule S -> SFS
-#rule L -> ['{+f-ff-f+|+f-ff-f}]
-#rule W ->[&&&D'/G////G////G////G////G]
-#rule D -> FF
-#rule G -> ['^F][{&&&&-f+f|-f+f}]
+var n 5
+var delta 18
+axiom P
+rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
+rule I -> FS[//&&L][//^^L]FS
+rule S -> SFS
+rule L -> ['{+f-ff-f+|+f-ff-f}]
+rule W ->[&&&D'/G////G////G////G////G]
+rule D -> FF
+rule G -> ['^F][{&&&&-f+f|-f+f}]
 
