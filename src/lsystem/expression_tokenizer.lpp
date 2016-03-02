@@ -39,5 +39,5 @@ int yywrap()
 
 void expression_error(char *s)
 {
-	printf("%s: %s\n", s, yytext);
+	printf("Expression %s: %s\n", s, yytext);
 }
