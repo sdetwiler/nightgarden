@@ -121,7 +121,6 @@ void ofApp::draw()
 				ofColor brown(139,69,19);
 				brown = brown * ofRandom(0.5, 1.5);
 				
-//				std::cout << "---------------------------------\n";
 				for(int i=0; i<sides; ++i)
 				{
 					ofVec4f v1(r,0,0,1);
@@ -139,25 +138,8 @@ void ofApp::draw()
 
 					mesh.addVertex(v2);
 					mesh.addColor(brown);
-//					std::cout << v1 << std::endl << v2 << std::endl;
-//					std::cout << "side:" << v << std::endl;
 				}
-//				std::cout << "---------------------------------\n";
 				mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-				
-				
-//				mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-//				ofVec4f v1(0,0,0,1);
-//				ofVec4f v2(0,n,0,1);
-//				v1 = v1 * currMatrix;
-//				v2 = v2 * currMatrix;
-//				mesh.addVertex(v1);
-//				
-//				mesh.addColor(brown);
-//				mesh.addVertex(v2);
-//				mesh.addColor(brown);
-
-				
 				mesh.draw();
 				
 				currMatrix.glTranslate(0,n,0);
@@ -199,13 +181,11 @@ void ofApp::draw()
 
 			else if(s->value == "[")
 			{
-//				std::cout << "PUSH" << std::endl;
 				matrixStack.push(currMatrix);
 			}
 			
 			else if(s->value == "]")
 			{
-//				std::cout << "POP" << std::endl;
 				currMatrix = matrixStack.top();
 				matrixStack.pop();
 			}
