@@ -21,7 +21,7 @@ void ofApp::setup(){
 		mStepInterval = 0;
 	}
 	
-	r=0;	
+	r=0;
 }
 
 //--------------------------------------------------------------
@@ -82,8 +82,6 @@ void ofApp::draw()
 	// Match openframeworks rendering context.
 	delta*=-1;
 
-//#define USE_GL_TRANSFORM
-	
 	MatrixStack matrixStack;
 
 	
@@ -96,12 +94,6 @@ void ofApp::draw()
 	
 	matrixStack.push(rm);
 	ofMatrix4x4 currMatrix = matrixStack.top();
-
-#ifdef USE_GL_TRANSFORM
-	ofTranslate(tx, ty);
-	ofRotate(180);
-	//	ofRotate(r,0,1,0);
-#endif
 
 
 	
@@ -120,41 +112,63 @@ void ofApp::draw()
 			if(s->value == "F")
 			{
 				ofMesh mesh;
-				mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
-				ofVec4f v1(0,0,0,1);
-				ofVec4f v2(0,n,0,1);
-#ifndef USE_GL_TRANSFORM
-				v1 = v1 * currMatrix;
-				v2 = v2 * currMatrix;
-#endif
-//				std::cout << "v1:" << v1 << " v2:" << v2 << std::endl;
-				mesh.addVertex(v1);
 				
+				float r = 1.0;
+				int sides = 4;
+				
+				float dr = 360.0/sides;
+
 				ofColor brown(139,69,19);
+				brown = brown * ofRandom(0.5, 1.5);
 				
-				mesh.addColor(brown);
-				mesh.addVertex(v2);
-				mesh.addColor(brown);
+//				std::cout << "---------------------------------\n";
+				for(int i=0; i<sides; ++i)
+				{
+					ofVec4f v1(r,0,0,1);
+					ofVec4f v2(r,n,0,1);
+					ofMatrix4x4 rotMatrix;
+					rotMatrix.glRotate(dr*i, 0, 1, 0);
+					v1 = v1 * rotMatrix;
+					v2 = v2 * rotMatrix;
+					
+					v1 = v1 * currMatrix;
+					v2 = v2 * currMatrix;
+					
+					mesh.addVertex(v1);
+					mesh.addColor(brown);
+
+					mesh.addVertex(v2);
+					mesh.addColor(brown);
+//					std::cout << v1 << std::endl << v2 << std::endl;
+//					std::cout << "side:" << v << std::endl;
+				}
+//				std::cout << "---------------------------------\n";
+				mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+				
+				
+//				mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+//				ofVec4f v1(0,0,0,1);
+//				ofVec4f v2(0,n,0,1);
+//				v1 = v1 * currMatrix;
+//				v2 = v2 * currMatrix;
+//				mesh.addVertex(v1);
+//				
+//				mesh.addColor(brown);
+//				mesh.addVertex(v2);
+//				mesh.addColor(brown);
+
+				
 				mesh.draw();
 				
-//				ofDrawLine(0,0,0,n);
-#ifdef USE_GL_TRANSFORM
-				ofTranslate(0, n, 0);
-#endif
 				currMatrix.glTranslate(0,n,0);
 			}
 			else if(s->value == "f")
 			{
 				ofDrawLine(0,0,0,n);
-#ifdef USE_GL_TRANSFORM
-				ofTranslate(0, n, 0);
-#endif
 				if(poly)
 				{
 					ofVec4f v1(0,0,0,1);
-#ifndef USE_GL_TRANSFORM
 					v1 = v1 * currMatrix;
-#endif
 					ofColor green(0,180,0);
 					green = green * ofRandom(0.5, 1.5);
 					poly->addVertex(v1);
@@ -186,71 +200,43 @@ void ofApp::draw()
 			else if(s->value == "[")
 			{
 //				std::cout << "PUSH" << std::endl;
-#ifdef USE_GL_TRANSFORM
-				ofPushMatrix();
-#endif
 				matrixStack.push(currMatrix);
 			}
 			
 			else if(s->value == "]")
 			{
 //				std::cout << "POP" << std::endl;
-#ifdef USE_GL_TRANSFORM
-				ofPopMatrix();
-#endif
 				currMatrix = matrixStack.top();
 				matrixStack.pop();
 			}
 			else if(s->value == "+")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(delta, 0,0,1);
-#endif
 				currMatrix.glRotate(delta, 0, 0, 1);
 			}
 			else if(s->value == "-")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(-delta, 0,0,1);
-#endif
 				currMatrix.glRotate(-delta, 0, 0, 1);
 			}
 			else if(s->value == "&")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(-delta, 1,0,0);
-#endif
 				currMatrix.glRotate(-delta, 1, 0, 0);
 			}
 			else if(s->value == "^")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(delta, 1,0,0);
-#endif
 				currMatrix.glRotate(delta, 1, 0, 0);
 			}
 			else if(s->value == "/")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(-delta, 0,1,0);
-#endif
 				currMatrix.glRotate(-delta, 0, 1, 0);
 			}
 			else if(s->value == "\\")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(delta, 0,1,0);
-#endif
 				currMatrix.glRotate(delta, 0, 1, 0);
 			}
 			else if(s->value == "|")
 			{
-#ifdef USE_GL_TRANSFORM
-				ofRotate(180, 0,0,1);
-#endif
 				currMatrix.glRotate(180, 0, 0, 1);
 			}
-			
 		}
 	}
 }
