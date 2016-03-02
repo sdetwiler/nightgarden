@@ -21,7 +21,7 @@ void ofApp::setup(){
 		mStepInterval = 0;
 	}
 	
-	r=0;
+	r=0;	
 }
 
 //--------------------------------------------------------------
@@ -51,7 +51,10 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-//	std::cout << "==================================" << std::endl;
+	// HACK for stable color generation below...
+	ofSeedRandom(1);
+
+	//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
 
 	float delta = 22.5;
@@ -85,7 +88,7 @@ void ofApp::draw()
 
 	
 
-	ofMatrix4x4 rm;// = ofGetCurrentMatrix(OF_MATRIX_MODELVIEW);
+	ofMatrix4x4 rm;
 	rm.glTranslate(tx, ty, 0);
 	rm.glRotate(180,0,0,1);
 
@@ -126,9 +129,12 @@ void ofApp::draw()
 #endif
 //				std::cout << "v1:" << v1 << " v2:" << v2 << std::endl;
 				mesh.addVertex(v1);
-				mesh.addColor(ofColor(255,255,255));
+				
+				ofColor brown(139,69,19);
+				
+				mesh.addColor(brown);
 				mesh.addVertex(v2);
-				mesh.addColor(ofColor(255,255,255));
+				mesh.addColor(brown);
 				mesh.draw();
 				
 //				ofDrawLine(0,0,0,n);
@@ -149,8 +155,10 @@ void ofApp::draw()
 #ifndef USE_GL_TRANSFORM
 					v1 = v1 * currMatrix;
 #endif
+					ofColor green(0,180,0);
+					green = green * ofRandom(0.5, 1.5);
 					poly->addVertex(v1);
-					poly->addColor(ofColor(0,180,0));
+					poly->addColor(green);
 				}
 				currMatrix.glTranslate(0, n, 0);
 			}
