@@ -54,6 +54,8 @@ void ofApp::draw()
 	// HACK for stable color generation below...
 	ofSeedRandom(1);
 
+	ofEnableDepthTest();
+	
 	//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
 
@@ -102,6 +104,8 @@ void ofApp::draw()
 	if(state)
 	{
 		ofMesh* poly = nullptr;
+		ofColor polyColor(0,180,0);
+
 		for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
 		{
 			
@@ -151,10 +155,8 @@ void ofApp::draw()
 				{
 					ofVec4f v1(0,0,0,1);
 					v1 = v1 * currMatrix;
-					ofColor green(0,180,0);
-					green = green * ofRandom(0.5, 1.5);
 					poly->addVertex(v1);
-					poly->addColor(green);
+					poly->addColor(polyColor);
 				}
 				currMatrix.glTranslate(0, n, 0);
 			}
@@ -166,6 +168,13 @@ void ofApp::draw()
 				}
 				
 				poly = new ofMesh();
+				if(s->expressions && s->expressions->expressions.size() == 3)
+				{
+//					std::cout << s->expressions->toString() << std::endl;
+					polyColor.r = stoi((*(s->expressions->expressions[0])).value);
+					polyColor.g = stoi((*(s->expressions->expressions[1])).value);
+					polyColor.b = stoi((*(s->expressions->expressions[2])).value);
+				}
 			}
 			
 			else if(s->value == "}")
