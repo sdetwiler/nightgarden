@@ -2,6 +2,12 @@
 #include "lsystem.h"
 #include "types.h"
 
+#include <stack>
+
+typedef std::stack<ofMatrix4x4>MatrixStack;
+
+
+
 
 
 //--------------------------------------------------------------
@@ -45,6 +51,7 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
 
 	float delta = 22.5;
@@ -67,77 +74,173 @@ void ofApp::draw()
 	int w = ofGetWidth();
 	int h = ofGetHeight();
 	
+	float tx = w/2.0;
+	float ty = h*0.75;
 	// Match openframeworks rendering context.
 	delta*=-1;
-	ofTranslate(w/2, h*.75);
+
+//#define USE_GL_TRANSFORM
+	
+	MatrixStack matrixStack;
+
+	
+
+	ofMatrix4x4 rm;// = ofGetCurrentMatrix(OF_MATRIX_MODELVIEW);
+	rm.glTranslate(tx, ty, 0);
+	rm.glRotate(180,0,0,1);
+
+	rm.glRotate(r,0,1,0);
+	
+	matrixStack.push(rm);
+	ofMatrix4x4 currMatrix = matrixStack.top();
+
+#ifdef USE_GL_TRANSFORM
+	ofTranslate(tx, ty);
 	ofRotate(180);
-	ofRotate(r,0,1,0);
+	//	ofRotate(r,0,1,0);
+#endif
+
 
 	
 	SymbolList const* state = LSystem::getInstance().getState();
 
 	if(state)
 	{
+		ofMesh* poly = nullptr;
 		for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
 		{
+			
+//			std::cout << "Matrix Audit\n------------\nglMatrix\n" << ofGetCurrentMatrix(OF_MATRIX_MODELVIEW) << "\nmyMatrix\n" << currMatrix << "\n\n";
+			
+			
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
-				ofDrawLine(0,0,0,n);
-				ofTranslate(0,n);
+				ofMesh mesh;
+				mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+				ofVec4f v1(0,0,0,1);
+				ofVec4f v2(0,n,0,1);
+#ifndef USE_GL_TRANSFORM
+				v1 = v1 * currMatrix;
+				v2 = v2 * currMatrix;
+#endif
+//				std::cout << "v1:" << v1 << " v2:" << v2 << std::endl;
+				mesh.addVertex(v1);
+				mesh.addColor(ofColor(255,255,255));
+				mesh.addVertex(v2);
+				mesh.addColor(ofColor(255,255,255));
+				mesh.draw();
+				
+//				ofDrawLine(0,0,0,n);
+#ifdef USE_GL_TRANSFORM
+				ofTranslate(0, n, 0);
+#endif
+				currMatrix.glTranslate(0,n,0);
 			}
-			if(s->value == "f")
+			else if(s->value == "f")
 			{
 				ofDrawLine(0,0,0,n);
-				ofTranslate(0,n);
+#ifdef USE_GL_TRANSFORM
+				ofTranslate(0, n, 0);
+#endif
+				if(poly)
+				{
+					ofVec4f v1(0,0,0,1);
+#ifndef USE_GL_TRANSFORM
+					v1 = v1 * currMatrix;
+#endif
+					poly->addVertex(v1);
+					poly->addColor(ofColor(0,180,0));
+				}
+				currMatrix.glTranslate(0, n, 0);
 			}
 			else if(s->value == "{")
 			{
+				if(poly)
+				{
+					delete poly;
+				}
+				
+				poly = new ofMesh();
 			}
 			
 			else if(s->value == "}")
 			{
+				if(poly)
+				{
+					poly->setMode(OF_PRIMITIVE_TRIANGLE_FAN); // SCD HACK This is actually wrong
+					poly->draw();
+					delete poly;
+					poly = nullptr;
+				}
 			}
 
 			else if(s->value == "[")
 			{
+//				std::cout << "PUSH" << std::endl;
+#ifdef USE_GL_TRANSFORM
 				ofPushMatrix();
+#endif
+				matrixStack.push(currMatrix);
 			}
 			
 			else if(s->value == "]")
 			{
+//				std::cout << "POP" << std::endl;
+#ifdef USE_GL_TRANSFORM
 				ofPopMatrix();
+#endif
+				currMatrix = matrixStack.top();
+				matrixStack.pop();
 			}
 			else if(s->value == "+")
 			{
-//				ofRotate(delta);
+#ifdef USE_GL_TRANSFORM
 				ofRotate(delta, 0,0,1);
-
+#endif
+				currMatrix.glRotate(delta, 0, 0, 1);
 			}
 			else if(s->value == "-")
 			{
-//				ofRotate(-delta);
+#ifdef USE_GL_TRANSFORM
 				ofRotate(-delta, 0,0,1);
+#endif
+				currMatrix.glRotate(-delta, 0, 0, 1);
 			}
 			else if(s->value == "&")
 			{
+#ifdef USE_GL_TRANSFORM
 				ofRotate(-delta, 1,0,0);
+#endif
+				currMatrix.glRotate(-delta, 1, 0, 0);
 			}
 			else if(s->value == "^")
 			{
+#ifdef USE_GL_TRANSFORM
 				ofRotate(delta, 1,0,0);
+#endif
+				currMatrix.glRotate(delta, 1, 0, 0);
 			}
 			else if(s->value == "/")
 			{
+#ifdef USE_GL_TRANSFORM
 				ofRotate(-delta, 0,1,0);
+#endif
+				currMatrix.glRotate(-delta, 0, 1, 0);
 			}
 			else if(s->value == "\\")
 			{
+#ifdef USE_GL_TRANSFORM
 				ofRotate(delta, 0,1,0);
+#endif
+				currMatrix.glRotate(delta, 0, 1, 0);
 			}
 			else if(s->value == "|")
 			{
+#ifdef USE_GL_TRANSFORM
 				ofRotate(180, 0,0,1);
+#endif
+				currMatrix.glRotate(180, 0, 0, 1);
 			}
 			
 		}
