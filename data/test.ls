@@ -64,6 +64,14 @@
 var n 8
 var delta 18
 
+var leafRed 0
+var leafGreen 128
+var leafBlue 0
+
+var flowerRed 255
+var flowerGreen 255
+var flowerBlue 255
+
 axiom P
 
 # Test Rule for debugging.
@@ -72,8 +80,8 @@ rule T -> F+F+F+F
 rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
 rule I -> FS[//&&L][//^^L]FS
 rule S -> SFS
-rule L -> ['{(0,128,0)+f-ff-f+|+f-ff-f}]
-rule W ->[&&&D'/G////G////G////G////G]
+rule L -> ['{(leafRed, leafGreen, leafBlue)+f-ff-f+|+f-ff-f}]
+rule W -> [&&&D'/G////G////G////G////G]
 rule D -> FF
-rule G -> ['^F][{(255,255,255)&&&&-f+f|-f+f}]
+rule G -> ['^F][{(flowerRed, flowerGreen, flowerBlue)&&&&-f+f|-f+f}]
 

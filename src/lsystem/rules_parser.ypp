@@ -413,6 +413,7 @@ expr :
 		free($2);
 		delete $3;
 	}
+
 	| number
 	{
 		#ifdef DEBUG_PARSER
@@ -423,11 +424,12 @@ expr :
 		$$->value = std::to_string($1);
 	}
 
-	| SYMBOL
+	| symbol_list
 	{
 		$$ = new Expression();
 		$$->value = $1->toString();
 	}
+
 
 operator :
 	'*'
