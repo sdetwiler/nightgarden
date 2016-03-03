@@ -61,27 +61,50 @@
 
 
 # Figure 1.26 A Plant
-var n 8
-var delta 18
+#var n 28
+#var delta 18
+#
+#var r 23
+#
+#var leafRed 0
+#var leafGreen 128
+#var leafBlue 0
+#
+#var flowerRed 255
+#var flowerGreen 255
+#var flowerBlue 255
+#
+#axiom P
+#
+#
+#rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
+#rule I -> FS[//&&L][//^^L]FS
+#rule S -> SFS
+#rule L -> ['{(leafRed, leafGreen, leafBlue)+f-ff-f+|+f-ff-f}]
+#rule W -> [&&&D'/G////G////G////G////G]
+#rule D -> FF
+#rule G -> ['^F][{(flowerRed, flowerGreen, flowerBlue)&&&&-f+f|-f+f}]
 
-var leafRed 0
-var leafGreen 128
-var leafBlue 0
 
-var flowerRed 255
-var flowerGreen 255
-var flowerBlue 255
+# Leaf
+#var n 20
+#var delta 18
+#axiom L
+#rule L -> {X[++++G.][++GG.][+GGG.][GGGGG.][-GGG.][--GG.][----G.]}
 
-axiom P
+# Cordate Leaf
+var n 20
+var delta 10
 
-# Test Rule for debugging.
-rule T -> F+F+F+F
+axiom [A][B]
+rule A -> [+A{.].C.}
+rule B -> [-B{.].C.}
+rule C -> GC
 
-rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
-rule I -> FS[//&&L][//^^L]FS
-rule S -> SFS
-rule L -> ['{(leafRed, leafGreen, leafBlue)+f-ff-f+|+f-ff-f}]
-rule W -> [&&&D'/G////G////G////G////G]
-rule D -> FF
-rule G -> ['^F][{(flowerRed, flowerGreen, flowerBlue)&&&&-f+f|-f+f}]
+
+# Lilly of the Valley
+#axiom [X(36)A]/(72)[X(36)B]
+#rule A -> [&GA{.].
+#rule B -> B&.G.}
+#rule X(a) -> X(a+4.5)
 

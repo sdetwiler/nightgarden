@@ -44,9 +44,9 @@ std::string Rule::toString() const
 
 SymbolList* Rule::evaluate(SymbolVec const& context, Symbol* s, Symbol* next) const
 {
-	std::cout << "Rule::evaluate" << std::endl
-	<< "rule: " << this->toString() << std::endl
-	<< "smbl: " << s->toString() << std::endl;
+//	std::cout << "Rule::evaluate" << std::endl
+//	<< "rule: " << this->toString() << std::endl
+//	<< "smbl: " << s->toString() << std::endl;
 	
 	VariableMap* scope = predicate->createScope(context, s, next);
 	
@@ -72,6 +72,6 @@ SymbolList* Rule::evaluate(SymbolVec const& context, Symbol* s, Symbol* next) co
 		}
 	}
 	
-	std::cout << "rslt: " << res->toString() << std::endl << std::endl;
+//	std::cout << "rslt: " << res->toString() << std::endl << std::endl;
 	return res;
 }

@@ -16,7 +16,7 @@ void ofApp::setup(){
 	if(LSystem::getInstance().load(filename))
 	{
 		mCurrSteps = 0;
-		mMaxSteps = 5;
+		mMaxSteps = 14;
 		mLastStepTime = 0;
 		mStepInterval = 0;
 	}
@@ -37,7 +37,7 @@ void ofApp::update()
 			++mCurrSteps;
 
 			SymbolList const* state = LSystem::getInstance().getState();
-			std::cout << state->toString() << std::endl;
+//			std::cout << state->toString() << std::endl;
 		}
 	}
 	
@@ -56,7 +56,7 @@ void ofApp::draw()
 
 	ofEnableDepthTest();
 	
-	//	std::cout << "==================================" << std::endl;
+//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
 
 	float delta = 22.5;
@@ -148,13 +148,31 @@ void ofApp::draw()
 				
 				currMatrix.glTranslate(0,n,0);
 			}
-			else if(s->value == "f")
+
+			if(s->value == "G")
 			{
-				ofDrawLine(0,0,0,n);
+				currMatrix.glTranslate(0,n,0);
+			}
+			
+			else if(s->value == ".")
+			{
 				if(poly)
 				{
 					ofVec4f v1(0,0,0,1);
 					v1 = v1 * currMatrix;
+//					std::cout << v1 << std::endl;
+					poly->addVertex(v1);
+					poly->addColor(polyColor);
+				}
+			}
+
+			else if(s->value == "f")
+			{
+				if(poly)
+				{
+					ofVec4f v1(0,0,0,1);
+					v1 = v1 * currMatrix;
+//					std::cout << v1 << std::endl;
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
 				}

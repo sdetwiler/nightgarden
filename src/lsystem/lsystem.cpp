@@ -207,6 +207,8 @@ void LSystem::step()
 	//typedef std::stack<Symbol*> SymbolStack;
 	// Not as efficient as using a stack<> but ...
 	SymbolVec context;
+	Symbol root;
+	context.push_back(&root);
 	SymbolVec branches;
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
@@ -219,10 +221,10 @@ void LSystem::step()
 			*(output)+= *symbol;
 
 			// Store the current head of the context in the branches vector.
-			if(context.size())
-			{
+//			if(context.size())
+//			{
 				branches.insert(branches.begin(), context.front());
-			}
+//			}
 		}
 		
 		// If a pop branch symbol...
