@@ -23,9 +23,12 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	void buildMeshes();
-	void drawMeshes();
+private:
 	void clearMeshes();
+	void buildMeshes();
+
+	void drawMeshes();
+	void drawDebugHUD();
 
 	
 	int mMaxSteps;
@@ -33,10 +36,16 @@ public:
 	float mLastStepTime;
 	float mStepInterval;
 	
-	float r;
-
 	
 	MeshVec mMeshes;
+
 	
+	float mLastStepDuration;
+	
+	
+	ofEasyCam mCamera;
+	ofLight mSpotlight;
+	
+	bool mDrawWireframe;
 	
 };

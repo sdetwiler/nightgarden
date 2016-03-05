@@ -38,6 +38,8 @@ public:
 	void dumpVariables();
 	VariableMap const& getGlobalVariables();
 	
+	float getGlobalVariable(char const* name, float def=0);
+	
 	void clear();
 	
 	SymbolList const* getState();

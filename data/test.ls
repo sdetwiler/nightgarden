@@ -1,3 +1,5 @@
+var steps 14
+
 # Bracketed OL System Test 1
 #var delta 25.7
 #var n 4
@@ -61,10 +63,8 @@
 
 
 # Figure 1.26 A Plant
-#var n 28
+#var n 10
 #var delta 18
-#
-#var r 23
 #
 #var leafRed 0
 #var leafGreen 128
@@ -75,7 +75,6 @@
 #var flowerBlue 255
 #
 #axiom P
-#
 #
 #rule P -> I+[P+W]--//[--L]I[++L]-[PW]++PW
 #rule I -> FS[//&&L][//^^L]FS
@@ -92,6 +91,7 @@
 #axiom L
 #rule L -> {X[++++G.][++GG.][+GGG.][GGGGG.][-GGG.][--GG.][----G.]}
 
+
 # Cordate Leaf
 var n 20
 var delta 10
@@ -100,6 +100,8 @@ axiom [A][B]
 rule A -> [+A{.].C.}
 rule B -> [-B{.].C.}
 rule C -> GC
+
+
 
 
 # Lilly of the Valley

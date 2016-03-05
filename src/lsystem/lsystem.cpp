@@ -167,6 +167,18 @@ void LSystem::clear()
 	}
 }
 
+float LSystem::getGlobalVariable(char const* name, float def)
+{
+	float ret = def;
+	StringVariableMap::const_iterator i;
+	i = mVariables.variables.find(std::string(name));
+	if(i!=mVariables.variables.end())
+	{
+		ret = i->second->value;
+	}
+	return ret;
+}
+
 
 VariableMap const& LSystem::getGlobalVariables()
 {

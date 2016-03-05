@@ -9,18 +9,28 @@ typedef std::stack<ofMatrix4x4> MatrixStack;
 
 
 
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
 	if(LSystem::getInstance().load(filename))
 	{
 		mCurrSteps = 0;
-		mMaxSteps = 14;
+		mMaxSteps = 4;
+		
+		mMaxSteps = LSystem::getInstance().getGlobalVariable("steps", 4);
+		
 		mLastStepTime = 0;
 		mStepInterval = 1;
 	}
 	
-	r=0;
+	mDrawWireframe = false;
+	mSpotlight.setDirectional();//20.0f);
+
+	mCamera.setPosition(0, 0, -10);
+	mCamera.setTarget(ofVec3f(0,0,0));
+	mCamera.enableMouseInput();
+
 }
 
 //--------------------------------------------------------------
@@ -34,19 +44,15 @@ void ofApp::update()
 			mLastStepTime = now;
 			LSystem::getInstance().step();
 			++mCurrSteps;
+			float afterStep = ofGetElapsedTimef();
+			
+			mLastStepDuration = afterStep - now;
 
 			SymbolList const* state = LSystem::getInstance().getState();
 //			std::cout << state->toString() << std::endl;
 			
 			buildMeshes();
-
 		}
-	}
-	
-//	r+=1;
-	if(r>360)
-	{
-		r = 0;
 	}
 }
 
@@ -55,8 +61,14 @@ void ofApp::drawMeshes()
 {
 	for(MeshVec::iterator i = mMeshes.begin(); i!=mMeshes.end(); ++i)
 	{
-		(*i)->drawWireframe();
-//		(*i)->draw();
+		if(mDrawWireframe)
+		{
+			(*i)->drawWireframe();
+		}
+		else
+		{
+			(*i)->draw();
+		}
 	}
 }
 
@@ -78,47 +90,17 @@ void ofApp::buildMeshes()
 	//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
 	
-	float delta = 22.5;
-	StringVariableMap::const_iterator i;
-	
-	i = globals.variables.find(std::string("delta"));
-	if(i!=globals.variables.end())
-	{
-		delta = i->second->value;
-	}
-	
-	
-	int n = 5;
-	i = globals.variables.find(std::string("n"));
-	if(i!=globals.variables.end())
-	{
-		n = i->second->value;
-	}
-	
-	int w = ofGetWidth();
-	int h = ofGetHeight();
-	
-	float tx = w/2.0;
-	float ty = h*0.75;
-	// Match openframeworks rendering context.
-	delta*=-1;
+	float delta = LSystem::getInstance().getGlobalVariable("delta", 22.5);
+	float n = LSystem::getInstance().getGlobalVariable("n", 5);
+
 	
 	MatrixStack matrixStack;
-	
-	
-	
-	ofMatrix4x4 rm;
-	rm.glTranslate(tx, ty, 0);
-	rm.glRotate(180,0,0,1);
-	
-	rm.glRotate(r,0,1,0);
-	
-	matrixStack.push(rm);
+	ofMatrix4x4 rootMatrix;
+
+	matrixStack.push(rootMatrix);
 	ofMatrix4x4 currMatrix = matrixStack.top();
 	
-	
 	SymbolList const* state = LSystem::getInstance().getState();
-	
 	if(state)
 	{
 		ofMesh* currMesh = nullptr;
@@ -127,16 +109,11 @@ void ofApp::buildMeshes()
 		
 		for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
 		{
-			
-			//			std::cout << "Matrix Audit\n------------\nglMatrix\n" << ofGetCurrentMatrix(OF_MATRIX_MODELVIEW) << "\nmyMatrix\n" << currMatrix << "\n\n";
-			
-			
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
-				// Next try joining to existing mesh...
+				// TODO Next try joining to existing mesh...
 				currMesh = new ofMesh();
-				
 				float r = 1.0;
 				int sides = 4;
 				
@@ -145,12 +122,12 @@ void ofApp::buildMeshes()
 				ofColor brown(139,69,19);
 				brown = brown * ofRandom(0.5, 1.5);
 				
-				for(int i=0; i<sides; ++i)
+				for(int j=0; j<sides; ++j)
 				{
 					ofVec4f v1(r,0,0,1);
 					ofVec4f v2(r,n,0,1);
 					ofMatrix4x4 rotMatrix;
-					rotMatrix.glRotate(dr*i, 0, 1, 0);
+					rotMatrix.glRotate(dr*j, 0, 1, 0);
 					v1 = v1 * rotMatrix;
 					v2 = v2 * rotMatrix;
 					
@@ -164,6 +141,8 @@ void ofApp::buildMeshes()
 					currMesh->addColor(brown);
 				}
 				currMesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+				
+				
 				mMeshes.push_back(currMesh);
 				currMesh = nullptr;
 				
@@ -181,7 +160,6 @@ void ofApp::buildMeshes()
 				{
 					ofVec4f v1(0,0,0,1);
 					v1 = v1 * currMatrix;
-					//					std::cout << v1 << std::endl;
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
 				}
@@ -193,12 +171,12 @@ void ofApp::buildMeshes()
 				{
 					ofVec4f v1(0,0,0,1);
 					v1 = v1 * currMatrix;
-					//					std::cout << v1 << std::endl;
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
 				}
 				currMatrix.glTranslate(0, n, 0);
 			}
+			
 			else if(s->value == "{")
 			{
 				if(poly)
@@ -208,6 +186,7 @@ void ofApp::buildMeshes()
 				}
 				
 				poly = new ofMesh();
+
 				if(s->expressions && s->expressions->expressions.size() == 3)
 				{
 					//					std::cout << s->expressions->toString() << std::endl;
@@ -231,36 +210,43 @@ void ofApp::buildMeshes()
 			{
 				matrixStack.push(currMatrix);
 			}
-			
+
 			else if(s->value == "]")
 			{
 				currMatrix = matrixStack.top();
 				matrixStack.pop();
 			}
+
 			else if(s->value == "+")
 			{
 				currMatrix.glRotate(delta, 0, 0, 1);
 			}
+
 			else if(s->value == "-")
 			{
 				currMatrix.glRotate(-delta, 0, 0, 1);
 			}
+
 			else if(s->value == "&")
 			{
 				currMatrix.glRotate(-delta, 1, 0, 0);
 			}
+
 			else if(s->value == "^")
 			{
 				currMatrix.glRotate(delta, 1, 0, 0);
 			}
+
 			else if(s->value == "/")
 			{
 				currMatrix.glRotate(-delta, 0, 1, 0);
 			}
+
 			else if(s->value == "\\")
 			{
 				currMatrix.glRotate(delta, 0, 1, 0);
 			}
+
 			else if(s->value == "|")
 			{
 				currMatrix.glRotate(180, 0, 0, 1);
@@ -269,12 +255,40 @@ void ofApp::buildMeshes()
 	}
 }
 
+void ofApp::drawDebugHUD()
+{
+	float delta = LSystem::getInstance().getGlobalVariable("delta", 22.5);
+	float n = LSystem::getInstance().getGlobalVariable("n", 5);
+	
+	ofSetColor(0);
+	std::string s;
+	s+= ("n:         " + to_string(n) + "\n");
+	s+= ("delta:     " + to_string(delta) + "\n");
+	s+= ("steps:     " + to_string(mMaxSteps) + "\n");
+	s+= ("currSteps: " + to_string(mCurrSteps) + "\n");
+	s+= ("Step duration: " + to_string(mLastStepDuration*1000) + " ms");
+	ofDrawBitmapString(s.c_str(), 20,20);
+
+}
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+	mSpotlight.setPosition(mCamera.getPosition());
+	mSpotlight.lookAt(mCamera.getLookAtDir());
+
+//	ofEnableLighting();
 	ofEnableDepthTest();
+	
+	mCamera.begin();
+//	mSpotlight.enable();
+	
 	drawMeshes();
+
+//	mSpotlight.disable();
+	mCamera.end();
+	
+	drawDebugHUD();
 }
 
 //--------------------------------------------------------------
@@ -284,7 +298,10 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+	if(key == 'w')
+	{
+		mDrawWireframe = !mDrawWireframe;
+	}
 }
 
 //--------------------------------------------------------------
