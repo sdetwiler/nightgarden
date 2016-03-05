@@ -71,7 +71,7 @@ std::string Predicate::toString() const
 	return s;
 }
 
-bool Predicate::doesMatch(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol)
+bool Predicate::doesMatch(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol)
 {
 	// TODO: Multisymbol predicate previous components that can evaluate against the computed context.
 	if(prev)
@@ -79,7 +79,7 @@ bool Predicate::doesMatch(SymbolVec const& context, Symbol const* currSymbol, Sy
 		if(context.size())
 		{
 			// The immediate predecessor to the current symbol is at the front of the context.
-			if(*prev != *context.front())
+			if(*prev != *context.top())
 			{
 				return false;
 			}
@@ -138,7 +138,7 @@ bool Predicate::doesMatch(SymbolVec const& context, Symbol const* currSymbol, Sy
 
 
 
-VariableMap* Predicate::createScope(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const
+VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const
 {
 	// The predicate defines variable names contained in the current scope.
 	// The prev, curr and next symbols contains expressions that set the
@@ -155,7 +155,7 @@ VariableMap* Predicate::createScope(SymbolVec const& context, Symbol const* curr
 		Symbol* prevSymbol = nullptr;
 		if(context.size())
 		{
-			prevSymbol = context.front();
+			prevSymbol = context.top();
 		}
 		idx = scope->addToMap(prev->variables, prevSymbol, idx);
 	}

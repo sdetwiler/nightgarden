@@ -1,4 +1,4 @@
-var steps 14
+var steps 10
 
 # Bracketed OL System Test 1
 #var delta 25.7
@@ -83,7 +83,7 @@ var steps 14
 #rule W -> [&&&D'/G////G////G////G////G]
 #rule D -> FF
 #rule G -> ['^F][{(flowerRed, flowerGreen, flowerBlue)&&&&-f+f|-f+f}]
-
+#
 
 # Leaf
 #var n 20

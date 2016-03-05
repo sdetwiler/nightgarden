@@ -15,6 +15,11 @@
 
 #include "rules_parser.tab.h"
 
+#include "timing.h"
+
+
+#include <ctime>
+
 // Parser forward declarations.
 #ifndef FLEXINT_H
 
@@ -192,7 +197,7 @@ SymbolList const* LSystem::getState()
 }
 
 
-Rule const* LSystem::getRuleForSymbol(SymbolVec const& context, Symbol const* symbol, Symbol const* next)
+Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next)
 {
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
@@ -210,20 +215,27 @@ Rule const* LSystem::getRuleForSymbol(SymbolVec const& context, Symbol const* sy
 
 void LSystem::step()
 {
+	START_TIME_MEASURE(step);
+	
 	if(!mState)
 	{
 		return;
 	}
 	SymbolList* output = new SymbolList;
 
-	//typedef std::stack<Symbol*> SymbolStack;
-	// Not as efficient as using a stack<> but ...
-	SymbolVec context;
+	SymbolStack context;
 	Symbol root;
-	context.push_back(&root);
+	context.push(&root);
 	SymbolVec branches;
+	
+	clock_t s = clock();
+	
+
+	std::cout << " LSystem::step processing " << std::to_string(mState->symbols.size()) << " symbols\n";
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
+		START_TIME_MEASURE(itr);
+
 		Symbol* symbol = (*i);
 
 		// If a push branch symbol...
@@ -233,10 +245,7 @@ void LSystem::step()
 			*(output)+= *symbol;
 
 			// Store the current head of the context in the branches vector.
-//			if(context.size())
-//			{
-				branches.insert(branches.begin(), context.front());
-//			}
+			branches.insert(branches.begin(), context.top());
 		}
 		
 		// If a pop branch symbol...
@@ -248,8 +257,8 @@ void LSystem::step()
 			// Get and pop location of the last branch and rewind the context back to that point.
 			if(branches.size() == 0)
 			{
-				std::cout << "Mismatch square brackets";
-				context.clear();
+				std::cout << "WARNING: Mismatch square brackets";
+				context = SymbolStack();
 			}
 			else
 			{
@@ -257,11 +266,11 @@ void LSystem::step()
 				branches.erase(branches.begin());
 				while(context.size())
 				{
-					if(b == context.front())
+					if(b == context.top())
 					{
 						break;
 					}
-					context.erase(context.begin());
+					context.pop();
 				}
 			}
 		}
@@ -277,19 +286,25 @@ void LSystem::step()
 		// Peek at the next symbol.
 		Symbol* next = nullptr;
 		SymbolVec::const_iterator peek = i+1;
+		size_t peekDistance = 0;
+//		START_TIME_MEASURE(peek_timer);
+
 		while(peek != mState->symbols.end())
 		{
-			if((*peek)->isOperator || (*peek)->value != "[" || (*peek)->value != "]")
-			{
-				++peek;
-			}
-			else
-			{
+			++peekDistance;
+//			if((*peek)->isOperator || (*peek)->value != "[" || (*peek)->value != "]")
+//			{
+//				++peek;
+//			}
+//			else
+//			{
 				next = *peek;
 				break;
-			}
+//			}
 		}
+//		LOG_TIME_DELTA(peek_timer, "\t\tpeek");
 		
+//		std::cout << "next is " << (next?next->toString():"null") << " scanned ahead " << std::to_string(peekDistance) << " symbols\n";
 		
 		Rule const* rule = getRuleForSymbol(context, symbol, next);
 		if(rule)
@@ -306,7 +321,10 @@ void LSystem::step()
 		}
 		
 		// Add the current symbol to the context.
-		context.insert(context.begin(), symbol);
+		context.push(symbol);
+
+		LOG_TIME_DELTA(itr, "\titrend");
+
 	}
 	
 	if(mState)
@@ -315,5 +333,7 @@ void LSystem::step()
 	}
 	
 	mState = output;
+	
+	LOG_TIME_DELTA(step, "end");
 }
 

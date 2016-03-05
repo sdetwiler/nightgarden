@@ -30,8 +30,8 @@ public:
 	~Predicate();
 	
 	std::string toString() const;
-	bool doesMatch(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol);
-	VariableMap* createScope(SymbolVec const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const;
+	bool doesMatch(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol);
+	VariableMap* createScope(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const;
 };
 
 

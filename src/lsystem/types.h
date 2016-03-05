@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <stack>
 #include <map>
 #include <limits>
 #include <iostream>
@@ -300,6 +301,7 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////
+typedef std::stack< Symbol* > SymbolStack;
 typedef std::vector< Symbol* > SymbolVec;
 class SymbolList
 {

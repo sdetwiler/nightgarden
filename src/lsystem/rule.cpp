@@ -42,7 +42,7 @@ std::string Rule::toString() const
 }
 
 
-SymbolList* Rule::evaluate(SymbolVec const& context, Symbol* s, Symbol* next) const
+SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
 {
 //	std::cout << "Rule::evaluate" << std::endl
 //	<< "rule: " << this->toString() << std::endl

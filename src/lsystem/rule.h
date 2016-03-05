@@ -36,7 +36,7 @@ public:
 	
 	std::string toString() const;
 	
-	SymbolList* evaluate(SymbolVec const& context, Symbol* s, Symbol* next) const;
+	SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
 };
 
 

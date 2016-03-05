@@ -21,7 +21,7 @@ void ofApp::setup(){
 		mMaxSteps = LSystem::getInstance().getGlobalVariable("steps", 4);
 		
 		mLastStepTime = 0;
-		mStepInterval = 1;
+		mStepInterval = 0;
 	}
 	
 	mDrawWireframe = false;
