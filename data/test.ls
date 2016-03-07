@@ -1,4 +1,4 @@
-var steps 10
+var steps 8
 
 # Bracketed OL System Test 1
 #var delta 25.7
@@ -33,33 +33,35 @@ var steps 10
 #rule R -> -LFLF+RFRFR+F+RF-LFL-FR
 
 
-
-#var n 8
-#var delta 22.5
-#axiom X
-#rule X -> F[[X]+X]+F[+FX]-X
-#rule F -> FF
-
+# Page 25 example e
 #var n 7
 #var delta 25.7
 #axiom X
 #rule X -> F[+X][-X]FX
 #rule F -> FF
 
-# axiom b(1)aaaaaa
+# Page 25 example f
+#var n 5
+#var delta 22.5
+#axiom X
+#rule X -> F-[[X]+X]+F[+FX]-X
+#rule F -> FF
+
+# Conditional LSystem test case
+#axiom b(1)aaaaaa
 #
-# rule b(x) < a : x<3 -> b(x+1)
-# rule b(x) < a : x>=3 ->b(x)
-# rule b -> a
+#rule b(x) < a : x<3 -> b(x+1)
+#rule b(x) < a : x>=3 ->b(x)
+#rule b -> a
 
 # Bush
-#var n 20
-#var delta 22.5
-#axiom A
-#rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
-#rule F -> S/////F
-#rule S -> F L
-#rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
+var n 7
+var delta 22.5
+axiom A
+rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
+rule F -> S/////F
+rule S -> F L
+rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
 
 
 # Figure 1.26 A Plant
@@ -83,7 +85,7 @@ var steps 10
 #rule W -> [&&&D'/G////G////G////G////G]
 #rule D -> FF
 #rule G -> ['^F][{(flowerRed, flowerGreen, flowerBlue)&&&&-f+f|-f+f}]
-#
+
 
 # Leaf
 #var n 20
@@ -93,13 +95,13 @@ var steps 10
 
 
 # Cordate Leaf
-var n 20
-var delta 10
-
-axiom [A][B]
-rule A -> [+A{.].C.}
-rule B -> [-B{.].C.}
-rule C -> GC
+#var n 20
+#var delta 10
+#
+#axiom [A][B]
+#rule A -> [+A{.].C.}
+#rule B -> [-B{.].C.}
+#rule C -> GC
 
 
 
@@ -110,3 +112,35 @@ rule C -> GC
 #rule B -> B&.G.}
 #rule X(a) -> X(a+4.5)
 
+
+
+
+
+# Sunflower head
+#axiom A(0)
+#var a 137.5
+#var n 1.0
+#var rd 1.0
+#var rb 1.1
+#rule A(b) -> +(a)[f(b^0.5)~[/(90)-(1.0)/(90)B][D]]A(b+1)
+#
+#rule B -> {(243, 183, 19)PPPPPPPP}
+#rule P -> f(rb)+(45)
+#
+#rule D -> {(239, 217, 17)VVVVVVVV}
+#rule V -> f(rd)+(45)
+
+
+
+
+# Cylindrical model test
+#var a 137.5281
+#var h 35.3
+#var r 500
+#var rd 100.0
+#
+#
+#axiom A
+#rule A -> [&(90)f(r)~D]f(h)/(a)A
+#rule D -> [^(90){(239, 217, 17)VVVVVVVV}]
+#rule V -> f(rd)+(45)
