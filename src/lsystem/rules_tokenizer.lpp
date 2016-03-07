@@ -34,8 +34,9 @@ void rules_error(char *s);
 
 "+" { return ADD; }
 "-" { return SUB; }
+"^" { return EXP; }
 
-[.\[\]\*&!/\'^|{}] { rules_lval.symbol = new Symbol(); rules_lval.symbol->isOperator=true; rules_lval.symbol->value = yytext; return SYMBOL; }
+[.\[\]\*&!/\'|{}~] { rules_lval.symbol = new Symbol(); rules_lval.symbol->isOperator=true; rules_lval.symbol->value = yytext; return SYMBOL; }
 
 
 [0-9]*\.?[0-9]* { rules_lval.num_float = atof(yytext); return FLOAT; }

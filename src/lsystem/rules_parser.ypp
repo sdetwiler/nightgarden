@@ -49,6 +49,7 @@ void yyerror(char *s);
 
 %token ADD
 %token SUB
+%token EXP
 
 %token LT
 %token LTE
@@ -76,6 +77,7 @@ void yyerror(char *s);
 %type <symbol>          symbol
 %type <symbolList>      symbol_list
 %type <symbol>          result_symbol
+%type <symbol>          symbol_add_sub_exp
 %type <symbolList>      result_symbol_list
 %type <variableList>    variable_list
 %type <expression>		condition_expr
@@ -332,7 +334,7 @@ result_symbol_list :
 
 
 result_symbol :
-	SYMBOL LP expr_list RP
+	symbol_add_sub_exp LP expr_list RP
 	{
 		#ifdef DEBUG_PARSER
 		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3->toString().c_str());
@@ -340,8 +342,16 @@ result_symbol :
 		$$ = $1;
 		$$->expressions = $3;
 	}
+	| symbol_add_sub_exp
+	{
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to symbol_add_sub\n\t%s\n", $1->value.c_str());
+		#endif
+		$$ = $1;
+	}
 
-	| SYMBOL
+symbol_add_sub_exp :
+	SYMBOL
 	{
 		#ifdef DEBUG_PARSER
 		printf("result_symbol to SYMBOL\n\t%s\n", $1->value.c_str());
@@ -351,23 +361,31 @@ result_symbol :
 
 	| ADD
 	{
-		
-		$$ = new Symbol(); $$->value = "+";
+		$$ = new Symbol();
+		$$->value = "+";
 		
 		#ifdef DEBUG_PARSER
-		printf("result_symbol to ADD\n\tsymbol:[%s]\n", $$->toString().c_str());
+		printf("symbol_add_sub_exp to ADD\n\tsymbol:[%s]\n", $$->toString().c_str());
 		#endif
 	}
 	| SUB
 	{
-		
-		$$ = new Symbol(); $$->value = "-";
+		$$ = new Symbol();
+		$$->value = "-";
 		
 		#ifdef DEBUG_PARSER
-		printf("resut_symbol to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
+		printf("symbol_add_sub_exp to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
 		#endif
 	}
-
+	| EXP
+	{
+		$$ = new Symbol();
+		$$->value = "^";
+		
+		#ifdef DEBUG_PARSER
+		printf("symbol_add_sub_exp to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
+		#endif
+	}
 
 
 
@@ -440,6 +458,10 @@ operator :
 	| '/'
 	{
 		$$ = strdup("/");
+	}
+	| EXP
+	{
+		$$ = strdup("^");
 	}
 
 	| SUB
