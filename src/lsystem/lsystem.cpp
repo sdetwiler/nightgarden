@@ -18,7 +18,6 @@
 #include "timing.h"
 
 
-#include <ctime>
 
 // Parser forward declarations.
 #ifndef FLEXINT_H
@@ -213,8 +212,68 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 	return nullptr;
 }
 
+void LSystem::reduce()
+{
+	typedef std::stack<SymbolVec*> SymbolVecStack;
+	
+	SymbolVecStack frames;
+	SymbolVec toRemove;
+	
+	
+	SymbolVec* currFrame = new SymbolVec();
+	frames.push(currFrame);
+	
+	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
+	{
+		Symbol* symbol = (*i);
+		
+		if(symbol->value == "[")
+		{
+			currFrame = new SymbolVec();
+			frames.push(currFrame);
+			currFrame->push_back(symbol);
+		}
+		else if(symbol->value == "]")
+		{
+			// Check frame contents and if only [ then drop those symbols from the symbollist.
+			if(currFrame->size() == 1 && currFrame->at(0)->value == "[")
+			{
+				toRemove.push_back(currFrame->at(0));
+				toRemove.push_back(symbol);
+			}
+			delete currFrame;
+			frames.pop();
+			currFrame = frames.top();
+		}
+		else
+		{
+			currFrame->push_back(symbol);
+		}
+	}
+	
+	for(SymbolVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
+	{
+		
+		SymbolVec::iterator j = std::find(mState->symbols.begin(), mState->symbols.end(), *i);
+		if(j!=mState->symbols.end())
+		{
+			mState->symbols.erase(j);
+		}
+	}
+
+	while(frames.size())
+	{
+		delete frames.top();
+		frames.pop();
+	}
+	
+//	std::cout << "Removed " << std::to_string(toRemove.size()) << " symbols\n";
+}
+
 void LSystem::step()
 {
+	bool reduce = true;
+	
 	START_TIME_MEASURE(step);
 	
 	if(!mState)
@@ -226,12 +285,9 @@ void LSystem::step()
 	SymbolStack context;
 	Symbol root;
 	context.push(&root);
-	SymbolVec branches;
+	SymbolStack branches;
 	
-	clock_t s = clock();
-	
-
-	std::cout << " LSystem::step processing " << std::to_string(mState->symbols.size()) << " symbols\n";
+//	std::cout << " LSystem::step processing " << std::to_string(mState->symbols.size()) << " symbols\n";
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
 		START_TIME_MEASURE(itr);
@@ -245,7 +301,7 @@ void LSystem::step()
 			*(output)+= *symbol;
 
 			// Store the current head of the context in the branches vector.
-			branches.insert(branches.begin(), context.top());
+			branches.push(context.top());
 		}
 		
 		// If a pop branch symbol...
@@ -262,8 +318,8 @@ void LSystem::step()
 			}
 			else
 			{
-				Symbol* b = branches.front();
-				branches.erase(branches.begin());
+				Symbol* b = branches.top();
+				branches.pop();
 				while(context.size())
 				{
 					if(b == context.top())
@@ -287,24 +343,29 @@ void LSystem::step()
 		Symbol* next = nullptr;
 		SymbolVec::const_iterator peek = i+1;
 		size_t peekDistance = 0;
-//		START_TIME_MEASURE(peek_timer);
 
-		while(peek != mState->symbols.end())
-		{
-			++peekDistance;
-//			if((*peek)->isOperator || (*peek)->value != "[" || (*peek)->value != "]")
-//			{
-//				++peek;
-//			}
-//			else
-//			{
-				next = *peek;
-				break;
-//			}
-		}
+//////////////////////////////////////////////////////
+// TODO FIXME This is all broken and currently disabled.
+//
+//		START_TIME_MEASURE(peek_timer);
+//
+//		while(peek != mState->symbols.end())
+//		{
+//			++peekDistance;
+////			if((*peek)->isOperator || (*peek)->value != "[" || (*peek)->value != "]")
+////			{
+////				++peek;
+////			}
+////			else
+////			{
+//				next = *peek;
+//				break;
+////			}
+//		}
 //		LOG_TIME_DELTA(peek_timer, "\t\tpeek");
-		
+//		
 //		std::cout << "next is " << (next?next->toString():"null") << " scanned ahead " << std::to_string(peekDistance) << " symbols\n";
+//////////////////////////////////////////////////////
 		
 		Rule const* rule = getRuleForSymbol(context, symbol, next);
 		if(rule)

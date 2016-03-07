@@ -44,6 +44,7 @@ public:
 	
 	SymbolList const* getState();
 	void step();
+	void reduce();
 	
 private:
 	typedef std::vector< Rule* > RuleVec;
@@ -56,6 +57,8 @@ private:
 	SymbolList* mState;
 	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);
+	
+
 };
 
 
