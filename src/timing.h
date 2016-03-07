@@ -9,6 +9,8 @@
 #ifndef timing_h
 #define timing_h
 
+#include <ctime>
+
 //#define MEASURE_TIME
 
 #ifdef MEASURE_TIME
