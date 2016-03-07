@@ -485,7 +485,7 @@ public:
 	{
 		for(VariableVec::iterator vi = variables->variables.begin(); vi!= variables->variables.end(); ++vi)
 		{
-			std::cout << (*vi)->name << "=" << (*vi)->value << std::endl;
+//			std::cout << (*vi)->name << "=" << (*vi)->value << std::endl;
 			Variable* variable = new Variable(*(*vi));
 			if(s->expressions)
 			{
