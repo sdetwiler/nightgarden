@@ -28,6 +28,7 @@ void rules_error(char *s);
 "<=" { return LTE; }
 ">" { return GT; }
 ">=" { return GTE; }
+"==" { return EQ; }
 
 "(" { return LP; }
 ")" { return RP; }

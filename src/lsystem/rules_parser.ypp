@@ -55,7 +55,7 @@ void yyerror(char *s);
 %token LTE
 %token GT
 %token GTE
-
+%token EQ
 
 %token NEWLINE
 %token AXIOM
@@ -488,6 +488,10 @@ operator :
 	| LTE
 	{
 		$$ = strdup("<=");
+	}
+	| EQ
+	{
+		$$ = strdup("==");
 	}
 
 

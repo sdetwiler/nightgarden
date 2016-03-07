@@ -25,6 +25,7 @@ void expression_error(char *s);
 "<=" { return LTE; }
 ">" { return GT; }
 ">=" { return GTE; }
+"==" { return EQ; }
 
 
 . { return yytext[0]; };
