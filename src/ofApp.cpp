@@ -49,8 +49,11 @@ void ofApp::update()
 			
 			mLastStepDuration = afterStep - now;
 
-			SymbolList const* state = LSystem::getInstance().getState();
-			std::cout << "state:   " << state->toString() << std::endl;
+			if(mCurrSteps == mMaxSteps)
+			{
+				SymbolList const* state = LSystem::getInstance().getState();
+				std::cout << "state:   " << state->toString() << std::endl;
+			}
 			
 			buildMeshes();
 		}
