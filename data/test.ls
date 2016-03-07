@@ -1,4 +1,4 @@
-var steps 8
+var steps 10
 
 # Bracketed OL System Test 1
 #var delta 25.7
@@ -55,13 +55,13 @@ var steps 8
 #rule b -> a
 
 # Bush
-var n 7
-var delta 22.5
-axiom A
-rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
-rule F -> S/////F
-rule S -> F L
-rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
+#var n 7
+#var delta 22.5
+#axiom A
+#rule A -> [&FL!A]/////'[&FL!A]///////'[&FL!A]
+#rule F -> S/////F
+#rule S -> F L
+#rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
 
 
 # Figure 1.26 A Plant
@@ -117,18 +117,18 @@ rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
 
 
 # Sunflower head
-#axiom A(0)
-#var a 137.5
-#var n 1.0
-#var rd 1.0
-#var rb 1.1
-#rule A(b) -> +(a)[f(b^0.5)~[/(90)-(1.0)/(90)B][D]]A(b+1)
-#
-#rule B -> {(243, 183, 19)PPPPPPPP}
-#rule P -> f(rb)+(45)
-#
-#rule D -> {(239, 217, 17)VVVVVVVV}
-#rule V -> f(rd)+(45)
+axiom A(0)
+var a 137.5
+var n 1.0
+var rd 1.0
+var rb 1.1
+rule A(b) -> +(a)[f(b^0.5)~[/(90)-(1.0)/(90)B][D]]A(b+1)
+
+rule B -> {(243, 183, 19)PPPPPPPP}
+rule P -> f(rb)+(45)
+
+rule D -> {(239, 217, 17)VVVVVVVV}
+rule V -> f(rd)+(45)
 
 
 
@@ -144,3 +144,32 @@ rule L -> ['''^^{(0,128,0)-f+f+f-|-f+f+f}]
 #rule A -> [&(90)f(r)~D]f(h)/(a)A
 #rule D -> [^(90){(239, 217, 17)VVVVVVVV}]
 #rule V -> f(rd)+(45)
+
+
+
+
+
+# Page 92 WIP
+#var n 10
+#var delta 60
+#
+#var flowerRed 128
+#var flowerGreen 0
+#var flowerBlue 128
+#
+#var stemRed 0
+#var stemGreen 128
+#var stemBlue 0
+#
+## flower delta
+#var fd 36
+## flower n
+#var fn 20
+#
+#axiom A~K
+#rule A -> [-/~K][+/~K]I(0)/(90)A
+#rule I(t) : t!=2 -> F(stemRed, stemGreen, stemBlue)I(t+1)
+#rule I(t) : t==2 -> I(t+1)[-F(stemRed, stemGreen, stemBlue)F(stemRed, stemGreen, stemBlue)A][+F(stemRed, stemGreen, stemBlue)F(stemRed, stemGreen, stemBlue)A]
+#rule K -> [&(fd)&(fd)&(fd)'(fd)/(fd)P/(fd)/(fd)/(fd)/(fd)P/(fd)/(fd)/(fd)/(fd)P/(fd)/(fd)/(fd)/(fd)P/(fd)/(fd)/(fd)/(fd)P]
+#rule P -> [{(flowerRed, flowerGreen, flowerBlue)&(fd)&(fd)&(fd)&(fd)-(fd)f(fn)+(fd)f(fn)|-(fd)f(fn)+(fd)f(fn)}]
+#
