@@ -43,13 +43,14 @@ void ofApp::update()
 		{
 			mLastStepTime = now;
 			LSystem::getInstance().step();
+			LSystem::getInstance().reduce();
 			++mCurrSteps;
 			float afterStep = ofGetElapsedTimef();
 			
 			mLastStepDuration = afterStep - now;
 
 			SymbolList const* state = LSystem::getInstance().getState();
-//			std::cout << state->toString() << std::endl;
+			std::cout << "state:   " << state->toString() << std::endl;
 			
 			buildMeshes();
 		}
@@ -167,6 +168,12 @@ void ofApp::buildMeshes()
 			
 			else if(s->value == "f")
 			{
+				float d = n;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+
 				if(poly)
 				{
 					ofVec4f v1(0,0,0,1);
@@ -174,7 +181,7 @@ void ofApp::buildMeshes()
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
 				}
-				currMatrix.glTranslate(0, n, 0);
+				currMatrix.glTranslate(0, d, 0);
 			}
 			
 			else if(s->value == "{")
@@ -219,32 +226,63 @@ void ofApp::buildMeshes()
 
 			else if(s->value == "+")
 			{
-				currMatrix.glRotate(delta, 0, 0, 1);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				
+				currMatrix.glRotate(d, 0, 0, 1);
 			}
 
 			else if(s->value == "-")
 			{
-				currMatrix.glRotate(-delta, 0, 0, 1);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				currMatrix.glRotate(-d, 0, 0, 1);
 			}
 
 			else if(s->value == "&")
 			{
-				currMatrix.glRotate(-delta, 1, 0, 0);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				currMatrix.glRotate(-d, 1, 0, 0);
 			}
 
 			else if(s->value == "^")
 			{
-				currMatrix.glRotate(delta, 1, 0, 0);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				currMatrix.glRotate(d, 1, 0, 0);
 			}
 
 			else if(s->value == "/")
 			{
-				currMatrix.glRotate(-delta, 0, 1, 0);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				currMatrix.glRotate(-d, 0, 1, 0);
 			}
 
 			else if(s->value == "\\")
 			{
-				currMatrix.glRotate(delta, 0, 1, 0);
+				float d = delta;
+				if(s->expressions && s->expressions->expressions.size() == 1)
+				{
+					d = stof((*(s->expressions->expressions[0])).value);
+				}
+				currMatrix.glRotate(d, 0, 1, 0);
 			}
 
 			else if(s->value == "|")
@@ -262,10 +300,11 @@ void ofApp::drawDebugHUD()
 	
 	ofSetColor(0);
 	std::string s;
-	s+= ("n:         " + to_string(n) + "\n");
-	s+= ("delta:     " + to_string(delta) + "\n");
-	s+= ("steps:     " + to_string(mMaxSteps) + "\n");
-	s+= ("currSteps: " + to_string(mCurrSteps) + "\n");
+	s+= ("n:             " + to_string(n) + "\n");
+	s+= ("delta:         " + to_string(delta) + "\n");
+	s+= ("steps:         " + to_string(mMaxSteps) + "\n");
+	s+= ("currSteps:     " + to_string(mCurrSteps) + "\n");
+	s+= ("system len:    " + to_string(LSystem::getInstance().getState()->symbols.size()) + "\n");
 	s+= ("Step duration: " + to_string(mLastStepDuration*1000) + " ms");
 	ofDrawBitmapString(s.c_str(), 20,20);
 
