@@ -29,6 +29,7 @@ void rules_error(char *s);
 ">" { return GT; }
 ">=" { return GTE; }
 "==" { return EQ; }
+"!=" { return NEQ; }
 
 "(" { return LP; }
 ")" { return RP; }
