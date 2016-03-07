@@ -116,6 +116,15 @@ void ofApp::buildMeshes()
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
+				ofColor color(139,69,19);
+				if(s->expressions && s->expressions->expressions.size() == 3)
+				{
+					//					std::cout << s->expressions->toString() << std::endl;
+					color.r = stoi((*(s->expressions->expressions[0])).value);
+					color.g = stoi((*(s->expressions->expressions[1])).value);
+					color.b = stoi((*(s->expressions->expressions[2])).value);
+				}
+				
 				// TODO Next try joining to existing mesh...
 				currMesh = new ofMesh();
 				float r = 1.0;
@@ -123,8 +132,6 @@ void ofApp::buildMeshes()
 				
 				float dr = 360.0/sides;
 				
-				ofColor brown(139,69,19);
-				brown = brown * ofRandom(0.5, 1.5);
 				
 				for(int j=0; j<sides; ++j)
 				{
@@ -139,10 +146,10 @@ void ofApp::buildMeshes()
 					v2 = v2 * currMatrix;
 					
 					currMesh->addVertex(v1);
-					currMesh->addColor(brown);
+					currMesh->addColor(color);
 					
 					currMesh->addVertex(v2);
-					currMesh->addColor(brown);
+					currMesh->addColor(color);
 				}
 				currMesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 				
