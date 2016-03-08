@@ -1,4 +1,4 @@
-var steps 10
+var steps 15
 
 # Bracketed OL System Test 1
 #var delta 25.7
@@ -95,13 +95,13 @@ var steps 10
 
 
 # Cordate Leaf
-#var n 20
-#var delta 10
-#
-#axiom [A][B]
-#rule A -> [+A{.].C.}
-#rule B -> [-B{.].C.}
-#rule C -> GC
+var n 20
+var delta 10
+
+axiom [A][B]
+rule A -> [+A{.].C.}
+rule B -> [-B{.].C.}
+rule C -> GC
 
 
 
@@ -117,18 +117,18 @@ var steps 10
 
 
 # Sunflower head
-axiom A(0)
-var a 137.5
-var n 1.0
-var rd 1.0
-var rb 1.1
-rule A(b) -> +(a)[f(b^0.5)~[/(90)-(1.0)/(90)B][D]]A(b+1)
-
-rule B -> {(243, 183, 19)PPPPPPPP}
-rule P -> f(rb)+(45)
-
-rule D -> {(239, 217, 17)VVVVVVVV}
-rule V -> f(rd)+(45)
+#axiom A(0)
+#var a 137.5
+#var n 1.0
+#var rd 1.0
+#var rb 1.1
+#rule A(b) -> +(a)[f(b^0.5)~[/(90)-(1.0)/(90)B][D]]A(b+1)
+#
+#rule B -> {(243, 183, 19)PPPPPPPP}
+#rule P -> f(rb)+(45)
+#
+#rule D -> {(239, 217, 17)VVVVVVVV}
+#rule V -> f(rd)+(45)
 
 
 
