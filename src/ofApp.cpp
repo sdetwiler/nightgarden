@@ -6,12 +6,15 @@
 
 typedef std::stack<ofMatrix4x4> MatrixStack;
 
+int ofApp::ImageWidth = 320;
+int ofApp::ImageHeight = 240;
 
 
 
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup()
+{
 	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
 	if(LSystem::getInstance().load(filename))
 	{
@@ -25,12 +28,17 @@ void ofApp::setup(){
 	}
 	
 	mDrawWireframe = false;
-	mSpotlight.setDirectional();//20.0f);
 
 	mCamera.setPosition(0, 0, -10);
 	mCamera.setTarget(ofVec3f(0,0,0));
 	mCamera.enableMouseInput();
-
+	
+	
+//	colorImg.allocate(ImageWidth, ImageHeight);
+//	grayImage.allocate(ImageWidth, ImageHeight);
+//	grayBg.allocate(ImageWidth, ImageHeight);
+//	grayDiff.allocate(ImageWidth, ImageHeight);
+//	mLearnBackground = true;
 }
 
 //--------------------------------------------------------------
@@ -58,8 +66,41 @@ void ofApp::update()
 			buildMeshes();
 		}
 	}
+	
+	
+	
+//	if (mLearnBackground == true)
+//	{
+//		ofImage img;
+//		img.load("/Users/steve/projects/nightgarden/data/contourtest-small.jpg");
+//		img.setImageType(OF_IMAGE_COLOR); // get rid of alpha channel from png
+//
+//		colorImg.setFromPixels(img.getPixels());
+//		grayImage = colorImg; // convert our color image to a grayscale image
+//		grayDiff = grayImage;
+//		grayDiff.threshold(100);
+//
+//		mLearnBackground = false;
+//	}
+//	contourFinder.findContours(grayDiff, (ImageWidth*ImageHeight)*0.001, (ImageWidth*ImageHeight)*0.8, 10, false, true);
+	
 }
 
+void ofApp::drawContours()
+{
+	colorImg.draw(0, 0, ImageWidth, ImageHeight);
+	grayImage.draw(0, ImageHeight, ImageWidth, ImageHeight);
+	ofDrawRectangle(ImageWidth, 0, ImageWidth, ImageHeight);
+	contourFinder.draw(ImageWidth, 0, ImageWidth, ImageHeight);
+	ofColor c(255, 255, 255);
+	for(int i = 0; i < contourFinder.nBlobs; i++) {
+		ofRectangle r = contourFinder.blobs.at(i).boundingRect;
+		r.x += ImageWidth; r.y += ImageHeight;
+		c.setHsb(i * 64, 255, 255);
+		ofSetColor(c);
+		ofDrawRectangle(r);
+	}
+}
 
 void ofApp::drawMeshes()
 {
@@ -323,19 +364,13 @@ void ofApp::drawDebugHUD()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	mSpotlight.setPosition(mCamera.getPosition());
-	mSpotlight.lookAt(mCamera.getLookAtDir());
-
-//	ofEnableLighting();
 	ofEnableDepthTest();
-	
 	mCamera.begin();
-//	mSpotlight.enable();
-	
 	drawMeshes();
-
-//	mSpotlight.disable();
 	mCamera.end();
+	ofDisableDepthTest();
+	
+//	drawContours();
 	
 	drawDebugHUD();
 }

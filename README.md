@@ -50,5 +50,30 @@ Context-aware parametric lsystem with conditions:
 	rule b(x) < a : x>=n -> b(x)
 	rule b -> a
 
+Build Notes
+===
 
+Flex and Bison Support in Xcode requires that the project.pbxproj is edited to include
+
+`YACC_GENERATED_FILE_STEM = InputFileStem;`
+
+For every build target.
+
+Find this fragment and add the indicated line:
+```
+        );
+      SDKROOT = macosx;
+      YACC_GENERATED_FILE_STEM = InputFileStem;
+    };
+    name = Debug;
+  };  
+```
+
+If project.pbxproj is XML use this:
+```
+	<key>YACC_GENERATED_FILE_STEM</key>
+	<string>InputFileStem</string>
+```
+
+Do the same for the Release target.
 

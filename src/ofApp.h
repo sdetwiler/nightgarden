@@ -1,7 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOpenCv.h"
+
 #include <vector>
+
 typedef std::vector<ofMesh*> MeshVec;
 
 class ofApp : public ofBaseApp{
@@ -31,6 +34,8 @@ private:
 	void drawDebugHUD();
 
 	
+	void drawContours();
+
 	int mMaxSteps;
 	int mCurrSteps;
 	float mLastStepTime;
@@ -44,8 +49,15 @@ private:
 	
 	
 	ofEasyCam mCamera;
-	ofLight mSpotlight;
-	
+
 	bool mDrawWireframe;
 	
+	
+	ofxCvColorImage colorImg;
+	ofxCvGrayscaleImage grayImage, grayBg, grayDiff;
+	ofxCvContourFinder contourFinder;
+	bool mLearnBackground;
+	
+	static int ImageWidth;
+	static int ImageHeight;
 };
