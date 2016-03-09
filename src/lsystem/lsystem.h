@@ -38,11 +38,11 @@ public:
 	void dumpVariables();
 	VariableMap const& getGlobalVariables();
 	
-	float getGlobalVariable(char const* name, float def=0);
+	float getGlobalVariable(char const* name, float def=0) const;
 	
 	void clear();
 	
-	SymbolList const* getState();
+	SymbolList const* getState() const;
 	void step();
 	void reduce();
 	

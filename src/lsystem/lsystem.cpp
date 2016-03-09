@@ -57,7 +57,6 @@ LSystem& LSystem::getInstance()
 
 bool LSystem::load(char const* filename)
 {
-//	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
 	std::ifstream infile(filename);
 	if(!infile.is_open())
 	{
@@ -171,7 +170,7 @@ void LSystem::clear()
 	}
 }
 
-float LSystem::getGlobalVariable(char const* name, float def)
+float LSystem::getGlobalVariable(char const* name, float def) const
 {
 	float ret = def;
 	StringVariableMap::const_iterator i;
@@ -190,7 +189,7 @@ VariableMap const& LSystem::getGlobalVariables()
 }
 
 
-SymbolList const* LSystem::getState()
+SymbolList const* LSystem::getState() const
 {
 	return mState;
 }

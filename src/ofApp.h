@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
+#include "ofxLSystem.h"
+
 #include <vector>
 
 typedef std::vector<ofMesh*> MeshVec;
@@ -27,37 +29,7 @@ public:
 	void gotMessage(ofMessage msg);
 
 private:
-	void clearMeshes();
-	void buildMeshes();
-
-	void drawMeshes();
 	void drawDebugHUD();
-
-	
-	void drawContours();
-
-	int mMaxSteps;
-	int mCurrSteps;
-	float mLastStepTime;
-	float mStepInterval;
-	
-	
-	MeshVec mMeshes;
-
-	
-	float mLastStepDuration;
-	
-	
+	ofxLSystem mSystem;
 	ofEasyCam mCamera;
-
-	bool mDrawWireframe;
-	
-	
-	ofxCvColorImage colorImg;
-	ofxCvGrayscaleImage grayImage, grayBg, grayDiff;
-	ofxCvContourFinder contourFinder;
-	bool mLearnBackground;
-	
-	static int ImageWidth;
-	static int ImageHeight;
 };

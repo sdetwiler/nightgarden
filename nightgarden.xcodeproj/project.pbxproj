@@ -19,6 +19,7 @@
 		84A3206118029CCFB09DF4EC /* expression.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1126A71A6C3746D505F285E7 /* expression.cpp */; };
 		A48FB1137A04CA2693898335 /* rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8DD9380A8CEB8111A0CC98 /* rule.cpp */; };
 		A7812E4ECE75F2380958E38F /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A973BBF2116DD28ECB0975C /* ofxCvContourFinder.cpp */; };
+		AABCD3A01C8FECDC00110C5C /* ofxLSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */; };
 		B897E464ACB53193F29FB87B /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4273183C29A4430F22FA560A /* predicate.cpp */; };
 		B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D737DC18DFB108292C691CAF /* ofxAssimpMeshHelper.cpp */; };
 		BAB47BEC3BBDDB6E036F9385 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C2C4BF3A433E8ADF4B786C04 /* test.cpp */; };
@@ -218,6 +219,8 @@
 		A9286B2FA8430635D0E0D315 /* vector2.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vector2.h; path = ../of_v0.9.2_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/vector2.h; sourceTree = SOURCE_ROOT; };
 		A9A0252F8963FE69194CB226 /* dummy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = dummy.h; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/flann/dummy.h; sourceTree = SOURCE_ROOT; };
 		A9F61A472397B3728679F718 /* operations.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = operations.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/operations.hpp; sourceTree = SOURCE_ROOT; };
+		AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystem.cpp; path = lsystem/ofxLSystem.cpp; sourceTree = "<group>"; };
+		AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystem.h; path = lsystem/ofxLSystem.h; sourceTree = "<group>"; };
 		AC63D10602ACB40AEEEEC864 /* util_inl.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = util_inl.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/util_inl.hpp; sourceTree = SOURCE_ROOT; };
 		AD47B1892DAD250DD34A40A7 /* openfabmap.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = openfabmap.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/contrib/openfabmap.hpp; sourceTree = SOURCE_ROOT; };
 		AE2C34D095F8CF81BC86784D /* background_segm.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = background_segm.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/video/background_segm.hpp; sourceTree = SOURCE_ROOT; };
@@ -616,6 +619,8 @@
 				90B18E35667C1FC1AA20A553 /* rules_tokenizer.lpp */,
 				C2C4BF3A433E8ADF4B786C04 /* test.cpp */,
 				09765D66A641E24A9E44595D /* types.h */,
+				AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */,
+				AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */,
 			);
 			name = lsystem;
 			sourceTree = "<group>";
@@ -1018,6 +1023,7 @@
 				A7812E4ECE75F2380958E38F /* ofxCvContourFinder.cpp in Sources */,
 				E961BA1EE9D733EFA52AD472 /* ofxCvFloatImage.cpp in Sources */,
 				8338DB7D7E3D446E7CAFF7C3 /* ofxCvGrayscaleImage.cpp in Sources */,
+				AABCD3A01C8FECDC00110C5C /* ofxLSystem.cpp in Sources */,
 				79E0E81BA5F148548A86FF14 /* ofxCvHaarFinder.cpp in Sources */,
 				CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */,
 				5E3D87E182F2624C32F8375B /* ofxCvShortImage.cpp in Sources */,
