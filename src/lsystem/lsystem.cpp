@@ -77,8 +77,7 @@ bool LSystem::load(char const* filename)
 		return -1;
 	}
 	
-	LSystem& lsystem = LSystem::getInstance();
-	return lsystem.parse(data.c_str());
+	return parse(data.c_str());
 }
 
 bool LSystem::parse(char const* input)
@@ -213,6 +212,11 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 
 void LSystem::reduce()
 {
+	if(!mState)
+	{
+		return;
+	}
+
 	typedef std::stack<SymbolVec*> SymbolVecStack;
 	
 	SymbolVecStack frames;

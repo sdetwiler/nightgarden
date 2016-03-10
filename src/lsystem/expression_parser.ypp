@@ -10,7 +10,7 @@
 // #define DEBUG_PARSER
 
 int yylex(void);
-void yyerror(char *s);
+void yyerror(char* s);
 
 
 Variable* getExpressionReturnVariable();

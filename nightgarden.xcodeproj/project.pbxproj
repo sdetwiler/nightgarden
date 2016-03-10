@@ -221,6 +221,10 @@
 		A9F61A472397B3728679F718 /* operations.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = operations.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/operations.hpp; sourceTree = SOURCE_ROOT; };
 		AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystem.cpp; path = lsystem/ofxLSystem.cpp; sourceTree = "<group>"; };
 		AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystem.h; path = lsystem/ofxLSystem.h; sourceTree = "<group>"; };
+		AABCD3A21C8FF91B00110C5C /* contourtest-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "contourtest-small.jpg"; sourceTree = "<group>"; };
+		AABCD3A31C8FF91B00110C5C /* nasturtiums-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "nasturtiums-small.jpg"; sourceTree = "<group>"; };
+		AABCD3A41C8FF91B00110C5C /* nasturtiums.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = nasturtiums.jpg; sourceTree = "<group>"; };
+		AABCD3A51C8FF91B00110C5C /* test.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.ls; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		AC63D10602ACB40AEEEEC864 /* util_inl.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = util_inl.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/util_inl.hpp; sourceTree = SOURCE_ROOT; };
 		AD47B1892DAD250DD34A40A7 /* openfabmap.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = openfabmap.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/contrib/openfabmap.hpp; sourceTree = SOURCE_ROOT; };
 		AE2C34D095F8CF81BC86784D /* background_segm.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = background_segm.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/video/background_segm.hpp; sourceTree = SOURCE_ROOT; };
@@ -702,6 +706,17 @@
 			name = opencv;
 			sourceTree = "<group>";
 		};
+		AABCD3A11C8FF91B00110C5C /* data */ = {
+			isa = PBXGroup;
+			children = (
+				AABCD3A21C8FF91B00110C5C /* contourtest-small.jpg */,
+				AABCD3A31C8FF91B00110C5C /* nasturtiums-small.jpg */,
+				AABCD3A41C8FF91B00110C5C /* nasturtiums.jpg */,
+				AABCD3A51C8FF91B00110C5C /* test.ls */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
 		AF43D9569510BEB0E2DFB944 /* stitching */ = {
 			isa = PBXGroup;
 			children = (
@@ -846,6 +861,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				AABCD3A11C8FF91B00110C5C /* data */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,

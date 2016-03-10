@@ -31,7 +31,7 @@ void ofApp::drawDebugHUD()
 	s+= ("delta:         " + to_string(delta) + "\n");
 	s+= ("steps:         " + to_string(mSystem.getMaxSteps()) + "\n");
 	s+= ("currSteps:     " + to_string(mSystem.getCurrSteps()) + "\n");
-	s+= ("system len:    " + to_string(mSystem.getLSystem().getState()->symbols.size()) + "\n");
+	s+= ("system len:    " + to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0) + "\n");
 	s+= ("Step duration: " + to_string(mSystem.getLastStepDuration()*1000) + " ms");
 	ofDrawBitmapString(s.c_str(), 20,20);
 

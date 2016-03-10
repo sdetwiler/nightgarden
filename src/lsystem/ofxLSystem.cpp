@@ -92,6 +92,7 @@ void ofxLSystem::setDrawWireframe(bool v)
 //--------------------------------------------------------------
 LSystem const& ofxLSystem::getLSystem() const
 {
+//	return mSystem;
 	return LSystem::getInstance();
 }
 
@@ -99,12 +100,13 @@ LSystem const& ofxLSystem::getLSystem() const
 void ofxLSystem::load(char const* filename)
 {
 //	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
+	// FIXME
 	if(LSystem::getInstance().load(filename))
 	{
 		mCurrSteps = 0;
 		mMaxSteps = 4;
 		
-		mMaxSteps = LSystem::getInstance().getGlobalVariable("steps", 4);
+		mMaxSteps = getLSystem().getGlobalVariable("steps", 4);
 		
 		mLastStepTime = 0;
 		mStepInterval = 0;
@@ -122,6 +124,7 @@ void ofxLSystem::update()
 		if(now-mStepInterval > mLastStepTime)
 		{
 			mLastStepTime = now;
+			// FIXME
 			LSystem::getInstance().step();
 			LSystem::getInstance().reduce();
 			++mCurrSteps;
@@ -131,8 +134,11 @@ void ofxLSystem::update()
 			
 			if(mCurrSteps == mMaxSteps)
 			{
-				SymbolList const* state = LSystem::getInstance().getState();
-				std::cout << "state:   " << state->toString() << std::endl;
+				SymbolList const* state = getLSystem().getState();
+				if(state)
+				{
+					std::cout << "state:   " << state->toString() << std::endl;
+				}
 			}
 			
 			buildMeshes();
@@ -173,10 +179,10 @@ void ofxLSystem::buildMeshes()
 	clearMeshes();
 	
 	//	std::cout << "==================================" << std::endl;
-	VariableMap const& globals = LSystem::getInstance().getGlobalVariables();
+	VariableMap const& globals = mSystem.getGlobalVariables();
 	
-	float delta = LSystem::getInstance().getGlobalVariable("delta", 22.5);
-	float n = LSystem::getInstance().getGlobalVariable("n", 5);
+	float delta = getLSystem().getGlobalVariable("delta", 22.5);
+	float n = getLSystem().getGlobalVariable("n", 5);
 	
 	
 	MatrixStack matrixStack;
@@ -185,7 +191,7 @@ void ofxLSystem::buildMeshes()
 	matrixStack.push(rootMatrix);
 	ofMatrix4x4 currMatrix = matrixStack.top();
 	
-	SymbolList const* state = LSystem::getInstance().getState();
+	SymbolList const* state = getLSystem().getState();
 	if(state)
 	{
 		ofMesh* currMesh = nullptr;
