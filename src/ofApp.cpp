@@ -5,48 +5,74 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
-	mSystem.load(filename);
+//	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
+//	loadSystem(filename);
 
 	mCamera.setPosition(0, 0, -10);
 	mCamera.setTarget(ofVec3f(0,0,0));
 	mCamera.enableMouseInput();
+	
+	mGui.setup();
+	
+	mGui.add(mNLabel.setup("n", ""));
+	mGui.add(mDeltaLabel.setup("delta", ""));
+	mGui.add(mMaxStepsLabel.setup("steps", ""));
+	mGui.add(mCurrStepsLabel.setup("currSteps", ""));
+	mGui.add(mSystemLenLabel.setup("system len", ""));
+	mGui.add(mLastDurationlabel.setup("step duration", ""));
+	
+	mGui.add(mFileButton.setup("File..."));
+	
+	mFileButton.addListener(this, &ofApp::fileButtonPressed);
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
 	mSystem.update();
-}
-
-
-void ofApp::drawDebugHUD()
-{
-	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
-	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
 	
-	ofSetColor(0);
-	std::string s;
-	s+= ("n:             " + to_string(n) + "\n");
-	s+= ("delta:         " + to_string(delta) + "\n");
-	s+= ("steps:         " + to_string(mSystem.getMaxSteps()) + "\n");
-	s+= ("currSteps:     " + to_string(mSystem.getCurrSteps()) + "\n");
-	s+= ("system len:    " + to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0) + "\n");
-	s+= ("Step duration: " + to_string(mSystem.getLastStepDuration()*1000) + " ms");
-	ofDrawBitmapString(s.c_str(), 20,20);
+	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
+	mNLabel = std::to_string(n);
+
+	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
+	mDeltaLabel = std::to_string(delta);
+
+	mMaxStepsLabel = std::to_string(mSystem.getMaxSteps());
+	mCurrStepsLabel = std::to_string(mSystem.getCurrSteps());
+	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
+	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
 
 }
+
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+	ofBackground(0,0,0);
 	ofEnableDepthTest();
 	mCamera.begin();
 	mSystem.draw();
 	mCamera.end();
 	ofDisableDepthTest();
 	
-	drawDebugHUD();
+	mGui.draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::fileButtonPressed()
+{
+	ofFileDialogResult res = ofSystemLoadDialog();
+	
+	if(res.bSuccess)
+	{
+		loadSystem(res.getPath().c_str());
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::loadSystem(char const* filename)
+{
+	mSystem.load(filename);
 }
 
 //--------------------------------------------------------------

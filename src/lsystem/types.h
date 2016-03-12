@@ -443,6 +443,8 @@ public:
 		{
 			delete i->second;
 		}
+		
+		variables.clear();
 	}
 	
 	std::string toString() const

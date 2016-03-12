@@ -4,12 +4,13 @@
 #include "ofxOpenCv.h"
 
 #include "ofxLSystem.h"
-
+#include "ofxGui.h"
 #include <vector>
 
 typedef std::vector<ofMesh*> MeshVec;
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp 
+{
 
 public:
 	void setup();
@@ -28,8 +29,25 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
+	
+	void fileButtonPressed();
+	
 private:
-	void drawDebugHUD();
+	
+	void loadSystem(char const* filename);
+	
 	ofxLSystem mSystem;
 	ofEasyCam mCamera;
+	
+	
+	ofxPanel mGui;
+	
+	ofxLabel mNLabel;
+	ofxLabel mDeltaLabel;
+	ofxLabel mMaxStepsLabel;
+	ofxLabel mCurrStepsLabel;
+	ofxLabel mSystemLenLabel;
+	ofxLabel mLastDurationlabel;
+	
+	ofxButton mFileButton;
 };

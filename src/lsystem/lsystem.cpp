@@ -57,6 +57,8 @@ LSystem& LSystem::getInstance()
 
 bool LSystem::load(char const* filename)
 {
+	clear();
+	
 	std::ifstream infile(filename);
 	if(!infile.is_open())
 	{
