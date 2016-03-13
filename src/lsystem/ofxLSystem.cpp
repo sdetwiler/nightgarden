@@ -180,6 +180,7 @@ void ofxLSystem::clear()
 	mMeshes.clear();
 }
 
+//--------------------------------------------------------------
 ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3)
 {
 	ofVec3f u = v2-v1;
@@ -297,94 +298,82 @@ void ofxLSystem::buildMeshes()
 				currMatrix.glTranslate(0,n,0);
 			}
 			
-			else if(s->value == ".")
+			else if(s->value == "." || s->value == "f")
 			{
 				if(poly)
 				{
-					ofVec4f v1(0,0,0,1);
-					v1 = v1 * currMatrix;
-					poly->addVertex(v1);
+					ofVec4f v2(0,0,0,1);
+					v2 = v2 * currMatrix;
+					poly->addVertex(v2);
 					poly->addColor(polyColor);
 					
 					ofIndexType numVerts = poly->getNumVertices();
 					if(numVerts == 3)
 					{
 						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
-//						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
-//						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
-//						poly->addNormal(getSurfaceNormal(v1, vNMinus1, v0));
+						ofVec3f v1 = poly->getVertex(numVerts-2);
+
+						ofVec3f v1v0 = v1-v0;
+						ofVec3f v2v0 = v2-v0;
+						ofVec3f cp = v1v0.cross(v2v0).normalize();
+
+//						std::cout << "\nnumVerts==3\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
 						
-						poly->addIndex(0);
-						poly->addIndex(1);
-						poly->addIndex(2);
+						if(cp[2] > 0)
+						{
+							poly->addNormal(getSurfaceNormal(v0, v2, v1));
+							poly->addNormal(getSurfaceNormal(v1, v0, v2));
+							poly->addNormal(getSurfaceNormal(v2, v1, v0));
+						}
+						else
+						{
+							poly->addNormal(getSurfaceNormal(v0, v1, v2));
+							poly->addNormal(getSurfaceNormal(v1, v2, v0));
+							poly->addNormal(getSurfaceNormal(v2, v0, v1));
+						}
+
+						poly->addIndex(0);			// v0
+						poly->addIndex(1);			// v1
+						poly->addIndex(2);			// v2
 					}
 					
-					else if(numVerts > 3)
+					if(numVerts > 3)
 					{
 						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
-//						poly->addVertex(v0);
-//						poly->addColor(polyColor);
-//						poly->addVertex(vNMinus1);
-//						poly->addColor(polyColor);
+						ofVec3f v1 = poly->getVertex(numVerts-2);
 
-//						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
-//						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
+						ofVec3f v1v0 = v1-v0;
+						ofVec3f v2v0 = v2-v0;
+						ofVec3f cp = v1v0.cross(v2v0).normalize();
+						
+//						std::cout << "\nnumVerts==" << to_string(numVerts) << "\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
 
-//						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
-						
-						poly->addIndex(0);
-						poly->addIndex(numVerts-1);
-						poly->addIndex(numVerts-2);
-						
-					
+						if(cp[2] > 0)
+						{
+							poly->addNormal(getSurfaceNormal(v2, v1, v0));
+						}
+						else
+						{
+							poly->addNormal(getSurfaceNormal(v2, v0, v1));
+						}
+
+						poly->addIndex(0);			// v0
+						poly->addIndex(numVerts-2);	// v1
+						poly->addIndex(numVerts-1);	// v2
 					}
+				}
+				
+				if(s->value == "f")
+				{
+					float d = n;
+					if(s->expressions && s->expressions->expressions.size() == 1)
+					{
+						d = stof((*(s->expressions->expressions[0])).value);
+					}
+					currMatrix.glTranslate(0, d, 0);
 				}
 			}
 			
-			else if(s->value == "f")
-			{
-				float d = n;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				
-				if(poly)
-				{
-					ofVec4f v1(0,0,0,1);
-					v1 = v1 * currMatrix;
-					poly->addVertex(v1);
-					poly->addColor(polyColor);
-
-					if(poly->getNumVertices() == 3)
-					{
-						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
-						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
-						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
-						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
-					}
-					
-					else if(poly->getNumVertices() > 3)
-					{
-						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
-						poly->addVertex(vNMinus1);
-						poly->addColor(polyColor);
-						poly->addVertex(v0);
-						poly->addColor(polyColor);
-						
-						poly->addNormal(getSurfaceNormal(v0, v1, vNMinus1));
-						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
-						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
-						
-					}
-
-				}
-				currMatrix.glTranslate(0, d, 0);
-			}
 			
 			else if(s->value == "{")
 			{
