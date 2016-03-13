@@ -258,6 +258,7 @@
 		AA85828C1C939C080066FAF1 /* bush.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bush.ls; sourceTree = "<group>"; };
 		AA85828D1C939C080066FAF1 /* conditionalTest.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conditionalTest.ls; sourceTree = "<group>"; };
 		AA85828E1C939C080066FAF1 /* page25f.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = page25f.ls; sourceTree = "<group>"; };
+		AA85828F1C9474EC0066FAF1 /* box.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = box.ls; sourceTree = "<group>"; };
 		AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystem.cpp; path = lsystem/ofxLSystem.cpp; sourceTree = "<group>"; };
 		AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystem.h; path = lsystem/ofxLSystem.h; sourceTree = "<group>"; };
 		AABCD3A21C8FF91B00110C5C /* contourtest-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "contourtest-small.jpg"; sourceTree = "<group>"; };
@@ -781,6 +782,7 @@
 		AABCD3A11C8FF91B00110C5C /* data */ = {
 			isa = PBXGroup;
 			children = (
+				AA85828F1C9474EC0066FAF1 /* box.ls */,
 				AA8582871C939C080066FAF1 /* cylindricalModelTest.ls */,
 				AA8582881C939C080066FAF1 /* sunflower.ls */,
 				AA8582891C939C080066FAF1 /* cordateLeaf.ls */,

@@ -2,15 +2,17 @@
 #include "lsystem.h"
 #include "types.h"
 
+#include "of3dUtils.h"
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-//	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
-//	loadSystem(filename);
-
 	mCamera.setPosition(0, 0, -10);
 	mCamera.setTarget(ofVec3f(0,0,0));
 	mCamera.enableMouseInput();
+	
+//	mSpotlight.setSpotlight(20.0f);
+	mSpotlight.setup();
 	
 	mGui.setup();
 	
@@ -22,13 +24,21 @@ void ofApp::setup()
 	mGui.add(mLastDurationlabel.setup("step duration", ""));
 	
 	mGui.add(mFileButton.setup("File..."));
-	
 	mFileButton.addListener(this, &ofApp::fileButtonPressed);
+
+	mShowAxis = false;
+	mShowAxis.setName("Axis");
+	mGui.add(mAxisButton.setup(mShowAxis));
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
+	mSpotlight.setPosition(mCamera.getPosition());
+	mSpotlight.lookAt(mCamera.getLookAtDir());
+
+	
 	mSystem.update();
 	
 	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
@@ -41,7 +51,6 @@ void ofApp::update()
 	mCurrStepsLabel = std::to_string(mSystem.getCurrSteps());
 	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
 	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
-
 }
 
 
@@ -50,11 +59,23 @@ void ofApp::draw()
 {
 	ofBackground(0,0,0);
 	ofEnableDepthTest();
+
+	mSpotlight.enable();
 	mCamera.begin();
-	mSystem.draw();
-	mCamera.end();
-	ofDisableDepthTest();
 	
+	mSystem.draw();
+	
+	if(mShowAxis)
+	{
+		ofDrawAxis(100);
+		ofDrawRotationAxes(10, 3);
+	}
+
+	mCamera.end();
+	mSpotlight.disable();
+	
+	ofDisableDepthTest();
+	ofDisableLighting();
 	mGui.draw();
 }
 
@@ -68,6 +89,7 @@ void ofApp::fileButtonPressed()
 		loadSystem(res.getPath().c_str());
 	}
 }
+
 
 //--------------------------------------------------------------
 void ofApp::loadSystem(char const* filename)

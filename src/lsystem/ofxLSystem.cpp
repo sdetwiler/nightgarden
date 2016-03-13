@@ -31,7 +31,7 @@ ofxLSystem::ofxLSystem(char const* filename)
 //--------------------------------------------------------------
 ofxLSystem::~ofxLSystem()
 {
-	clearMeshes();
+	clear();
 }
 
 //--------------------------------------------------------------
@@ -99,17 +99,15 @@ LSystem const& ofxLSystem::getLSystem() const
 //--------------------------------------------------------------
 void ofxLSystem::load(char const* filename)
 {
-//	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
+
 	// FIXME
 	if(LSystem::getInstance().load(filename))
 	{
 		mCurrSteps = 0;
-		mMaxSteps = 4;
-		
 		mMaxSteps = getLSystem().getGlobalVariable("steps", 4);
 		
 		mLastStepTime = 0;
-		mStepInterval = 0;
+		mStepInterval = .5;
 	}
 	
 	mDrawWireframe = false;
@@ -149,22 +147,31 @@ void ofxLSystem::update()
 //--------------------------------------------------------------
 void ofxLSystem::draw()
 {
-	for(MeshVec::iterator i = mMeshes.begin(); i!=mMeshes.end(); ++i)
+	for(NodeVec::iterator i = mNodes.begin(); i!=mNodes.end(); ++i)
 	{
+		of3dPrimitive* p = (of3dPrimitive*)(*i);
 		if(mDrawWireframe)
 		{
-			(*i)->drawWireframe();
+			p->drawWireframe();
+			p->drawNormals(10);
 		}
 		else
 		{
-			(*i)->draw();
+			p->draw();
 		}
 	}
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::clearMeshes()
+void ofxLSystem::clear()
 {
+	for(NodeVec::iterator i = mNodes.begin(); i!=mNodes.end(); ++i)
+	{
+		delete(*i);
+	}
+	
+	mNodes.clear();
+
 	for(MeshVec::iterator i = mMeshes.begin(); i!=mMeshes.end(); ++i)
 	{
 		delete(*i);
@@ -173,18 +180,26 @@ void ofxLSystem::clearMeshes()
 	mMeshes.clear();
 }
 
+ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3)
+{
+	ofVec3f u = v2-v1;
+	ofVec3f v = v3-v1;
+	return u.cross(v).normalize();
+}
+
 //--------------------------------------------------------------
 void ofxLSystem::buildMeshes()
 {
-	clearMeshes();
+	clear();
 	
 	//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = mSystem.getGlobalVariables();
 	
 	float delta = getLSystem().getGlobalVariable("delta", 22.5);
 	float n = getLSystem().getGlobalVariable("n", 5);
+	float r = getLSystem().getGlobalVariable("r", 0.25);
 	
-	
+
 	MatrixStack matrixStack;
 	ofMatrix4x4 rootMatrix;
 	
@@ -214,33 +229,63 @@ void ofxLSystem::buildMeshes()
 				
 				// TODO Next try joining to existing mesh...
 				currMesh = new ofMesh();
-				float r = 1.0;
 				int sides = 4;
 				
 				float dr = 360.0/sides;
 				
-				
+				ofIndexType idx = 0;
+				// Build faces around the center of height n.
 				for(int j=0; j<sides; ++j)
 				{
-					ofVec4f v1(r,0,0,1);
-					ofVec4f v2(r,n,0,1);
+					ofVec4f v0(r,0,r,1);
+					ofVec4f v1(r,n,r,1);
+					ofVec4f v2(-r,n,r,1);
+					ofVec4f v3(-r,0,r,1);
 					ofMatrix4x4 rotMatrix;
 					rotMatrix.glRotate(dr*j, 0, 1, 0);
+					v0 = v0 * rotMatrix;
 					v1 = v1 * rotMatrix;
 					v2 = v2 * rotMatrix;
+					v3 = v3 * rotMatrix;
 					
+					v0 = v0 * currMatrix;
 					v1 = v1 * currMatrix;
 					v2 = v2 * currMatrix;
+					v3 = v3 * currMatrix;
 					
+					currMesh->addVertex(v0);
+					currMesh->addColor(color);
+
 					currMesh->addVertex(v1);
 					currMesh->addColor(color);
 					
 					currMesh->addVertex(v2);
 					currMesh->addColor(color);
+
+					currMesh->addVertex(v3);
+					currMesh->addColor(color);
+					
+					currMesh->addNormal(getSurfaceNormal(v0,v1,v3));
+					currMesh->addNormal(getSurfaceNormal(v1,v2,v0));
+					currMesh->addNormal(getSurfaceNormal(v2,v3,v1));
+					currMesh->addNormal(getSurfaceNormal(v3,v1,v2));
+					
+					currMesh->addIndex(idx+0);
+					currMesh->addIndex(idx+1);
+					currMesh->addIndex(idx+2);
+
+					currMesh->addIndex(idx+2);
+					currMesh->addIndex(idx+3);
+					currMesh->addIndex(idx+0);
+					
+					idx+=4;
 				}
-				currMesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+				
+				currMesh->setMode(OF_PRIMITIVE_TRIANGLES);
 				
 				
+				of3dPrimitive* prim = new of3dPrimitive(*currMesh);
+				mNodes.push_back(prim);
 				mMeshes.push_back(currMesh);
 				currMesh = nullptr;
 				
@@ -260,6 +305,41 @@ void ofxLSystem::buildMeshes()
 					v1 = v1 * currMatrix;
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
+					
+					ofIndexType numVerts = poly->getNumVertices();
+					if(numVerts == 3)
+					{
+						ofVec3f v0 = poly->getVertex(0);
+						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
+//						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
+//						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
+//						poly->addNormal(getSurfaceNormal(v1, vNMinus1, v0));
+						
+						poly->addIndex(0);
+						poly->addIndex(1);
+						poly->addIndex(2);
+					}
+					
+					else if(numVerts > 3)
+					{
+						ofVec3f v0 = poly->getVertex(0);
+						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
+//						poly->addVertex(v0);
+//						poly->addColor(polyColor);
+//						poly->addVertex(vNMinus1);
+//						poly->addColor(polyColor);
+
+//						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
+//						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
+
+//						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
+						
+						poly->addIndex(0);
+						poly->addIndex(numVerts-1);
+						poly->addIndex(numVerts-2);
+						
+					
+					}
 				}
 			}
 			
@@ -277,6 +357,31 @@ void ofxLSystem::buildMeshes()
 					v1 = v1 * currMatrix;
 					poly->addVertex(v1);
 					poly->addColor(polyColor);
+
+					if(poly->getNumVertices() == 3)
+					{
+						ofVec3f v0 = poly->getVertex(0);
+						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
+						poly->addNormal(getSurfaceNormal(v0, vNMinus1, v1));
+						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
+						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
+					}
+					
+					else if(poly->getNumVertices() > 3)
+					{
+						ofVec3f v0 = poly->getVertex(0);
+						ofVec3f vNMinus1 = poly->getVertex(poly->getNumVertices()-2);
+						poly->addVertex(vNMinus1);
+						poly->addColor(polyColor);
+						poly->addVertex(v0);
+						poly->addColor(polyColor);
+						
+						poly->addNormal(getSurfaceNormal(v0, v1, vNMinus1));
+						poly->addNormal(getSurfaceNormal(vNMinus1, v0, v1));
+						poly->addNormal(getSurfaceNormal(v1, v0, vNMinus1));
+						
+					}
+
 				}
 				currMatrix.glTranslate(0, d, 0);
 			}
@@ -304,7 +409,10 @@ void ofxLSystem::buildMeshes()
 			{
 				if(poly)
 				{
-					poly->setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+					of3dPrimitive* prim = new of3dPrimitive(*poly);
+					mNodes.push_back(prim);
+
+					poly->setMode(OF_PRIMITIVE_TRIANGLES);
 					mMeshes.push_back(poly);
 					poly = nullptr;
 				}

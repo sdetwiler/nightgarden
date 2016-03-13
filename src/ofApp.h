@@ -38,7 +38,7 @@ private:
 	
 	ofxLSystem mSystem;
 	ofEasyCam mCamera;
-	
+	ofLight mSpotlight;
 	
 	ofxPanel mGui;
 	
@@ -50,4 +50,8 @@ private:
 	ofxLabel mLastDurationlabel;
 	
 	ofxButton mFileButton;
+	ofxToggle mAxisButton;
+	
+	ofParameter<bool> mShowAxis;
+
 };
