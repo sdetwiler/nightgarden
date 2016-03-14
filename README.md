@@ -125,7 +125,7 @@ Step 3
 
 LSystems symbols can optionally carry parameters which can be used to influence the generated output. The axiom defines the starting values for parameters, which are matched to the production rules.
 
-For example, an LSystem that sets the delta angle used on rotation operators:
+For example, an LSystem that sets the angle used on the `+` rotation operator by passing the angle as a parameter:
 
 ```
 var steps 4
@@ -134,6 +134,11 @@ axiom A(0)
 
 rule A(d) -> F(d)+(d+10)A(d+10)
 rule A -> F
+```
+
+The final production is:
+```
+F(0.000000)+(10.000000)F(10.000000)+(20.000000)F(20.000000)+(30.000000)A(30.000000)
 ```
 
 LSystem rules can also contain conditions that must be satisfied for the rule to apply to a given symbol:
@@ -161,6 +166,15 @@ rule A(d) : d>=theta -> F(d)+(20 + theta + d)A(20 + theta + d)
 rule A -> F
 
 ```
+
+The final production is:
+```
+F(0.000000)+(10.000000)F(10.000000)+(40.000000)F(40.000000)+(70.000000)F(70.000000)+(100.000000)F(100.000000)+(130.000000)A(130.000000)
+```
+
+
+
+
 
 
 Further Examples
