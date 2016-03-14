@@ -53,7 +53,7 @@ Context-aware parametric lsystem with conditions:
 LSystem Symbol Commands
 ===
 
-Implemented symbols as defined in The Algorithmic Beauty of Plants
+Implemented symbols as defined in The Algorithmic Beauty of Plants.
 
 | Symbol | Interpretation | Status |
 |--------|----------------|--------|
@@ -65,7 +65,7 @@ Implemented symbols as defined in The Algorithmic Beauty of Plants
 | &      | Pitch down. | Implemented |
 | \      | Roll left. | Implemented |
 | /      | Roll right. | Implemented |
-| |      | Turn around. | Implemented |
+| "|"      | Turn around. | Implemented |
 | $      | Rotate to vertical. | Not implemented |
 | [      | Start a branch. | Implemented |
 | ]      | Complete a branch. | Implemented |
