@@ -107,7 +107,7 @@ void ofxLSystem::load(char const* filename)
 		mMaxSteps = getLSystem().getGlobalVariable("steps", 4);
 		
 		mLastStepTime = 0;
-		mStepInterval = .5;
+		mStepInterval = 1/60.;
 	}
 	
 	mDrawWireframe = false;
@@ -123,7 +123,7 @@ void ofxLSystem::update()
 		{
 			mLastStepTime = now;
 			// FIXME
-			LSystem::getInstance().step();
+			LSystem::getInstance().step(mStepInterval);
 			LSystem::getInstance().reduce();
 			++mCurrSteps;
 			float afterStep = ofGetElapsedTimef();
@@ -196,9 +196,9 @@ void ofxLSystem::buildMeshes()
 	//	std::cout << "==================================" << std::endl;
 	VariableMap const& globals = mSystem.getGlobalVariables();
 	
-	float delta = getLSystem().getGlobalVariable("delta", 22.5);
-	float n = getLSystem().getGlobalVariable("n", 5);
-	float r = getLSystem().getGlobalVariable("r", 0.25);
+	float const delta = getLSystem().getGlobalVariable("delta", 22.5);
+	float const n = getLSystem().getGlobalVariable("n", 5);
+	float const r = getLSystem().getGlobalVariable("r", 0.25);
 	
 
 	MatrixStack matrixStack;
@@ -219,6 +219,10 @@ void ofxLSystem::buildMeshes()
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
+				// HACK
+				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
+				float lr = r*(MIN(s->age/s->terminalAge, 1.0));
+
 				ofColor color(139,69,19);
 				if(s->expressions && s->expressions->expressions.size() == 3)
 				{
@@ -238,10 +242,10 @@ void ofxLSystem::buildMeshes()
 				// Build faces around the center of height n.
 				for(int j=0; j<sides; ++j)
 				{
-					ofVec4f v0(r,0,r,1);
-					ofVec4f v1(r,n,r,1);
-					ofVec4f v2(-r,n,r,1);
-					ofVec4f v3(-r,0,r,1);
+					ofVec4f v0(lr,0,r,1);
+					ofVec4f v1(lr,ln,lr,1);
+					ofVec4f v2(-lr,ln,lr,1);
+					ofVec4f v3(-lr,0,lr,1);
 					ofMatrix4x4 rotMatrix;
 					rotMatrix.glRotate(dr*j, 0, 1, 0);
 					v0 = v0 * rotMatrix;
@@ -290,12 +294,15 @@ void ofxLSystem::buildMeshes()
 				mMeshes.push_back(currMesh);
 				currMesh = nullptr;
 				
-				currMatrix.glTranslate(0,n,0);
+				currMatrix.glTranslate(0,ln,0);
 			}
 			
 			if(s->value == "G")
 			{
-				currMatrix.glTranslate(0,n,0);
+				// HACK
+				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
+				
+				currMatrix.glTranslate(0,ln,0);
 			}
 			
 			else if(s->value == "." || s->value == "f")
@@ -365,12 +372,16 @@ void ofxLSystem::buildMeshes()
 				
 				if(s->value == "f")
 				{
-					float d = n;
+					float ln = n;
+
 					if(s->expressions && s->expressions->expressions.size() == 1)
 					{
-						d = stof((*(s->expressions->expressions[0])).value);
+						ln = stof((*(s->expressions->expressions[0])).value);
 					}
-					currMatrix.glTranslate(0, d, 0);
+					// HACK
+					ln*=(MIN(s->age/s->terminalAge, 1.0));
+					
+					currMatrix.glTranslate(0, ln, 0);
 				}
 			}
 			
@@ -425,7 +436,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(d, 0, 0, 1);
 			}
 			
@@ -436,6 +448,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(-d, 0, 0, 1);
 			}
 			
@@ -446,6 +460,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(-d, 1, 0, 0);
 			}
 			
@@ -456,6 +472,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(d, 1, 0, 0);
 			}
 			
@@ -466,6 +484,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(-d, 0, 1, 0);
 			}
 			
@@ -476,6 +496,8 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
+				// HACK
+				d*=(MIN(s->age/s->terminalAge, 1.0));
 				currMatrix.glRotate(d, 0, 1, 0);
 			}
 			

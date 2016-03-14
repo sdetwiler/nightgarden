@@ -275,7 +275,7 @@ void LSystem::reduce()
 //	std::cout << "Removed " << std::to_string(toRemove.size()) << " symbols\n";
 }
 
-void LSystem::step()
+void LSystem::step(float dt)
 {
 	bool reduce = true;
 	
@@ -336,11 +336,13 @@ void LSystem::step()
 			}
 		}
 		
-		else if(symbol->isOperator)
-		{
-			*(output)+= *symbol;
-			continue;
-		}
+//		else if(symbol->isOperator)
+//		{
+//			symbol->age+=dt;
+//
+//			*(output)+= *symbol;
+//			continue;
+//		}
 		
 
 		// HACK: Only one lookahead symbol currently provided.
@@ -372,17 +374,31 @@ void LSystem::step()
 //		std::cout << "next is " << (next?next->toString():"null") << " scanned ahead " << std::to_string(peekDistance) << " symbols\n";
 //////////////////////////////////////////////////////
 		
-		Rule const* rule = getRuleForSymbol(context, symbol, next);
-		if(rule)
+		// HACK
+		symbol->age+=dt;
+		
+		if(symbol->age > symbol->terminalAge && !symbol->isTerminal)
 		{
-			SymbolList* result = rule->evaluate(context, symbol, next);
-			*(output)+= *result;
-			delete result;
+			symbol->isTerminal = true;
+//			*(output)+= *symbol;
+		
+			Rule const* rule = getRuleForSymbol(context, symbol, next);
+			if(rule)
+			{
+
+				SymbolList* result = rule->evaluate(context, symbol, next);
+				*(output)+= *result;
+				delete result;
+			}
+			// If no rule is found that matches the current symbol, append the original symbol to the output.
+			else
+			{
+				// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
+				*(output)+= *symbol;
+			}
 		}
-		// If no rule is found that matches the current symbol, append the original symbol to the output.
 		else
 		{
-			// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
 			*(output)+= *symbol;
 		}
 		

@@ -217,6 +217,10 @@ public:
 	std::string value;
 	bool isOperator;
 	
+	bool isTerminal;
+	float terminalAge;
+	float age;
+	
 	VariableList* variables; // (parameters)
 	ExpressionList* expressions;
 	
@@ -225,12 +229,19 @@ public:
 		isOperator = false;
 		variables = nullptr;
 		expressions = nullptr;
+		age = 0;
+		terminalAge = 1;
+		isTerminal = false;
 	}
 	
 	Symbol(Symbol const& rhs)
 	{
 		isOperator = rhs.isOperator;
 		value = rhs.value;
+		terminalAge = rhs.terminalAge;
+		age = rhs.age;
+		isTerminal = rhs.isTerminal;
+				
 		if(rhs.variables)
 		{
 			variables = new VariableList(*(rhs.variables));

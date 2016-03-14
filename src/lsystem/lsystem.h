@@ -43,7 +43,7 @@ public:
 	void clear();
 	
 	SymbolList const* getState() const;
-	void step();
+	void step(float dt);
 	void reduce();
 	
 private:
@@ -55,6 +55,8 @@ private:
 	Result* mAxiom;
 	
 	SymbolList* mState;
+	
+	float mAge;
 	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);
 	

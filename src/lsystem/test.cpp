@@ -60,7 +60,7 @@ int parser_test()
 		
 		for(int i=0; i<4; ++i)
 		{
-			lsystem.step();
+			lsystem.step(1.0);
 			state = lsystem.getState();
 			if(state)
 			{

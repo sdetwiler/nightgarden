@@ -1,5 +1,5 @@
 # Sunflower head
-var steps 120
+var steps 1440
 axiom A(0)
 var a 137.5
 var n 10.0

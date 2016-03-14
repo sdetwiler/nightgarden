@@ -1,5 +1,5 @@
 # Page 25 example f
-var steps 10
+var steps 50
 var n 5
 var delta 22.5
 axiom X

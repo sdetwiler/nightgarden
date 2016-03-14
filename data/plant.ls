@@ -1,5 +1,5 @@
 # Figure 1.26 A Plant
-var steps 5
+var steps 400
 var n 10
 var delta 18
 var leafRed 0

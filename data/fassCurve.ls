@@ -1,5 +1,5 @@
 # FASS Curve
-var steps 5
+var steps 240
 var n 6
 var delta 90
 axiom -L
