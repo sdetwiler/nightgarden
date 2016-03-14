@@ -65,7 +65,7 @@ Implemented symbols as defined in The Algorithmic Beauty of Plants.
 | &      | Pitch down. | Implemented |
 | \      | Roll left. | Implemented |
 | /      | Roll right. | Implemented |
-| "|"      | Turn around. | Implemented |
+| \|      | Turn around. | Implemented |
 | $      | Rotate to vertical. | Not implemented |
 | [      | Start a branch. | Implemented |
 | ]      | Complete a branch. | Implemented |
