@@ -184,7 +184,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol\n\t%s\n", $1->value.c_str());
 		#endif
 		
-		$$ = new Predicate();
+		$$ = new Predicate(&LSystem::getInstance());
 		$$->symbol = $1;
 	}
 
@@ -194,7 +194,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
-		$$ = new Predicate();
+		$$ = new Predicate(&LSystem::getInstance());
 		$$->prev = $1;
 		$$->symbol = $3;
 	}
@@ -205,7 +205,7 @@ predicate_symbols :
 		printf("predicate to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
-		$$ = new Predicate();
+		$$ = new Predicate(&LSystem::getInstance());
 		$$->symbol = $1;
 		$$->next = $3;
 	}
@@ -216,7 +216,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
 		#endif
 		
-		$$ = new Predicate();
+		$$ = new Predicate(&LSystem::getInstance());
 		$$->prev = $1;
 		$$->symbol = $3;
 		$$->next = $5;

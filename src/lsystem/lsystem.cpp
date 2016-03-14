@@ -184,7 +184,7 @@ float LSystem::getGlobalVariable(char const* name, float def) const
 }
 
 
-VariableMap const& LSystem::getGlobalVariables()
+VariableMap const& LSystem::getGlobalVariables() const
 {
 	return mVariables;
 }

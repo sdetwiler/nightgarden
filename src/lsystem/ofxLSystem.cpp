@@ -19,7 +19,8 @@ typedef std::stack<ofMatrix4x4> MatrixStack;
 //--------------------------------------------------------------
 ofxLSystem::ofxLSystem()
 {
-	
+	// FIXME
+	mSystem = &LSystem::getInstance();
 }
 
 //--------------------------------------------------------------
@@ -92,15 +93,13 @@ void ofxLSystem::setDrawWireframe(bool v)
 //--------------------------------------------------------------
 LSystem const& ofxLSystem::getLSystem() const
 {
-//	return mSystem;
-	return LSystem::getInstance();
+	return *mSystem;
 }
 
 //--------------------------------------------------------------
 void ofxLSystem::load(char const* filename)
 {
-	// FIXME
-	if(LSystem::getInstance().load(filename))
+	if(mSystem->load(filename))
 	{
 		// Is the system configured to step through time, or over an explicit number of steps.
 		float duration = getLSystem().getGlobalVariable("duration", -1);
@@ -131,9 +130,8 @@ void ofxLSystem::update()
 		if(now-mStepInterval > mLastStepTime)
 		{
 			mLastStepTime = now;
-			// FIXME
-			LSystem::getInstance().step(mStepInterval);
-			LSystem::getInstance().reduce();
+			mSystem->step(mStepInterval);
+			mSystem->reduce();
 			++mCurrSteps;
 			float afterStep = ofGetElapsedTimef();
 			
@@ -203,7 +201,7 @@ void ofxLSystem::buildMeshes()
 	clear();
 	
 	//	std::cout << "==================================" << std::endl;
-	VariableMap const& globals = mSystem.getGlobalVariables();
+	VariableMap const& globals = getLSystem().getGlobalVariables();
 	
 	float const delta = getLSystem().getGlobalVariable("delta", 22.5);
 	float const n = getLSystem().getGlobalVariable("n", 5);

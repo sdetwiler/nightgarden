@@ -16,6 +16,7 @@
 //class Symbol;
 //class Expression;
 //class VariableMap;
+class LSystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 class Predicate
@@ -25,8 +26,9 @@ public:
 	Symbol* prev;	// Previous symbol for context-sensitive evaluation.
 	Symbol* next;	// Next symbol for context-sensitive evaluation.
 	Expression* condition; // Condition that must be true for predicate to match symbol sequence.
-
-	Predicate();
+	LSystem const* lsystem;
+	
+	Predicate(LSystem const* lsystem);
 	~Predicate();
 	
 	std::string toString() const;

@@ -36,7 +36,7 @@ public:
 
 	void addVariable(Variable* variable);
 	void dumpVariables();
-	VariableMap const& getGlobalVariables();
+	VariableMap const& getGlobalVariables() const;
 	
 	float getGlobalVariable(char const* name, float def=0) const;
 	

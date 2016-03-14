@@ -39,7 +39,7 @@ int parser_test()
 		std::cout << "Error while reading from " << filename << std::endl;
 		return -1;
 	}
-		
+	// FIXME
 	LSystem& lsystem = LSystem::getInstance();
 	if(lsystem.parse(data.c_str()))
 	{

@@ -959,9 +959,9 @@
 			isa = PBXGroup;
 			children = (
 				AACA91DC1C974FD30059190F /* README.md */,
-				AABCD3A11C8FF91B00110C5C /* data */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
+				AABCD3A11C8FF91B00110C5C /* data */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,

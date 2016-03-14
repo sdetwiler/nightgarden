@@ -10,12 +10,13 @@
 #include "types.h"
 #include "lsystem.h"
 
-Predicate::Predicate()
+Predicate::Predicate(LSystem const* system)
 {
 	symbol = nullptr;
 	prev = nullptr;
 	next = nullptr;
 	condition = nullptr;
+	lsystem = system;
 }
 
 Predicate::~Predicate()
@@ -145,7 +146,7 @@ VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* cu
 	// variable values. Values are mapped in the order the variables are
 	// defined from the predicate.
 
-	VariableMap* scope = new VariableMap(LSystem::getInstance().getGlobalVariables());
+	VariableMap* scope = new VariableMap(lsystem->getGlobalVariables());
 	
 	// If the predicate's symbol has attached variables...
 	size_t idx=0;
