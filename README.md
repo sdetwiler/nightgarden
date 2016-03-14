@@ -10,6 +10,35 @@ Notes and Papers
 The Algorithmic Beauty of Plants
 http://algorithmicbotany.org/papers/abop/abop.pdf
 
+
+LSystem Overview
+---
+
+LSystems define a set of rules that manipulate symbols which are further interpreted to control a <a href="https://en.wikipedia.org/wiki/Turtle_graphics">"turtle</a> to generate computer graphics.
+
+Each LSystem starts with a string of symbols called the "axiom" on which rules are applied to generate a new string of symbols.
+
+Each symbol is a single character [A-Z,a-z] or one of the defined operators. The symbols either change the state of the turtle or serve as placeholders for future productions.
+
+
+LSystem Syntax
+---
+
+The simplest LSystem only defines the axiom that draws a line:
+
+```
+axiom F
+```
+
+LSystem Keywords
+---
+| Keyword | Interpretation | Example |
+|---------|----------------|--------|
+| axiom   | Declares the LSystem axiom. | `axiom F` |
+| var     | Declares a global variable. | `var pi 3.1415926` |
+| rule    | Declares a production rule. | `rule A -> AB` |
+
+
 LSystem Symbol Commands
 ---
 
@@ -37,27 +66,6 @@ Implemented symbols as defined in The Algorithmic Beauty of Plants.
 | !      | Decrement the diameter of segments. | Not implemented |
 | '      | Increment the current color index. | Not implemented |
 | %      | Cut off the remainter of the branch. | Not implemented |
-
-
-LSystem Overview
----
-
-LSystems define a set of rules that manipulate symbols which are further interpreted to control a <a href="https://en.wikipedia.org/wiki/Turtle_graphics">"turtle</a> to generate computer graphics.
-
-Each LSystem starts with a string of symbols called the "axiom" on which rules are applied to generate a new string of symbols.
-
-Each symbol is a single character [A-Z,a-z] or one of the operators defined above. The symbols either change the state of the turtle or serve as placeholders for future productions.
-
-
-LSystem Syntax
----
-
-The simplest LSystem only defines the axiom that draws a line:
-
-```
-axiom F
-```
-
 
 
 
