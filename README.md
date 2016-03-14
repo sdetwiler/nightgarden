@@ -200,6 +200,15 @@ rule L -> ['''^^{-f+f+f-|-f+f+f}]
 Xcode Build Notes
 ===
 
+openFrameworks
+---
+The project expects a directory `of_latest_osx_release/` to exist at the same level as the `nightgarden/` directory. This can be symlinked to the 
+version of openFrameworks to use. Currently building with version 0.9.3.
+
+
+Flex and Bison Support
+---
+
 Flex and Bison Support in Xcode requires that the project.pbxproj is edited to include
 
 `YACC_GENERATED_FILE_STEM = InputFileStem;`
