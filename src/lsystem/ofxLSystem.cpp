@@ -103,11 +103,21 @@ void ofxLSystem::load(char const* filename)
 	// FIXME
 	if(LSystem::getInstance().load(filename))
 	{
-		mCurrSteps = 0;
-		mMaxSteps = getLSystem().getGlobalVariable("steps", 4);
+		// Is the system configured to step through time, or over an explicit number of steps.
+		float duration = getLSystem().getGlobalVariable("duration", -1);
+		if(duration > 0)
+		{
+			mStepInterval = getLSystem().getGlobalVariable("stepInterval", 1);
+			mMaxSteps = duration/mStepInterval;
+		}
+		else
+		{
+			mStepInterval = 1/30.;
+			mMaxSteps = getLSystem().getGlobalVariable("steps", 4) / mStepInterval;
+		}
 		
+		mCurrSteps = 0;
 		mLastStepTime = 0;
-		mStepInterval = 1/60.;
 	}
 	
 	mDrawWireframe = false;

@@ -227,6 +227,7 @@
 		A9286B2FA8430635D0E0D315 /* vector2.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vector2.h; path = ../of_v0.9.2_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/vector2.h; sourceTree = SOURCE_ROOT; };
 		A9A0252F8963FE69194CB226 /* dummy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = dummy.h; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/flann/dummy.h; sourceTree = SOURCE_ROOT; };
 		A9F61A472397B3728679F718 /* operations.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = operations.hpp; path = ../of_v0.9.2_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/operations.hpp; sourceTree = SOURCE_ROOT; };
+		AA3FD01B1C973733007A8117 /* simplePlant.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simplePlant.ls; sourceTree = "<group>"; };
 		AA8582681C9379F40066FAF1 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		AA8582691C9379F40066FAF1 /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
 		AA85826A1C9379F40066FAF1 /* ofxButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxButton.cpp; sourceTree = "<group>"; };
@@ -783,6 +784,7 @@
 		AABCD3A11C8FF91B00110C5C /* data */ = {
 			isa = PBXGroup;
 			children = (
+				AA3FD01B1C973733007A8117 /* simplePlant.ls */,
 				AA8582901C9622A90066FAF1 /* timedDOL.ls */,
 				AA85828F1C9474EC0066FAF1 /* box.ls */,
 				AA8582871C939C080066FAF1 /* cylindricalModelTest.ls */,

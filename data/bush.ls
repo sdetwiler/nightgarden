@@ -1,5 +1,5 @@
 # Bush
-var steps 240
+var steps 5
 var n 7
 var delta 22.5
 axiom A

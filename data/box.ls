@@ -1,5 +1,5 @@
 # Single Box
-var steps 80
+var steps 4
 var delta 22.5
 var n 20
 var r 20

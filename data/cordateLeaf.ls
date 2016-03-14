@@ -1,5 +1,5 @@
 # Cordate Leaf
-var steps 1200
+var steps 20
 var n 20
 var delta 10
 

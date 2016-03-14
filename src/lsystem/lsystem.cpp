@@ -380,12 +380,11 @@ void LSystem::step(float dt)
 		if(symbol->age > symbol->terminalAge && !symbol->isTerminal)
 		{
 			symbol->isTerminal = true;
-//			*(output)+= *symbol;
 		
 			Rule const* rule = getRuleForSymbol(context, symbol, next);
+			// Rule exists, evaluate it and replace current symbol with the results.
 			if(rule)
 			{
-
 				SymbolList* result = rule->evaluate(context, symbol, next);
 				*(output)+= *result;
 				delete result;
@@ -397,6 +396,7 @@ void LSystem::step(float dt)
 				*(output)+= *symbol;
 			}
 		}
+		// Not yet terminal so keep the current symbol.
 		else
 		{
 			*(output)+= *symbol;
