@@ -41,13 +41,13 @@ void ofApp::update()
 	
 	mSystem.update();
 	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
-	mNLabel = std::to_string(n);
+	mNLabel = to_string(n);
 	
 	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
-	mDeltaLabel = std::to_string(delta);
+	mDeltaLabel = to_string(delta);
 	
-	mMaxStepsLabel = std::to_string(mSystem.getMaxSteps());
-	mCurrStepsLabel = std::to_string(mSystem.getCurrSteps());
+	mMaxStepsLabel = to_string(mSystem.getMaxSteps());
+	mCurrStepsLabel = to_string(mSystem.getCurrSteps());
 	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
 	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
 }

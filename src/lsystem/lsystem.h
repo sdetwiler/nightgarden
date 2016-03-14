@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <map>
+
 #include "types.h"
 #include "rule.h"
 

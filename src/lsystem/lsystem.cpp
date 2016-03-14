@@ -17,7 +17,7 @@
 
 #include "timing.h"
 
-
+using namespace std;
 
 // Parser forward declarations.
 #ifndef FLEXINT_H
@@ -59,15 +59,15 @@ bool LSystem::load(char const* filename)
 {
 	clear();
 	
-	std::ifstream infile(filename);
+	ifstream infile(filename);
 	if(!infile.is_open())
 	{
-		std::cout << "Failed to open " << filename << std::endl;
+		cout << "Failed to open " << filename << endl;
 		return -1;
 	}
-	std::string data;
-	std::string line;
-	while(std::getline(infile, line))
+	string data;
+	string line;
+	while(getline(infile, line))
 	{
 		data+=line;
 		data+="\n";
@@ -75,7 +75,7 @@ bool LSystem::load(char const* filename)
 	
 	if(infile.bad())
 	{
-		std::cout << "Error while reading from " << filename << std::endl;
+		cout << "Error while reading from " << filename << endl;
 		return -1;
 	}
 	
@@ -95,7 +95,7 @@ bool LSystem::parse(char const* input)
 
 	if(ret)
 	{
-//		std::cout << "yyparse returns " << ret << std::endl;
+//		cout << "yyparse returns " << ret << endl;
 		return false;
 	}
 
@@ -126,12 +126,12 @@ void LSystem::addRule(Rule* rule)
 
 void LSystem::dumpRules()
 {
-	std::cout << "LSystem::dumpRules" << std::endl;
+	cout << "LSystem::dumpRules" << endl;
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
-		std::cout << (*i)->toString() << std::endl;
+		cout << (*i)->toString() << endl;
 	}
-	std::cout << std::endl;
+	cout << endl;
 	
 }
 
@@ -142,9 +142,9 @@ void LSystem::addVariable(Variable* variable)
 
 void LSystem::dumpVariables()
 {
-	std::cout << "LSystem::dumpVariables" << std::endl;
-	std::cout << mVariables.toString() << std::endl;
-	std::cout << std::endl;
+	cout << "LSystem::dumpVariables" << endl;
+	cout << mVariables.toString() << endl;
+	cout << endl;
 }
 
 
@@ -175,7 +175,7 @@ float LSystem::getGlobalVariable(char const* name, float def) const
 {
 	float ret = def;
 	StringVariableMap::const_iterator i;
-	i = mVariables.variables.find(std::string(name));
+	i = mVariables.variables.find(string(name));
 	if(i!=mVariables.variables.end())
 	{
 		ret = i->second->value;
@@ -219,7 +219,7 @@ void LSystem::reduce()
 		return;
 	}
 
-	typedef std::stack<SymbolVec*> SymbolVecStack;
+	typedef stack<SymbolVec*> SymbolVecStack;
 	
 	SymbolVecStack frames;
 	SymbolVec toRemove;
@@ -259,7 +259,7 @@ void LSystem::reduce()
 	for(SymbolVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
 	{
 		
-		SymbolVec::iterator j = std::find(mState->symbols.begin(), mState->symbols.end(), *i);
+		SymbolVec::iterator j = find(mState->symbols.begin(), mState->symbols.end(), *i);
 		if(j!=mState->symbols.end())
 		{
 			mState->symbols.erase(j);
@@ -272,7 +272,7 @@ void LSystem::reduce()
 		frames.pop();
 	}
 	
-//	std::cout << "Removed " << std::to_string(toRemove.size()) << " symbols\n";
+//	cout << "Removed " << to_string(toRemove.size()) << " symbols\n";
 }
 
 void LSystem::step(float dt)
@@ -292,7 +292,7 @@ void LSystem::step(float dt)
 	context.push(&root);
 	SymbolStack branches;
 	
-//	std::cout << " LSystem::step processing " << std::to_string(mState->symbols.size()) << " symbols\n";
+//	cout << " LSystem::step processing " << to_string(mState->symbols.size()) << " symbols\n";
 	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
 	{
 		START_TIME_MEASURE(itr);
@@ -318,7 +318,7 @@ void LSystem::step(float dt)
 			// Get and pop location of the last branch and rewind the context back to that point.
 			if(branches.size() == 0)
 			{
-				std::cout << "WARNING: Mismatch square brackets";
+				cout << "WARNING: Mismatch square brackets";
 				context = SymbolStack();
 			}
 			else
@@ -371,7 +371,7 @@ void LSystem::step(float dt)
 //		}
 //		LOG_TIME_DELTA(peek_timer, "\t\tpeek");
 //		
-//		std::cout << "next is " << (next?next->toString():"null") << " scanned ahead " << std::to_string(peekDistance) << " symbols\n";
+//		cout << "next is " << (next?next->toString():"null") << " scanned ahead " << to_string(peekDistance) << " symbols\n";
 //////////////////////////////////////////////////////
 		
 		// HACK
@@ -392,7 +392,7 @@ void LSystem::step(float dt)
 			// If no rule is found that matches the current symbol, append the original symbol to the output.
 			else
 			{
-				// std::cout << "No rule to match " << symbol->toString() << " so keeping symbol" << std::endl;
+				// cout << "No rule to match " << symbol->toString() << " so keeping symbol" << endl;
 				*(output)+= *symbol;
 			}
 		}

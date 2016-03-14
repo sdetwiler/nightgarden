@@ -10,25 +10,26 @@
 #include <fstream>
 #include "lsystem.h"
 
+using namespace std;
 
 int parser_test()
 {
-	std::cout << "parser_test: Hello, World!\n";
+	cout << "parser_test: Hello, World!\n";
 	
 	
 //	char const* testString = "A->BCDEFG\nB->XYZ\n";
 
 	// TODO: FIXME
 	char const* filename = "/Users/steve/projects/nightgarden/data/test.ls";
-	std::ifstream infile(filename);
+	ifstream infile(filename);
 	if(!infile.is_open())
 	{
-		std::cout << "Failed to open " << filename << std::endl;
+		cout << "Failed to open " << filename << endl;
 		return -1;
 	}
-	std::string data;
-	std::string line;
-	while(std::getline(infile, line))
+	string data;
+	string line;
+	while(getline(infile, line))
 	{
 		data+=line;
 		data+="\n";
@@ -36,7 +37,7 @@ int parser_test()
 	
 	if(infile.bad())
 	{
-		std::cout << "Error while reading from " << filename << std::endl;
+		cout << "Error while reading from " << filename << endl;
 		return -1;
 	}
 	// FIXME
@@ -53,8 +54,8 @@ int parser_test()
 		state = lsystem.getState();
 		if(state)
 		{
-			std::cout << "Intial State" << std:: endl;
-			std::cout << state->toString() << std::endl << std::endl;
+			cout << "Intial State" <<  endl;
+			cout << state->toString() << endl << endl;
 		}
 		
 		
@@ -64,19 +65,19 @@ int parser_test()
 			state = lsystem.getState();
 			if(state)
 			{
-//				std::cout << "Curr State" << std::endl;
-//				std::cout << state->toString() << std::endl;
+//				cout << "Curr State" << endl;
+//				cout << state->toString() << endl;
 			}
 		}
 		
-		std::cout << "Final State" << std::endl;
-		std::cout << state->toString() << std::endl;
+		cout << "Final State" << endl;
+		cout << state->toString() << endl;
 		
 		//lsystem.clear();
 	}
 	else
 	{
-		std::cout << "Failed to parse lsystem from file." << std::endl;
+		cout << "Failed to parse lsystem from file." << endl;
 	}
 	
 	

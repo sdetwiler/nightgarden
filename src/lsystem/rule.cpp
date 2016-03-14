@@ -11,6 +11,8 @@
 #include "lsystem.h"
 #include "predicate.h"
 
+using namespace std;
+
 Rule::Rule()
 {
 	predicate = nullptr;
@@ -30,9 +32,9 @@ Rule::~Rule()
 	}
 }
 
-std::string Rule::toString() const
+string Rule::toString() const
 {
-	std::string s;
+	string s;
 	
 	s+= predicate->toString();
 	s+= " -> ";
@@ -44,9 +46,9 @@ std::string Rule::toString() const
 
 SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
 {
-//	std::cout << "Rule::evaluate" << std::endl
-//	<< "rule: " << this->toString() << std::endl
-//	<< "smbl: " << s->toString() << std::endl;
+//	cout << "Rule::evaluate" << endl
+//	<< "rule: " << this->toString() << endl
+//	<< "smbl: " << s->toString() << endl;
 	
 	VariableMap* scope = predicate->createScope(context, s, next);
 	
@@ -66,12 +68,12 @@ SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) 
 
 				if(e->eval(scope, &v))
 				{
-					e->value = std::to_string(v.value);
+					e->value = to_string(v.value);
 				}
 			}
 		}
 	}
 	
-//	std::cout << "rslt: " << res->toString() << std::endl << std::endl;
+//	cout << "rslt: " << res->toString() << endl << endl;
 	return res;
 }

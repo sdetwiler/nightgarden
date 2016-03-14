@@ -9,6 +9,8 @@
 #include "expression.h"
 #include "types.h"
 
+using namespace std;
+
 // Parser forward declarations.
 #ifndef FLEXINT_H
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
@@ -32,7 +34,7 @@ Variable* getVariable(char const* name)
 {
 	if(gScope)
 	{
-		std::string k(name);
+		string k(name);
 		StringVariableMap::iterator i = gScope->variables.find(k);
 		if(i!=gScope->variables.end())
 		{
@@ -104,7 +106,7 @@ bool Expression::eval(VariableMap* scope, Variable* ret)
 		return false;
 	}
 	
-//	std::cout << "Expression::eval " << value << "=" << ret->toString() << std::endl;
+//	cout << "Expression::eval " << value << "=" << ret->toString() << endl;
 	
 	return true;
 }

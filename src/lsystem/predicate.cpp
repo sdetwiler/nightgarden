@@ -10,6 +10,8 @@
 #include "types.h"
 #include "lsystem.h"
 
+using namespace std;
+
 Predicate::Predicate(LSystem const* system)
 {
 	symbol = nullptr;
@@ -44,7 +46,7 @@ Predicate::~Predicate()
 
 std::string Predicate::toString() const
 {
-	std::string s;
+	string s;
 	
 	if(prev)
 	{
@@ -128,7 +130,7 @@ bool Predicate::doesMatch(SymbolStack const& context, Symbol const* currSymbol, 
 		}
 		else
 		{
-			std::cout << "condition expression eval failed for " << condition->toString() << std::endl << "scope: " << scope->toString() << std::endl;
+			cout << "condition expression eval failed for " << condition->toString() << endl << "scope: " << scope->toString() << endl;
 			delete scope;
 		}
 		

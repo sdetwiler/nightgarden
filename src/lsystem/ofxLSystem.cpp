@@ -13,7 +13,9 @@
 
 #include <stack>
 
-typedef std::stack<ofMatrix4x4> MatrixStack;
+using namespace std;
+
+typedef stack<ofMatrix4x4> MatrixStack;
 
 
 //--------------------------------------------------------------
@@ -142,7 +144,7 @@ void ofxLSystem::update()
 				SymbolList const* state = getLSystem().getState();
 				if(state)
 				{
-					std::cout << "state:   " << state->toString() << std::endl;
+					cout << "state:   " << state->toString() << endl;
 				}
 			}
 			
@@ -200,7 +202,7 @@ void ofxLSystem::buildMeshes()
 {
 	clear();
 	
-	//	std::cout << "==================================" << std::endl;
+	//	cout << "==================================" << endl;
 	VariableMap const& globals = getLSystem().getGlobalVariables();
 	
 	float const delta = getLSystem().getGlobalVariable("delta", 22.5);
@@ -233,7 +235,7 @@ void ofxLSystem::buildMeshes()
 				ofColor color(139,69,19);
 				if(s->expressions && s->expressions->expressions.size() == 3)
 				{
-					//					std::cout << s->expressions->toString() << std::endl;
+					//					cout << s->expressions->toString() << endl;
 					color.r = stoi((*(s->expressions->expressions[0])).value);
 					color.g = stoi((*(s->expressions->expressions[1])).value);
 					color.b = stoi((*(s->expressions->expressions[2])).value);
@@ -332,7 +334,7 @@ void ofxLSystem::buildMeshes()
 						ofVec3f v2v0 = v2-v0;
 						ofVec3f cp = v1v0.cross(v2v0).normalize();
 
-//						std::cout << "\nnumVerts==3\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
+//						cout << "\nnumVerts==3\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
 						
 						if(cp[2] > 0)
 						{
@@ -361,7 +363,7 @@ void ofxLSystem::buildMeshes()
 						ofVec3f v2v0 = v2-v0;
 						ofVec3f cp = v1v0.cross(v2v0).normalize();
 						
-//						std::cout << "\nnumVerts==" << to_string(numVerts) << "\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
+//						cout << "\nnumVerts==" << to_string(numVerts) << "\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
 
 						if(cp[2] > 0)
 						{
@@ -398,7 +400,7 @@ void ofxLSystem::buildMeshes()
 			{
 				if(poly)
 				{
-					std::cout << "Warning: New poly started while an existing poly was being built. Deleting existing poly.\n";
+					cout << "Warning: New poly started while an existing poly was being built. Deleting existing poly.\n";
 					delete poly;
 				}
 				
@@ -406,7 +408,7 @@ void ofxLSystem::buildMeshes()
 				
 				if(s->expressions && s->expressions->expressions.size() == 3)
 				{
-					//					std::cout << s->expressions->toString() << std::endl;
+					//					cout << s->expressions->toString() << endl;
 					polyColor.r = stoi((*(s->expressions->expressions[0])).value);
 					polyColor.g = stoi((*(s->expressions->expressions[1])).value);
 					polyColor.b = stoi((*(s->expressions->expressions[2])).value);
