@@ -99,7 +99,6 @@ LSystem const& ofxLSystem::getLSystem() const
 //--------------------------------------------------------------
 void ofxLSystem::load(char const* filename)
 {
-
 	// FIXME
 	if(LSystem::getInstance().load(filename))
 	{
@@ -252,7 +251,8 @@ void ofxLSystem::buildMeshes()
 				// Build faces around the center of height n.
 				for(int j=0; j<sides; ++j)
 				{
-					ofVec4f v0(lr,0,r,1);
+					
+					ofVec4f v0(lr,0,lr,1);
 					ofVec4f v1(lr,ln,lr,1);
 					ofVec4f v2(-lr,ln,lr,1);
 					ofVec4f v3(-lr,0,lr,1);
