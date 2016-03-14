@@ -10,6 +10,7 @@
 #define types_hpp
 
 #include <stdio.h>
+
 #include <string>
 #include <vector>
 #include <stack>
@@ -18,6 +19,7 @@
 #include <iostream>
 
 #include "expression.h"
+using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 class Variable
@@ -294,8 +296,6 @@ public:
 			s+= ")";
 		}
 		
-		
-		
 		return s;
 	}
 	
@@ -308,7 +308,27 @@ public:
 	{
 		return value != rhs.value;
 	}
+	
+	// Use the symbol's current age to scale the value v by a growth function.
+	// Used to animate the current symbol.
+	float applyGrowthFunction(float v)
+	{
+		// TODO: Implement more than linear growth functions.
+		return linearGrowthFunction(v);
+	}
+
+	float linearGrowthFunction(float v)
+	{
+		float max = 1.0;
+		float pct = age/terminalAge;
+		if(pct > max)
+		{
+			return v*max;
+		}
+		return v*pct;
+	}
 };
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

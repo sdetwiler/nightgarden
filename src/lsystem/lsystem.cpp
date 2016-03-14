@@ -1,6 +1,5 @@
 //
 //  lsystem.cpp
-//  parser
 //
 //  Created by Stephen Detwiler on 2/15/16.
 //  Copyright © 2016 Pirate Studios. All rights reserved.
@@ -335,15 +334,6 @@ void LSystem::step(float dt)
 				}
 			}
 		}
-		
-//		else if(symbol->isOperator)
-//		{
-//			symbol->age+=dt;
-//
-//			*(output)+= *symbol;
-//			continue;
-//		}
-		
 
 		// HACK: Only one lookahead symbol currently provided.
 		// Peek at the next symbol.
@@ -374,9 +364,8 @@ void LSystem::step(float dt)
 //		cout << "next is " << (next?next->toString():"null") << " scanned ahead " << to_string(peekDistance) << " symbols\n";
 //////////////////////////////////////////////////////
 		
-		// HACK
+		// Age the symbol by the delta time.
 		symbol->age+=dt;
-		
 		if(symbol->age > symbol->terminalAge && !symbol->isTerminal)
 		{
 			symbol->isTerminal = true;

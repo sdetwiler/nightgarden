@@ -31,7 +31,6 @@
 		AACA91DD1C974FD30059190F /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = AACA91DC1C974FD30059190F /* README.md */; };
 		B897E464ACB53193F29FB87B /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4273183C29A4430F22FA560A /* predicate.cpp */; };
 		B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D737DC18DFB108292C691CAF /* ofxAssimpMeshHelper.cpp */; };
-		BAB47BEC3BBDDB6E036F9385 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C2C4BF3A433E8ADF4B786C04 /* test.cpp */; };
 		CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3937A0E5CFB2248F4F2685C6 /* ofxCvImage.cpp */; };
 		DA7932F16038539DEEE88588 /* expression_parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 45C697DC38E89E013B8EF9FC /* expression_parser.ypp */; };
 		E06D8ED5D36036BBE163765C /* rules_parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = E2BEA0F5E6D7D898FE177A5F /* rules_parser.ypp */; };
@@ -286,7 +285,6 @@
 		BB29817DCA063AE56EFB1059 /* opengl_interop_deprecated.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = opengl_interop_deprecated.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/opengl_interop_deprecated.hpp; sourceTree = SOURCE_ROOT; };
 		BC9F4ABA5DF5B7CE7C1506F1 /* block.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = block.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/block.hpp; sourceTree = SOURCE_ROOT; };
 		C27F8F05F97DD6888C8C1561 /* gpu_test.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = gpu_test.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/ts/gpu_test.hpp; sourceTree = SOURCE_ROOT; };
-		C2C4BF3A433E8ADF4B786C04 /* test.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = test.cpp; path = src/lsystem/test.cpp; sourceTree = SOURCE_ROOT; };
 		C401DECFBBD2E91A64C6269E /* eigen.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = eigen.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/eigen.hpp; sourceTree = SOURCE_ROOT; };
 		C43FAB7D30C6B56A730C0216 /* lsh_index.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = lsh_index.h; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/flann/lsh_index.h; sourceTree = SOURCE_ROOT; };
 		C4AA7A45B234DB9D2E95880A /* matrix3x3.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = matrix3x3.h; path = ../of_latest_osx_release/addons/ofxAssimpModelLoader/libs/assimp/include/assimp/matrix3x3.h; sourceTree = SOURCE_ROOT; };
@@ -666,7 +664,6 @@
 				1FEE1036D3F78C21B0356C42 /* rule.h */,
 				E2BEA0F5E6D7D898FE177A5F /* rules_parser.ypp */,
 				90B18E35667C1FC1AA20A553 /* rules_tokenizer.lpp */,
-				C2C4BF3A433E8ADF4B786C04 /* test.cpp */,
 				09765D66A641E24A9E44595D /* types.h */,
 				AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */,
 				AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */,
@@ -1132,7 +1129,6 @@
 				AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */,
 				E06D8ED5D36036BBE163765C /* rules_parser.ypp in Sources */,
 				6680511EE47054F8FE956336 /* rules_tokenizer.lpp in Sources */,
-				BAB47BEC3BBDDB6E036F9385 /* test.cpp in Sources */,
 				6C6AB6259CEB124E821162AF /* ofxAssimpAnimation.cpp in Sources */,
 				B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */,
 				AA85827A1C9379F40066FAF1 /* ofxButton.cpp in Sources */,

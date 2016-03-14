@@ -202,9 +202,6 @@ void ofxLSystem::buildMeshes()
 {
 	clear();
 	
-	//	cout << "==================================" << endl;
-	VariableMap const& globals = getLSystem().getGlobalVariables();
-	
 	float const delta = getLSystem().getGlobalVariable("delta", 22.5);
 	float const n = getLSystem().getGlobalVariable("n", 5);
 	float const r = getLSystem().getGlobalVariable("r", 0.25);
@@ -228,7 +225,7 @@ void ofxLSystem::buildMeshes()
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
-				// HACK
+				// Scale n and r by the symbol's age into a local version of n and r.
 				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
 				float lr = r*(MIN(s->age/s->terminalAge, 1.0));
 
@@ -309,10 +306,7 @@ void ofxLSystem::buildMeshes()
 			
 			if(s->value == "G")
 			{
-				// HACK
-				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
-				
-				currMatrix.glTranslate(0,ln,0);
+				currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
 			}
 			
 			else if(s->value == "." || s->value == "f")
@@ -388,10 +382,8 @@ void ofxLSystem::buildMeshes()
 					{
 						ln = stof((*(s->expressions->expressions[0])).value);
 					}
-					// HACK
-					ln*=(MIN(s->age/s->terminalAge, 1.0));
-					
-					currMatrix.glTranslate(0, ln, 0);
+
+					currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
 				}
 			}
 			
@@ -446,9 +438,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(d, 0, 0, 1);
+				currMatrix.glRotate(s->applyGrowthFunction(d), 0, 0, 1);
 			}
 			
 			else if(s->value == "-")
@@ -458,9 +448,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(-d, 0, 0, 1);
+				currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 0, 1);
 			}
 			
 			else if(s->value == "&")
@@ -470,9 +458,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(-d, 1, 0, 0);
+				currMatrix.glRotate(-s->applyGrowthFunction(d), 1, 0, 0);
 			}
 			
 			else if(s->value == "^")
@@ -482,9 +468,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(d, 1, 0, 0);
+				currMatrix.glRotate(s->applyGrowthFunction(d), 1, 0, 0);
 			}
 			
 			else if(s->value == "/")
@@ -494,9 +478,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(-d, 0, 1, 0);
+				currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 1, 0);
 			}
 			
 			else if(s->value == "\\")
@@ -506,9 +488,7 @@ void ofxLSystem::buildMeshes()
 				{
 					d = stof((*(s->expressions->expressions[0])).value);
 				}
-				// HACK
-				d*=(MIN(s->age/s->terminalAge, 1.0));
-				currMatrix.glRotate(d, 0, 1, 0);
+				currMatrix.glRotate(s->applyGrowthFunction(d), 0, 1, 0);
 			}
 			
 			else if(s->value == "|")

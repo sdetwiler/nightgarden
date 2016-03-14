@@ -49,19 +49,12 @@ public:
 	
 private:
 	typedef std::vector< Rule* > RuleVec;
-	RuleVec mRules;
-
+	RuleVec		mRules;
 	VariableMap mVariables;
-	
-	Result* mAxiom;
-	
+	Result*		mAxiom;
 	SymbolList* mState;
 	
-	float mAge;
-	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);
-	
-
 };
 
 

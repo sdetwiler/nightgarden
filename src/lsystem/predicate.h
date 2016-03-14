@@ -1,6 +1,5 @@
 //
 //  predicate.h
-//  parser
 //
 //  Created by Stephen Detwiler on 2/20/16.
 //  Copyright © 2016 Pirate Studios. All rights reserved.
@@ -13,9 +12,6 @@
 #include "types.h"
 #include "expression.h"
 
-//class Symbol;
-//class Expression;
-//class VariableMap;
 class LSystem;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,10 +19,9 @@ class Predicate
 {
 public:
 	Symbol* symbol;
-	Symbol* prev;	// Previous symbol for context-sensitive evaluation.
-	Symbol* next;	// Next symbol for context-sensitive evaluation.
-	Expression* condition; // Condition that must be true for predicate to match symbol sequence.
-	LSystem const* lsystem;
+	Symbol* prev;			// Previous symbol for context-sensitive evaluation.
+	Symbol* next;			// Next symbol for context-sensitive evaluation.
+	Expression* condition;	// Condition that must be true for predicate to match symbol sequence.
 	
 	Predicate(LSystem const* lsystem);
 	~Predicate();
@@ -34,6 +29,10 @@ public:
 	std::string toString() const;
 	bool doesMatch(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol);
 	VariableMap* createScope(SymbolStack const& context, Symbol const* currSymbol, Symbol const* nextSymbol) const;
+
+private:
+	LSystem const* mSystem;
+
 };
 
 

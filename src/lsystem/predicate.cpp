@@ -1,6 +1,5 @@
 //
 //  predicate.cpp
-//  parser
 //
 //  Created by Stephen Detwiler on 2/20/16.
 //  Copyright © 2016 Pirate Studios. All rights reserved.
@@ -18,7 +17,7 @@ Predicate::Predicate(LSystem const* system)
 	prev = nullptr;
 	next = nullptr;
 	condition = nullptr;
-	lsystem = system;
+	mSystem = system;
 }
 
 Predicate::~Predicate()
@@ -116,7 +115,6 @@ bool Predicate::doesMatch(SymbolStack const& context, Symbol const* currSymbol, 
 	
 	if(condition)
 	{
-		
 		VariableMap* scope = createScope(context, currSymbol, nextSymbol);
 		Variable ret;
 		if(condition->eval(scope, &ret))
@@ -148,7 +146,7 @@ VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* cu
 	// variable values. Values are mapped in the order the variables are
 	// defined from the predicate.
 
-	VariableMap* scope = new VariableMap(lsystem->getGlobalVariables());
+	VariableMap* scope = new VariableMap(mSystem->getGlobalVariables());
 	
 	// If the predicate's symbol has attached variables...
 	size_t idx=0;

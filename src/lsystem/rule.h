@@ -1,6 +1,5 @@
 //
 //  rule.h
-//  parser
 //
 //  Created by Stephen Detwiler on 2/18/16.
 //  Copyright © 2016 Pirate Studios. All rights reserved.
@@ -17,11 +16,6 @@
 #include "expression.h"
 #include "predicate.h"
 
-//class Predicate;
-//class Result;
-//class SymbolList;
-//class Symbol;
-//class Expression;
 
 ////////////////////////////////////////////////////////////////////////////////
 class Rule

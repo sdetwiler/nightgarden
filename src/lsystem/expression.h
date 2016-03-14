@@ -1,6 +1,5 @@
 //
 //  expression.h
-//  parser
 //
 //  Created by Stephen Detwiler on 2/18/16.
 //  Copyright © 2016 Pirate Studios. All rights reserved.
