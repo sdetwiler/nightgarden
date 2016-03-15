@@ -21,7 +21,6 @@ typedef stack<ofMatrix4x4> MatrixStack;
 //--------------------------------------------------------------
 ofxLSystem::ofxLSystem()
 {
-	// FIXME
 	mSystem = new LSystem();
 }
 
