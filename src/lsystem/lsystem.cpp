@@ -22,11 +22,14 @@ using namespace std;
 #ifndef FLEXINT_H
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
+typedef void* yyscan_t;
+YY_BUFFER_STATE rules__scan_string (const char* yy_str, yyscan_t yyscanner );
+void rules__delete_buffer(YY_BUFFER_STATE  b, yyscan_t yyscanner);
+int rules_parse(void*);
 
-YY_BUFFER_STATE  rules__scan_string(const char *s);
-void rules__delete_buffer(YY_BUFFER_STATE buf);
+int rules_lex_init(yyscan_t* scanner);
+int rules_lex_destroy(yyscan_t scanner);
 
-int rules_parse();
 
 #endif
 
@@ -83,14 +86,18 @@ bool LSystem::load(char const* filename)
 
 bool LSystem::parse(char const* input)
 {
+	void* scanner;
 	
-	YY_BUFFER_STATE buf;
+	rules_lex_init (&scanner);
+
+	YY_BUFFER_STATE buf = NULL;
 	
-	buf = rules__scan_string(input);
+	buf = rules__scan_string (input, scanner );
 	
-	int ret = rules_parse();
+	int ret = rules_parse(scanner);
 	
-	rules__delete_buffer(buf);
+	rules__delete_buffer(buf, scanner);
+	rules_lex_destroy(scanner);
 
 	if(ret)
 	{

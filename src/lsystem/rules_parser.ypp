@@ -1,4 +1,14 @@
+%name-prefix="rules_"
+%pure-parser
+%lex-param { yyscan_t scanner }
+%parse-param { yyscan_t scanner }
+
 %{
+
+typedef void* yyscan_t;
+//int rules_lex(yyscan_t scanner, void*);
+union YYSTYPE;
+extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 
 #include <stdio.h>
 #include <string.h>
@@ -9,12 +19,12 @@
 
 // #define DEBUG_PARSER
 
-int yylex(void);
-void yyerror(char *s);
+int rules_error(yyscan_t scanner,  const char* msg) {
+	return 0;
+}
 
 %}
 
-%name-prefix="rules_"
 
 
 

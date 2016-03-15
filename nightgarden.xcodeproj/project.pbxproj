@@ -28,7 +28,6 @@
 		AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582751C9379F40066FAF1 /* ofxSliderGroup.cpp */; };
 		AA8582801C9379F40066FAF1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582771C9379F40066FAF1 /* ofxToggle.cpp */; };
 		AABCD3A01C8FECDC00110C5C /* ofxLSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */; };
-		AACA91DD1C974FD30059190F /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = AACA91DC1C974FD30059190F /* README.md */; };
 		B897E464ACB53193F29FB87B /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4273183C29A4430F22FA560A /* predicate.cpp */; };
 		B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D737DC18DFB108292C691CAF /* ofxAssimpMeshHelper.cpp */; };
 		CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3937A0E5CFB2248F4F2685C6 /* ofxCvImage.cpp */; };
@@ -1136,7 +1135,6 @@
 				45A90D4CAC4101564308445E /* ofxAssimpTexture.cpp in Sources */,
 				AA85827D1C9379F40066FAF1 /* ofxPanel.cpp in Sources */,
 				AA85827C1C9379F40066FAF1 /* ofxLabel.cpp in Sources */,
-				AACA91DD1C974FD30059190F /* README.md in Sources */,
 				AA85827E1C9379F40066FAF1 /* ofxSlider.cpp in Sources */,
 				FBD511919FEFD3275163CC99 /* ofxCvColorImage.cpp in Sources */,
 				A7812E4ECE75F2380958E38F /* ofxCvContourFinder.cpp in Sources */,

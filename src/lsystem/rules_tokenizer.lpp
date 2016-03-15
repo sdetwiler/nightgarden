@@ -1,14 +1,14 @@
+%option prefix="rules_"
+%option reentrant bison-bridge
+%option noyywrap nounput noinput
+
 %{
 
 #include "rules_parser.tab.h"
 #include "types.h"
 
-
-void rules_error(char *s);
-    
 %}
 
-%option prefix="rules_"
 
 %%
 
@@ -16,7 +16,7 @@ void rules_error(char *s);
 
 
 
-[a-zA-Z] { rules_lval.symbol = new Symbol(); rules_lval.symbol->value = yytext; return SYMBOL; }
+[a-zA-Z] { yylval->symbol = new Symbol(); yylval->symbol->value = yytext; return SYMBOL; }
 
 
 
@@ -38,10 +38,10 @@ void rules_error(char *s);
 "-" { return SUB; }
 "^" { return EXP; }
 
-[.\[\]\*&!/\'|{}~] { rules_lval.symbol = new Symbol(); rules_lval.symbol->isOperator=true; rules_lval.symbol->value = yytext; return SYMBOL; }
+[.\[\]\*&!/\'|{}~] { yylval->symbol = new Symbol(); yylval->symbol->isOperator=true; yylval->symbol->value = yytext; return SYMBOL; }
 
 
-[0-9]*\.?[0-9]* { rules_lval.num_float = atof(yytext); return FLOAT; }
+[0-9]*\.?[0-9]* { yylval->num_float = atof(yytext); return FLOAT; }
 
 "\n" { return NEWLINE; }
 
@@ -55,14 +55,3 @@ void rules_error(char *s);
 . { return yytext[0]; };
 
 %%
-
-int yywrap() 
-{
-    // This is a place where one can append more text if it would be needed, quit for now
-    return 1;
-}
-
-void rules_error(char *s)
-{
-	printf("Rules %s: %s\n", s, yytext);
-}
