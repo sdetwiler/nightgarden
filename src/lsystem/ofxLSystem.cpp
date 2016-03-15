@@ -15,8 +15,6 @@
 
 using namespace std;
 
-typedef stack<ofMatrix4x4> MatrixStack;
-
 
 //--------------------------------------------------------------
 ofxLSystem::ofxLSystem()
@@ -154,11 +152,11 @@ void ofxLSystem::update()
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::draw()
+void ofxLSystem::customDraw()
 {
-	for(NodeVec::iterator i = mNodes.begin(); i!=mNodes.end(); ++i)
+	for(PrimitiveVec::iterator i = mPrimitives.begin(); i!=mPrimitives.end(); ++i)
 	{
-		of3dPrimitive* p = (of3dPrimitive*)(*i);
+		of3dPrimitive* p = *i;
 		if(mDrawWireframe)
 		{
 			p->drawWireframe();
@@ -174,19 +172,12 @@ void ofxLSystem::draw()
 //--------------------------------------------------------------
 void ofxLSystem::clear()
 {
-	for(NodeVec::iterator i = mNodes.begin(); i!=mNodes.end(); ++i)
+	for(PrimitiveVec::iterator i = mPrimitives.begin(); i!=mPrimitives.end(); ++i)
 	{
 		delete(*i);
 	}
 	
-	mNodes.clear();
-
-	for(MeshVec::iterator i = mMeshes.begin(); i!=mMeshes.end(); ++i)
-	{
-		delete(*i);
-	}
-	
-	mMeshes.clear();
+	mPrimitives.clear();
 }
 
 //--------------------------------------------------------------
@@ -206,6 +197,7 @@ void ofxLSystem::buildMeshes()
 	float const n = getLSystem().getGlobalVariable("n", 5);
 	float const r = getLSystem().getGlobalVariable("r", 0.25);
 	
+	typedef stack<ofMatrix4x4> MatrixStack;
 
 	MatrixStack matrixStack;
 	ofMatrix4x4 rootMatrix;
@@ -295,10 +287,9 @@ void ofxLSystem::buildMeshes()
 				
 				currMesh->setMode(OF_PRIMITIVE_TRIANGLES);
 				
-				
 				of3dPrimitive* prim = new of3dPrimitive(*currMesh);
-				mNodes.push_back(prim);
-				mMeshes.push_back(currMesh);
+				mPrimitives.push_back(prim);
+				delete currMesh;
 				currMesh = nullptr;
 				
 				currMatrix.glTranslate(0,ln,0);
@@ -411,11 +402,11 @@ void ofxLSystem::buildMeshes()
 			{
 				if(poly)
 				{
-					of3dPrimitive* prim = new of3dPrimitive(*poly);
-					mNodes.push_back(prim);
-
 					poly->setMode(OF_PRIMITIVE_TRIANGLES);
-					mMeshes.push_back(poly);
+					of3dPrimitive* prim = new of3dPrimitive(*poly);
+					mPrimitives.push_back(prim);
+
+					delete poly;
 					poly = nullptr;
 				}
 			}
