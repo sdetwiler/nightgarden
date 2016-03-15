@@ -23,9 +23,6 @@ public:
 	LSystem();
 	
 	~LSystem();
-
-	
-	static LSystem& getInstance();
 	
 	void setAxiom(Result* axiom);
 	

@@ -2,11 +2,11 @@
 %pure-parser
 %lex-param { yyscan_t scanner }
 %parse-param { yyscan_t scanner }
+%parse-param { LSystem* lsystem }
 
 %{
 
 typedef void* yyscan_t;
-//int rules_lex(yyscan_t scanner, void*);
 union YYSTYPE;
 extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 
@@ -19,14 +19,11 @@ extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 
 // #define DEBUG_PARSER
 
-int rules_error(yyscan_t scanner,  const char* msg) {
+int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 	return 0;
 }
 
 %}
-
-
-
 
 %union {
 	class Rule*           rule;
@@ -73,12 +70,6 @@ int rules_error(yyscan_t scanner,  const char* msg) {
 %token RULE
 %token VAR
 
-
-/*
-%type <value> expr
-%type <value> number
-*/
-
 %type <variable>        variable_dec
 %type <variable>        variable
 %type <rule>            rule
@@ -121,8 +112,7 @@ axiom :
 		printf("axiom %s\n", $2->toString().c_str());
 		#endif
 		
-		LSystem& lsystem = LSystem::getInstance();
-		lsystem.setAxiom($2);
+		lsystem->setAxiom($2);
 	}
 
 
@@ -136,8 +126,7 @@ variable_dec :
 		printf("variable_dec to VAR VARIABLE number\n\t%s %f\n", $2->toString().c_str(), $3);
 		#endif
 
-		LSystem& lsystem = LSystem::getInstance();
-		lsystem.addVariable($$);
+		lsystem->addVariable($$);
 	}
 
 variable :
@@ -172,8 +161,7 @@ rule :
 		$$->predicate = $2;
 		$$->result = $4;
 		
-		LSystem& lsystem = LSystem::getInstance();
-		lsystem.addRule($$);
+		lsystem->addRule($$);
 	}
 
 predicate:
@@ -194,7 +182,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol\n\t%s\n", $1->value.c_str());
 		#endif
 		
-		$$ = new Predicate(&LSystem::getInstance());
+		$$ = new Predicate(lsystem);
 		$$->symbol = $1;
 	}
 
@@ -204,7 +192,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol LT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
-		$$ = new Predicate(&LSystem::getInstance());
+		$$ = new Predicate(lsystem);
 		$$->prev = $1;
 		$$->symbol = $3;
 	}
@@ -215,7 +203,7 @@ predicate_symbols :
 		printf("predicate to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
-		$$ = new Predicate(&LSystem::getInstance());
+		$$ = new Predicate(lsystem);
 		$$->symbol = $1;
 		$$->next = $3;
 	}
@@ -226,7 +214,7 @@ predicate_symbols :
 		printf("predicate_symbols to symbol LT symbol GT symbol\n\t%s %s %s\n", $1->toString().c_str(), $3->toString().c_str(), $5->toString().c_str());
 		#endif
 		
-		$$ = new Predicate(&LSystem::getInstance());
+		$$ = new Predicate(lsystem);
 		$$->prev = $1;
 		$$->symbol = $3;
 		$$->next = $5;

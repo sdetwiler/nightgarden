@@ -25,7 +25,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef void* yyscan_t;
 YY_BUFFER_STATE rules__scan_string (const char* yy_str, yyscan_t yyscanner );
 void rules__delete_buffer(YY_BUFFER_STATE  b, yyscan_t yyscanner);
-int rules_parse(void*);
+int rules_parse(void* scanner, LSystem* lsystem);
 
 int rules_lex_init(yyscan_t* scanner);
 int rules_lex_destroy(yyscan_t scanner);
@@ -44,17 +44,6 @@ LSystem::LSystem()
 LSystem::~LSystem()
 {
 	clear();
-}
-
-LSystem& LSystem::getInstance()
-{
-	static LSystem* singleton = nullptr;
-	if(singleton == nullptr)
-	{
-		singleton = new LSystem;
-	}
-	
-	return *singleton;
 }
 
 bool LSystem::load(char const* filename)
@@ -94,7 +83,7 @@ bool LSystem::parse(char const* input)
 	
 	buf = rules__scan_string (input, scanner );
 	
-	int ret = rules_parse(scanner);
+	int ret = rules_parse(scanner, this);
 	
 	rules__delete_buffer(buf, scanner);
 	rules_lex_destroy(scanner);

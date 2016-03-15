@@ -22,7 +22,7 @@ typedef stack<ofMatrix4x4> MatrixStack;
 ofxLSystem::ofxLSystem()
 {
 	// FIXME
-	mSystem = &LSystem::getInstance();
+	mSystem = new LSystem();
 }
 
 //--------------------------------------------------------------
@@ -35,6 +35,7 @@ ofxLSystem::ofxLSystem(char const* filename)
 ofxLSystem::~ofxLSystem()
 {
 	clear();
+	delete mSystem;
 }
 
 //--------------------------------------------------------------
