@@ -1,23 +1,22 @@
+%option prefix="expression_"
+%option reentrant bison-bridge
+%option noyywrap nounput noinput
+
 %{
 
 #include "expression_parser.tab.h"
 #include "types.h"
 
-
-void expression_error(char *s);
-    
 %}
-
-%option prefix="expression_"
 
 %%
 
 
-[0-9]+\.[0-9]* { expression_lval.value = atof(yytext); return FLOAT; }
+[0-9]+\.[0-9]* { yylval->value = atof(yytext); return FLOAT; }
 
-[0-9]+ { expression_lval.value = atof(yytext); return INTEGER; }
+[0-9]+ { yylval->value = atof(yytext); return INTEGER; }
 
-[a-zA-Z]+ { expression_lval.identifier = strdup(yytext); return IDENTIFIER; }
+[a-zA-Z]+ { yylval->identifier = strdup(yytext); return IDENTIFIER; }
 
 [\n\t ] { }
 
@@ -32,14 +31,3 @@ void expression_error(char *s);
 . { return yytext[0]; };
 
 %%
-
-int yywrap() 
-{
-    // This is a place where one can append more text if it would be needed, quit for now
-    return 1;
-}
-
-void expression_error(char *s)
-{
-	printf("Expression %s: %s\n", s, yytext);
-}

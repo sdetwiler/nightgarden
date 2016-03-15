@@ -12,38 +12,18 @@ using namespace std;
 
 // Parser forward declarations.
 #ifndef FLEXINT_H
+
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
+typedef void* yyscan_t;
+YY_BUFFER_STATE expression__scan_string (const char* yy_str, yyscan_t yyscanner );
+void expression__delete_buffer(YY_BUFFER_STATE  b, yyscan_t yyscanner);
+int expression_parse(void* scanner, VariableMap* scope, Variable* retVal);
 
-YY_BUFFER_STATE  expression__scan_string(const char *s);
-void expression__delete_buffer(YY_BUFFER_STATE buf);
-
-int expression_parse();
+int expression_lex_init(yyscan_t* scanner);
+int expression_lex_destroy(yyscan_t scanner);
 
 
 #endif
-
-Variable* gExpressionReturnVar = nullptr;
-Variable* getExpressionReturnVariable()
-{
-	return gExpressionReturnVar;
-}
-
-VariableMap* gScope = nullptr;
-Variable* getVariable(char const* name)
-{
-	if(gScope)
-	{
-		string k(name);
-		StringVariableMap::iterator i = gScope->variables.find(k);
-		if(i!=gScope->variables.end())
-		{
-			return i->second;
-		}
-	}
-	
-	return nullptr;
-}
-
 
 Expression::Expression()
 {
@@ -83,29 +63,25 @@ Expression& Expression::operator+=(Expression const& rhs)
 
 bool Expression::eval(VariableMap* scope, Variable* ret)
 {
-	// OMG NOT THREAD SAFE.
-
-	gExpressionReturnVar = ret;
-	gScope = scope;
 	
-	YY_BUFFER_STATE buf;
+	void* scanner;
 	
-	buf = expression__scan_string(value.c_str());
+	expression_lex_init (&scanner);
 	
-	int r = expression_parse();
+	YY_BUFFER_STATE buf = NULL;
 	
-	expression__delete_buffer(buf);
+	buf = expression__scan_string(value.c_str(), scanner);
 	
-	gExpressionReturnVar = nullptr;
-	gScope = nullptr;
+	int r = expression_parse(scanner, scope, ret);
 	
+	expression__delete_buffer(buf, scanner);
+	expression_lex_destroy(scanner);
 	
 	if(r)
 	{
+		//		cout << "yyparse returns " << ret << endl;
 		return false;
 	}
-	
-//	cout << "Expression::eval " << value << "=" << ret->toString() << endl;
 	
 	return true;
 }

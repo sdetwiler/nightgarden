@@ -1,24 +1,30 @@
+%name-prefix="expression_"
+%pure-parser
+%lex-param { yyscan_t scanner }
+%parse-param { yyscan_t scanner }
+%parse-param { VariableMap* scope }
+%parse-param { Variable* retVal }
+
 %{
+
+typedef void* yyscan_t;
+union YYSTYPE;
+extern int expression_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
 #include "types.h"
 #include "lsystem.h"
 
 // #define DEBUG_PARSER
 
-int yylex(void);
-void yyerror(char* s);
-
-
-Variable* getExpressionReturnVariable();
-Variable* getVariable(char const* name);
-
+int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, const char* msg) {
+	cout << "Expression: " << msg << endl;
+	return 0;
+}
 %}
 
-%name-prefix="expression_"
 
 
 %union {
@@ -49,10 +55,9 @@ Variable* getVariable(char const* name);
 
 calc : expr
 {
-	Variable* ret = getExpressionReturnVariable();
-	if(ret)
+	if(retVal)
 	{
-		ret->value = $1;
+		retVal->value = $1;
 	}
 }
 
@@ -73,14 +78,23 @@ number : INTEGER { $$ = $1; }
 | FLOAT { $$ = $1; }
 | IDENTIFIER
 {
-	Variable* v = getVariable($1);
+	Variable* v = nullptr;
+	if(scope)
+	{
+		string k($1);
+		StringVariableMap::iterator i = scope->variables.find(k);
+		if(i!=scope->variables.end())
+		{
+			v = i->second;
+		}
+	}
 	if(v)
 	{
 		$$ = v->value;
 	}
 	else
 	{
-		yyerror("Variable not defined");
+		yyerror(scanner, scope, retVal, "Variable not defined");
 	}
 }
 
