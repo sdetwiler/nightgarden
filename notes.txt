@@ -1,6 +1,6 @@
-Interactive placement of LSystem nodes
+Done		Interactive placement of LSystem nodes
 
-Multithreading?
+Done		Multithreading
 
 Loading and playback of precomputed step sequences
 
@@ -14,3 +14,6 @@ Rendering Improvements
 	Fix normal computation bugs
 	Textures and materials
 	Shader and lighting model
+
+Perfomance
+	Memory management improvements for SymbolList copies
