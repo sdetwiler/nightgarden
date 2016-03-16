@@ -47,7 +47,7 @@ void ofApp::update()
 
 	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 	{
-		ofxLSystem* system = *i;
+		ofxLSystemNode* system = *i;
 		
 		system->update();
 	}
@@ -76,7 +76,7 @@ void ofApp::draw()
 	
 	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 	{
-		ofxLSystem* system = *i;
+		ofxLSystemNode* system = *i;
 		
 		system->draw();
 	}
@@ -110,9 +110,9 @@ void ofApp::fileButtonPressed()
 
 
 //--------------------------------------------------------------
-ofxLSystem* ofApp::loadSystem(char const* filename)
+ofxLSystemNode* ofApp::loadSystem(char const* filename)
 {
-	ofxLSystem* system = new ofxLSystem(filename);
+	ofxLSystemNode* system = new ofxLSystemNode(filename);
 	mSystems.push_back(system);
 //	mSystem.load(filename);
 	
@@ -130,7 +130,7 @@ void ofApp::keyReleased(int key){
 	{
 		for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 		{
-			ofxLSystem* system = *i;
+			ofxLSystemNode* system = *i;
 			
 			system->setDrawWireframe(system->getDrawWireframe());
 		}
@@ -174,7 +174,7 @@ void ofApp::mouseReleased(int x, int y, int button)
 	
 	if(mEdit)
 	{
-		ofxLSystem* system = loadSystem(mFilename.c_str());
+		ofxLSystemNode* system = loadSystem(mFilename.c_str());
 		ofVec3f p = ray.calcPosition(t);
 		system->setPosition(p.x, 0, p.z);
 	}

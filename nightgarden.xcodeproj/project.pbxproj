@@ -28,7 +28,7 @@
 		AA85827E1C9379F40066FAF1 /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582731C9379F40066FAF1 /* ofxSlider.cpp */; };
 		AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582751C9379F40066FAF1 /* ofxSliderGroup.cpp */; };
 		AA8582801C9379F40066FAF1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582771C9379F40066FAF1 /* ofxToggle.cpp */; };
-		AABCD3A01C8FECDC00110C5C /* ofxLSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */; };
+		AABCD3A01C8FECDC00110C5C /* ofxLSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */; };
 		B897E464ACB53193F29FB87B /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4273183C29A4430F22FA560A /* predicate.cpp */; };
 		B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D737DC18DFB108292C691CAF /* ofxAssimpMeshHelper.cpp */; };
 		CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3937A0E5CFB2248F4F2685C6 /* ofxCvImage.cpp */; };
@@ -265,8 +265,8 @@
 		AA85828E1C939C080066FAF1 /* page25f.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = page25f.ls; sourceTree = "<group>"; };
 		AA85828F1C9474EC0066FAF1 /* box.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = box.ls; sourceTree = "<group>"; };
 		AA8582901C9622A90066FAF1 /* timedDOL.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = timedDOL.ls; sourceTree = "<group>"; };
-		AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystem.cpp; path = lsystem/ofxLSystem.cpp; sourceTree = "<group>"; };
-		AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystem.h; path = lsystem/ofxLSystem.h; sourceTree = "<group>"; };
+		AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystemNode.cpp; path = lsystem/ofxLSystemNode.cpp; sourceTree = "<group>"; };
+		AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystemNode.h; path = lsystem/ofxLSystemNode.h; sourceTree = "<group>"; };
 		AABCD3A21C8FF91B00110C5C /* contourtest-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "contourtest-small.jpg"; sourceTree = "<group>"; };
 		AABCD3A31C8FF91B00110C5C /* nasturtiums-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "nasturtiums-small.jpg"; sourceTree = "<group>"; };
 		AABCD3A41C8FF91B00110C5C /* nasturtiums.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = nasturtiums.jpg; sourceTree = "<group>"; };
@@ -669,8 +669,8 @@
 				E2BEA0F5E6D7D898FE177A5F /* rules_parser.ypp */,
 				90B18E35667C1FC1AA20A553 /* rules_tokenizer.lpp */,
 				09765D66A641E24A9E44595D /* types.h */,
-				AABCD39E1C8FECDC00110C5C /* ofxLSystem.cpp */,
-				AABCD39F1C8FECDC00110C5C /* ofxLSystem.h */,
+				AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */,
+				AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */,
 			);
 			name = lsystem;
 			sourceTree = "<group>";
@@ -1150,7 +1150,7 @@
 				A7812E4ECE75F2380958E38F /* ofxCvContourFinder.cpp in Sources */,
 				E961BA1EE9D733EFA52AD472 /* ofxCvFloatImage.cpp in Sources */,
 				8338DB7D7E3D446E7CAFF7C3 /* ofxCvGrayscaleImage.cpp in Sources */,
-				AABCD3A01C8FECDC00110C5C /* ofxLSystem.cpp in Sources */,
+				AABCD3A01C8FECDC00110C5C /* ofxLSystemNode.cpp in Sources */,
 				79E0E81BA5F148548A86FF14 /* ofxCvHaarFinder.cpp in Sources */,
 				CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */,
 				5E3D87E182F2624C32F8375B /* ofxCvShortImage.cpp in Sources */,

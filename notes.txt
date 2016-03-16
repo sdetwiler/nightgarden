@@ -1,5 +1,7 @@
 Interactive placement of LSystem nodes
 
+Multithreading?
+
 Loading and playback of precomputed step sequences
 
 Fast forward and rewind

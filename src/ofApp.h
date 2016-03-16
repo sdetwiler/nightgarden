@@ -3,11 +3,11 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 
-#include "ofxLSystem.h"
+#include "ofxLSystemNode.h"
 #include "ofxGui.h"
 #include <vector>
 
-typedef std::vector<ofxLSystem*> SystemVec;
+typedef std::vector<ofxLSystemNode*> SystemVec;
 
 class ofApp : public ofBaseApp 
 {
@@ -34,7 +34,7 @@ public:
 	
 private:
 	
-	ofxLSystem* loadSystem(char const* filename);
+	ofxLSystemNode* loadSystem(char const* filename);
 	
 //	ofxLSystem mSystem;
 	SystemVec mSystems;

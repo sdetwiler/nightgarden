@@ -1,12 +1,12 @@
 //
-//  ofxLSystem.cpp
+//  ofxLSystemNode.cpp
 //  nightgarden
 //
 //  Created by Stephen Detwiler on 3/8/16.
 //
 //
 
-#include "ofxLSystem.h"
+#include "ofxLSystemNode.h"
 
 #include "lsystem.h"
 #include "types.h"
@@ -17,14 +17,14 @@ using namespace std;
 
 
 //--------------------------------------------------------------
-ofxLSystem::ofxLSystem()
+ofxLSystemNode::ofxLSystemNode()
 {
 	mSystem = new LSystem();
 	mCurrMesh = nullptr;
 }
 
 //--------------------------------------------------------------
-ofxLSystem::ofxLSystem(char const* filename)
+ofxLSystemNode::ofxLSystemNode(char const* filename)
 {
 	mSystem = new LSystem();
 	mCurrMesh = nullptr;
@@ -33,75 +33,75 @@ ofxLSystem::ofxLSystem(char const* filename)
 }
 
 //--------------------------------------------------------------
-ofxLSystem::~ofxLSystem()
+ofxLSystemNode::~ofxLSystemNode()
 {
 	clear();
 	delete mSystem;
 }
 
 //--------------------------------------------------------------
-int ofxLSystem::getMaxSteps() const
+int ofxLSystemNode::getMaxSteps() const
 {
 	return mMaxSteps;
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::setMaxSteps(int v)
+void ofxLSystemNode::setMaxSteps(int v)
 {
 	mMaxSteps = v;
 }
 
 
 //--------------------------------------------------------------
-int ofxLSystem::getCurrSteps() const
+int ofxLSystemNode::getCurrSteps() const
 {
 	return mCurrSteps;
 }
 
 //--------------------------------------------------------------
-float ofxLSystem::getLastStepTime() const
+float ofxLSystemNode::getLastStepTime() const
 {
 	return mLastStepTime;
 }
 
 //--------------------------------------------------------------
-float ofxLSystem::getStepInterval() const
+float ofxLSystemNode::getStepInterval() const
 {
 	return mStepInterval;
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::setStepInterval(float v)
+void ofxLSystemNode::setStepInterval(float v)
 {
 	mStepInterval = v;
 }
 
 //--------------------------------------------------------------
-float ofxLSystem::getLastStepDuration() const
+float ofxLSystemNode::getLastStepDuration() const
 {
 	return mLastStepDuration;
 }
 
 //--------------------------------------------------------------
-bool ofxLSystem::getDrawWireframe() const
+bool ofxLSystemNode::getDrawWireframe() const
 {
 	return mDrawWireframe;
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::setDrawWireframe(bool v)
+void ofxLSystemNode::setDrawWireframe(bool v)
 {
 	mDrawWireframe = v;
 }
 
 //--------------------------------------------------------------
-LSystem const& ofxLSystem::getLSystem() const
+LSystem const& ofxLSystemNode::getLSystem() const
 {
 	return *mSystem;
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::load(char const* filename)
+void ofxLSystemNode::load(char const* filename)
 {
 	if(mSystem->load(filename))
 	{
@@ -126,7 +126,7 @@ void ofxLSystem::load(char const* filename)
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::update()
+void ofxLSystemNode::update()
 {
 	if(mCurrSteps < mMaxSteps)
 	{
@@ -156,7 +156,7 @@ void ofxLSystem::update()
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::customDraw()
+void ofxLSystemNode::customDraw()
 {
 	for(PrimitiveVec::iterator i = mPrimitives.begin(); i!=mPrimitives.end(); ++i)
 	{
@@ -175,7 +175,7 @@ void ofxLSystem::customDraw()
 }
 
 //--------------------------------------------------------------
-void ofxLSystem::clear()
+void ofxLSystemNode::clear()
 {
 	for(PrimitiveVec::iterator i = mPrimitives.begin(); i!=mPrimitives.end(); ++i)
 	{
@@ -193,7 +193,7 @@ ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3
 	return u.cross(v).normalize();
 }
 
-void ofxLSystem::closeMesh()
+void ofxLSystemNode::closeMesh()
 {
 	if(mCurrMesh)
 	{
@@ -204,7 +204,7 @@ void ofxLSystem::closeMesh()
 	}
 }
 
-float ofxLSystem::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
+float ofxLSystemNode::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
 {
 	float const n = getLSystem().getGlobalVariable("n", 5);
 	float const r = getLSystem().getGlobalVariable("r", 0.25);
@@ -323,7 +323,7 @@ float ofxLSystem::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
 
 
 //--------------------------------------------------------------
-void ofxLSystem::buildMeshes()
+void ofxLSystemNode::buildMeshes()
 {
 	clear();
 	

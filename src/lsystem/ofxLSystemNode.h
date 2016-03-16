@@ -1,23 +1,23 @@
 //
-//  ofxLSystem.h
+//  ofxLSystemNodeNode.h
 //  nightgarden
 //
 //  Created by Stephen Detwiler on 3/8/16.
 //
 //
 
-#ifndef ofxLSystem_h
-#define ofxLSystem_h
+#ifndef ofxLSystemNode_h
+#define ofxLSystemNode_h
 
 #include "of3dPrimitives.h"
 #include "lsystem.h"
 
-class ofxLSystem : public ofNode
+class ofxLSystemNode : public ofNode
 {
 public:
-	ofxLSystem();
-	ofxLSystem(char const* filename);
-	virtual ~ofxLSystem();
+	ofxLSystemNode();
+	ofxLSystemNode(char const* filename);
+	virtual ~ofxLSystemNode();
 	
 	void load(char const* filename);
 	void update();
@@ -63,4 +63,4 @@ private:
 	ofMesh* mCurrMesh;
 };
 
-#endif /* ofxLSystem_h */
+#endif /* ofxLSystemNode_h */
