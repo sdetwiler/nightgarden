@@ -227,6 +227,7 @@
 		A9A0252F8963FE69194CB226 /* dummy.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = dummy.h; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/flann/dummy.h; sourceTree = SOURCE_ROOT; };
 		A9F61A472397B3728679F718 /* operations.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = operations.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/core/operations.hpp; sourceTree = SOURCE_ROOT; };
 		AA34770C1C98878F006342B9 /* vine.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vine.ls; sourceTree = "<group>"; };
+		AA34770D1C98E720006342B9 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		AA3FD01B1C973733007A8117 /* simplePlant.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simplePlant.ls; sourceTree = "<group>"; };
 		AA8582681C9379F40066FAF1 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		AA8582691C9379F40066FAF1 /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
@@ -956,6 +957,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				AA34770D1C98E720006342B9 /* notes.txt */,
 				AACA91DC1C974FD30059190F /* README.md */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,

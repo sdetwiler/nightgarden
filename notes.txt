@@ -1,0 +1,14 @@
+Interactive placement of LSystem nodes
+
+Loading and playback of precomputed step sequences
+
+Fast forward and rewind
+
+LSystem environmental awareness
+	Collision detection with environment geometry
+	Tropism
+
+Rendering Improvements
+	Fix normal computation bugs
+	Textures and materials
+	Shader and lighting model
