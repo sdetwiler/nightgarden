@@ -8,10 +8,12 @@
 void ofApp::setup()
 {
 	mCamera.setPosition(0, 0, -10);
+	mCamera.setDistance(100);
 	mCamera.setTarget(ofVec3f(0,0,0));
 	mCamera.enableMouseInput();
 	
-//	mSpotlight.setSpotlight(20.0f);
+//	mSpotlight.setSpotlight(200.0f);
+	mSpotlight.setDirectional();
 	mSpotlight.setup();
 	
 	mGui.setup();
@@ -67,7 +69,8 @@ void ofApp::draw()
 	if(mShowAxis)
 	{
 		ofDrawAxis(100);
-		ofDrawRotationAxes(10, 3);
+		ofDrawGrid(100, 100, false, false, true, false);
+//		ofDrawRotationAxes(10, 3);
 	}
 
 	mCamera.end();
@@ -125,8 +128,14 @@ void ofApp::mousePressed(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
+void ofApp::mouseReleased(int x, int y, int button)
+{
+	cout << "mouseReleased" << endl;
+	cout << "screen: " << to_string(x) << "," << to_string(y) << endl;
+	ofRectangle viewport = ofGetWindowRect();
+	ofVec3f w = mCamera.screenToWorld(ofVec3f(x,y,mCamera.getDistance()), viewport);
+	cout << "world: " << to_string(w.x) << "," << to_string(w.y) << "," << to_string(w.z) << endl;
+	
 }
 
 //--------------------------------------------------------------
