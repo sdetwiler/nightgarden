@@ -24,7 +24,7 @@ void ofxThreadedLSystem::threadedFunction()
 		// dirty read...
 		if(!mUpdateRequested)
 		{
-			yield();
+			sleep(5);
 		}
 		else if(!mUpdateAvailable)
 		{
