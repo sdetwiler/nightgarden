@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include "of3dUtils.h"
+#include "ofRay.h"
 
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -31,6 +32,10 @@ void ofApp::setup()
 	mShowAxis = false;
 	mShowAxis.setName("Axis");
 	mGui.add(mAxisButton.setup(mShowAxis));
+
+	mEdit = false;
+	mEdit.setName("Edit");
+	mGui.add(mEditButton.setup(mEdit));
 	
 }
 
@@ -40,18 +45,23 @@ void ofApp::update()
 	mSpotlight.setPosition(mCamera.getPosition());
 	mSpotlight.lookAt(mCamera.getLookAtDir());
 
+	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
+	{
+		ofxLSystem* system = *i;
+		
+		system->update();
+	}
 	
-	mSystem.update();
-	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
-	mNLabel = to_string(n);
-	
-	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
-	mDeltaLabel = to_string(delta);
-	
-	mMaxStepsLabel = to_string(mSystem.getMaxSteps());
-	mCurrStepsLabel = to_string(mSystem.getCurrSteps());
-	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
-	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
+//	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
+//	mNLabel = to_string(n);
+//	
+//	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
+//	mDeltaLabel = to_string(delta);
+//	
+//	mMaxStepsLabel = to_string(mSystem.getMaxSteps());
+//	mCurrStepsLabel = to_string(mSystem.getCurrSteps());
+//	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
+//	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
 }
 
 
@@ -64,7 +74,12 @@ void ofApp::draw()
 	mSpotlight.enable();
 	mCamera.begin();
 	
-	mSystem.draw();
+	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
+	{
+		ofxLSystem* system = *i;
+		
+		system->draw();
+	}
 	
 	if(mShowAxis)
 	{
@@ -88,15 +103,20 @@ void ofApp::fileButtonPressed()
 	
 	if(res.bSuccess)
 	{
-		loadSystem(res.getPath().c_str());
+		mFilename =res.getPath();
+//		loadSystem(res.getPath().c_str());
 	}
 }
 
 
 //--------------------------------------------------------------
-void ofApp::loadSystem(char const* filename)
+ofxLSystem* ofApp::loadSystem(char const* filename)
 {
-	mSystem.load(filename);
+	ofxLSystem* system = new ofxLSystem(filename);
+	mSystems.push_back(system);
+//	mSystem.load(filename);
+	
+	return system;
 }
 
 //--------------------------------------------------------------
@@ -108,7 +128,12 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
 	if(key == 'w')
 	{
-		mSystem.setDrawWireframe(!mSystem.getDrawWireframe());
+		for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
+		{
+			ofxLSystem* system = *i;
+			
+			system->setDrawWireframe(system->getDrawWireframe());
+		}
 	}
 }
 
@@ -132,10 +157,27 @@ void ofApp::mouseReleased(int x, int y, int button)
 {
 	cout << "mouseReleased" << endl;
 	cout << "screen: " << to_string(x) << "," << to_string(y) << endl;
-	ofRectangle viewport = ofGetWindowRect();
-	ofVec3f w = mCamera.screenToWorld(ofVec3f(x,y,mCamera.getDistance()), viewport);
-	cout << "world: " << to_string(w.x) << "," << to_string(w.y) << "," << to_string(w.z) << endl;
 	
+	
+	ofVec3f screenToWorld = mCamera.screenToWorld(ofVec3f(x,y,0.0));
+	ofRay ray(mCamera.getPosition(),screenToWorld - mCamera.getPosition());
+	bool intersection = false;
+	float t = 0;
+	intersection = ray.calcPlaneIntersection(ofVec3f(0,0,0), ofVec3f(0,1,0), &t);
+	if (intersection) {
+		ofLog() << "Intersection Point(in world space) = " << ray.calcPosition(t);
+	}
+	
+	
+	
+	
+	
+	if(mEdit)
+	{
+		ofxLSystem* system = loadSystem(mFilename.c_str());
+		ofVec3f p = ray.calcPosition(t);
+		system->setPosition(p.x, 0, p.z);
+	}
 }
 
 //--------------------------------------------------------------

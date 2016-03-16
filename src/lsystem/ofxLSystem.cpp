@@ -26,6 +26,9 @@ ofxLSystem::ofxLSystem()
 //--------------------------------------------------------------
 ofxLSystem::ofxLSystem(char const* filename)
 {
+	mSystem = new LSystem();
+	mCurrMesh = nullptr;
+
 	load(filename);
 }
 

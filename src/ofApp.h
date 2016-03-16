@@ -7,7 +7,7 @@
 #include "ofxGui.h"
 #include <vector>
 
-typedef std::vector<ofMesh*> MeshVec;
+typedef std::vector<ofxLSystem*> SystemVec;
 
 class ofApp : public ofBaseApp 
 {
@@ -34,9 +34,11 @@ public:
 	
 private:
 	
-	void loadSystem(char const* filename);
+	ofxLSystem* loadSystem(char const* filename);
 	
-	ofxLSystem mSystem;
+//	ofxLSystem mSystem;
+	SystemVec mSystems;
+	
 	ofEasyCam mCamera;
 	ofLight mSpotlight;
 	
@@ -51,7 +53,13 @@ private:
 	
 	ofxButton mFileButton;
 	ofxToggle mAxisButton;
+	ofxToggle mEditButton;
 	
 	ofParameter<bool> mShowAxis;
+	ofParameter<bool> mEdit;
+	
+	std::string mFilename;
+	
+	
 
 };
