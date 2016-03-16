@@ -56,6 +56,11 @@ private:
 	
 	void clear();
 	void buildMeshes();
+
+	void closeMesh();
+	float makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix);
+	
+	ofMesh* mCurrMesh;
 };
 
 #endif /* ofxLSystem_h */

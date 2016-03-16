@@ -20,6 +20,7 @@ using namespace std;
 ofxLSystem::ofxLSystem()
 {
 	mSystem = new LSystem();
+	mCurrMesh = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -159,8 +160,9 @@ void ofxLSystem::customDraw()
 		of3dPrimitive* p = *i;
 		if(mDrawWireframe)
 		{
-			p->drawWireframe();
-			p->drawNormals(10);
+//			p->drawWireframe();
+			p->drawVertices();
+//			p->drawNormals(10);
 		}
 		else
 		{
@@ -188,6 +190,135 @@ ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3
 	return u.cross(v).normalize();
 }
 
+void ofxLSystem::closeMesh()
+{
+	if(mCurrMesh)
+	{
+		of3dPrimitive* prim = new of3dPrimitive(*mCurrMesh);
+		mPrimitives.push_back(prim);
+		delete mCurrMesh;
+		mCurrMesh = nullptr;
+	}
+}
+
+float ofxLSystem::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
+{
+	float const n = getLSystem().getGlobalVariable("n", 5);
+	float const r = getLSystem().getGlobalVariable("r", 0.25);
+
+	// Scale n and r by the symbol's age into a local version of n and r.
+	float ln = n*(MIN(s->age/s->terminalAge, 1.0));
+	float lr = r*(MIN(s->age/s->terminalAge, 1.0));
+	
+	
+	ofColor color(139,69,19);
+	if(s->expressions && s->expressions->expressions.size() == 3)
+	{
+		//					cout << s->expressions->toString() << endl;
+		color.r = stoi((*(s->expressions->expressions[0])).value);
+		color.g = stoi((*(s->expressions->expressions[1])).value);
+		color.b = stoi((*(s->expressions->expressions[2])).value);
+	}
+	
+	int sides = 6;
+	
+	float theta = (PI*2)/sides;
+	
+	// Build next ring of vertices around center.
+	for(int j=0; j<sides; ++j)
+	{
+		
+		/************
+		 
+		 v3-------------v2
+		 |              |
+		 |              |
+		 |              |
+		 |       +      |
+		 |              |
+		 |              |
+		 |              |
+		 v0-------------v1
+		 
+		 ***********/
+		
+		float x = lr * sinf(theta*j);
+		float z = lr * cosf(theta*j);
+		
+		ofVec4f v(x,0,z,1);
+		v = v * currMatrix;
+		mCurrMesh->addVertex(v);
+		mCurrMesh->addColor(color);
+	}
+	
+	// Add normals and indicies using the verticies to form new triangles.
+	ofIndexType numVerts = mCurrMesh->getNumVertices();
+	ofIndexType idx = (numVerts-sides);
+	ofIndexType prevIdx = idx - sides;
+	
+	bool firstTris = (prevIdx == 0);
+	
+	// If this is not the first ring of verticies.
+	if(idx != 0)
+	{
+		for(int j=0; j<sides; ++j)
+		{
+			
+			ofIndexType i0n = (idx     + 0);
+			ofIndexType i1n = (idx     + 1);
+			ofIndexType i0p = (prevIdx + 0);
+			ofIndexType i1p = (prevIdx + 1);
+			
+			// HACK
+			if(i1n == numVerts)
+			{
+				i1n = numVerts - sides;
+				i1p-=sides;
+			}
+			
+			// New and previous verts.
+			ofVec3f v0n = mCurrMesh->getVertex(i0n);
+			ofVec3f v1n = mCurrMesh->getVertex(i1n);
+			ofVec3f v0p = mCurrMesh->getVertex(i0p);
+			ofVec3f v1p = mCurrMesh->getVertex(i1p);
+			
+			mCurrMesh->addNormal(getSurfaceNormal(v0n, v0p, v1n));
+			mCurrMesh->addNormal(getSurfaceNormal(v1n, v1p, v0n));
+			
+			// If this is the first set of faces, add normals for the first ring of vertices.
+			if(firstTris)
+			{
+				mCurrMesh->addNormal(getSurfaceNormal(v0p, v1p, v0n));
+				mCurrMesh->addNormal(getSurfaceNormal(v1p, v1n, v0p));
+			}
+			
+			mCurrMesh->addIndex(i0p);	// v0p
+			mCurrMesh->addIndex(i1n);	// v1n
+			mCurrMesh->addIndex(i0n);	// v0n
+			
+			//						cout << "(" << v0p << "), (" << v1n << "), (" << v0n << ")" << endl;
+			
+			
+			mCurrMesh->addIndex(i1p);	// v1p
+			mCurrMesh->addIndex(i1n);	// v1n
+			mCurrMesh->addIndex(i0p);	// v0p
+			
+			++idx;
+			++prevIdx;
+		}
+	}
+	//				cout << "Indicies: " << mCurrMesh->getNumIndices() << endl;
+	//
+	//				for(vector<ofIndexType>::iterator k = mCurrMesh->getIndices().begin(); k!=mCurrMesh->getIndices().end(); ++k)
+	//				{
+	//					cout << *k << endl;
+	//				}
+	//
+	//				cout << endl;
+	return ln;
+}
+
+
 //--------------------------------------------------------------
 void ofxLSystem::buildMeshes()
 {
@@ -208,7 +339,6 @@ void ofxLSystem::buildMeshes()
 	SymbolList const* state = getLSystem().getState();
 	if(state)
 	{
-		ofMesh* currMesh = nullptr;
 		ofMesh* poly = nullptr;
 		ofColor polyColor(0,180,0);
 		
@@ -217,82 +347,19 @@ void ofxLSystem::buildMeshes()
 			Symbol* s = *i;
 			if(s->value == "F")
 			{
-				// Scale n and r by the symbol's age into a local version of n and r.
+				if(mCurrMesh == nullptr)
+				{
+					mCurrMesh = new ofMesh();
+					mCurrMesh->setMode(OF_PRIMITIVE_TRIANGLES);
+					// Create initial mesh verts.
+					makeMeshFaces(s, currMatrix);
+				}
+				
+				// Scale n by the symbol's age into a local version of n.
 				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
-				float lr = r*(MIN(s->age/s->terminalAge, 1.0));
 
-				ofColor color(139,69,19);
-				if(s->expressions && s->expressions->expressions.size() == 3)
-				{
-					//					cout << s->expressions->toString() << endl;
-					color.r = stoi((*(s->expressions->expressions[0])).value);
-					color.g = stoi((*(s->expressions->expressions[1])).value);
-					color.b = stoi((*(s->expressions->expressions[2])).value);
-				}
-				
-				// TODO Next try joining to existing mesh...
-				currMesh = new ofMesh();
-				int sides = 4;
-				
-				float dr = 360.0/sides;
-				
-				ofIndexType idx = 0;
-				// Build faces around the center of height n.
-				for(int j=0; j<sides; ++j)
-				{
-					
-					ofVec4f v0(lr,0,lr,1);
-					ofVec4f v1(lr,ln,lr,1);
-					ofVec4f v2(-lr,ln,lr,1);
-					ofVec4f v3(-lr,0,lr,1);
-					ofMatrix4x4 rotMatrix;
-					rotMatrix.glRotate(dr*j, 0, 1, 0);
-					v0 = v0 * rotMatrix;
-					v1 = v1 * rotMatrix;
-					v2 = v2 * rotMatrix;
-					v3 = v3 * rotMatrix;
-					
-					v0 = v0 * currMatrix;
-					v1 = v1 * currMatrix;
-					v2 = v2 * currMatrix;
-					v3 = v3 * currMatrix;
-					
-					currMesh->addVertex(v0);
-					currMesh->addColor(color);
-
-					currMesh->addVertex(v1);
-					currMesh->addColor(color);
-					
-					currMesh->addVertex(v2);
-					currMesh->addColor(color);
-
-					currMesh->addVertex(v3);
-					currMesh->addColor(color);
-					
-					currMesh->addNormal(getSurfaceNormal(v0,v1,v3));
-					currMesh->addNormal(getSurfaceNormal(v1,v2,v0));
-					currMesh->addNormal(getSurfaceNormal(v2,v3,v1));
-					currMesh->addNormal(getSurfaceNormal(v3,v1,v2));
-					
-					currMesh->addIndex(idx+0);
-					currMesh->addIndex(idx+1);
-					currMesh->addIndex(idx+2);
-
-					currMesh->addIndex(idx+2);
-					currMesh->addIndex(idx+3);
-					currMesh->addIndex(idx+0);
-					
-					idx+=4;
-				}
-				
-				currMesh->setMode(OF_PRIMITIVE_TRIANGLES);
-				
-				of3dPrimitive* prim = new of3dPrimitive(*currMesh);
-				mPrimitives.push_back(prim);
-				delete currMesh;
-				currMesh = nullptr;
-				
 				currMatrix.glTranslate(0,ln,0);
+				makeMeshFaces(s, currMatrix);
 			}
 			
 			if(s->value == "G")
@@ -413,11 +480,13 @@ void ofxLSystem::buildMeshes()
 			
 			else if(s->value == "[")
 			{
+				closeMesh();
 				matrixStack.push(currMatrix);
 			}
 			
 			else if(s->value == "]")
 			{
+				closeMesh();
 				currMatrix = matrixStack.top();
 				matrixStack.pop();
 			}
@@ -487,5 +556,8 @@ void ofxLSystem::buildMeshes()
 				currMatrix.glRotate(180, 0, 0, 1);
 			}
 		}
+
+		closeMesh();
+
 	}
 }
