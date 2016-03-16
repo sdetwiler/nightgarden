@@ -1,4 +1,6 @@
 var steps 4
+var n 10
+var r 2
 
 axiom A(0)
 

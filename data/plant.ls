@@ -7,6 +7,7 @@
 var stepInterval 0.016666
 var duration 5
 
+var r 1
 var n 10
 var delta 18
 var leafRed 0

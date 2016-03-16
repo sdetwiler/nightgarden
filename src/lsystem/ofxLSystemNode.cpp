@@ -194,6 +194,7 @@ ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3
 	return u.cross(v).normalize();
 }
 
+//--------------------------------------------------------------
 void ofxLSystemNode::closeMesh()
 {
 	if(mCurrMesh)
@@ -202,11 +203,10 @@ void ofxLSystemNode::closeMesh()
 		mPrimitives.push_back(prim);
 		delete mCurrMesh;
 		mCurrMesh = nullptr;
-		
-		cout << "closeMesh\n";
 	}
 }
 
+//--------------------------------------------------------------
 float ofxLSystemNode::makeMeshFaces(float radius, ofColor color, ofMatrix4x4 const& currMatrix)
 {
 	int sides = 6;
