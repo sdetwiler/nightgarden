@@ -558,8 +558,7 @@ void ofxLSystemNode::buildMeshes()
 		{
 			currMatrix.glRotate(180, 0, 0, 1);
 		}
-
-		closeMesh();
-
 	}
+	
+	closeMesh();
 }
