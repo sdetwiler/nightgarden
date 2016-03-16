@@ -20,6 +20,7 @@
 		A48FB1137A04CA2693898335 /* rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8DD9380A8CEB8111A0CC98 /* rule.cpp */; };
 		A7812E4ECE75F2380958E38F /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A973BBF2116DD28ECB0975C /* ofxCvContourFinder.cpp */; };
 		AA3477101C9909B3006342B9 /* ofRay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA34770E1C9909B3006342B9 /* ofRay.cpp */; };
+		AA3477131C991050006342B9 /* ofxThreadedLSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */; };
 		AA8582791C9379F40066FAF1 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582681C9379F40066FAF1 /* ofxBaseGui.cpp */; };
 		AA85827A1C9379F40066FAF1 /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA85826A1C9379F40066FAF1 /* ofxButton.cpp */; };
 		AA85827B1C9379F40066FAF1 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA85826D1C9379F40066FAF1 /* ofxGuiGroup.cpp */; };
@@ -231,6 +232,8 @@
 		AA34770D1C98E720006342B9 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		AA34770E1C9909B3006342B9 /* ofRay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofRay.cpp; sourceTree = "<group>"; };
 		AA34770F1C9909B3006342B9 /* ofRay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofRay.h; sourceTree = "<group>"; };
+		AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxThreadedLSystem.cpp; path = lsystem/ofxThreadedLSystem.cpp; sourceTree = "<group>"; };
+		AA3477121C991050006342B9 /* ofxThreadedLSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxThreadedLSystem.h; path = lsystem/ofxThreadedLSystem.h; sourceTree = "<group>"; };
 		AA3FD01B1C973733007A8117 /* simplePlant.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simplePlant.ls; sourceTree = "<group>"; };
 		AA8582681C9379F40066FAF1 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		AA8582691C9379F40066FAF1 /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
@@ -656,6 +659,8 @@
 		877C37091A21DA50EB372D30 /* lsystem */ = {
 			isa = PBXGroup;
 			children = (
+				AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */,
+				AA3477121C991050006342B9 /* ofxThreadedLSystem.h */,
 				1126A71A6C3746D505F285E7 /* expression.cpp */,
 				00B84041DA7F8DAD808067C8 /* expression.h */,
 				45C697DC38E89E013B8EF9FC /* expression_parser.ypp */,
@@ -1129,6 +1134,7 @@
 				AA3477101C9909B3006342B9 /* ofRay.cpp in Sources */,
 				DA7932F16038539DEEE88588 /* expression_parser.ypp in Sources */,
 				AA8582791C9379F40066FAF1 /* ofxBaseGui.cpp in Sources */,
+				AA3477131C991050006342B9 /* ofxThreadedLSystem.cpp in Sources */,
 				5E810E217691B6855B0DCA9D /* expression_tokenizer.lpp in Sources */,
 				119023A0F9431A82826EF742 /* lsystem.cpp in Sources */,
 				B897E464ACB53193F29FB87B /* predicate.cpp in Sources */,

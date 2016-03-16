@@ -372,6 +372,28 @@ public:
 		
 		return s;
 	}
+
+	void clear()
+	{
+		for(SymbolVec::iterator i = symbols.begin(); i!=symbols.end(); ++i)
+		{
+			delete *i;
+		}
+		symbols.clear();
+	}
+	
+	SymbolList& operator=(SymbolList const& rhs)
+	{
+		clear();
+		for(SymbolVec::const_iterator i = rhs.symbols.begin(); i!=rhs.symbols.end(); ++i)
+		{
+			symbols.push_back(new Symbol(*(*i)));
+		}
+		
+		
+		return *this;
+	}
+	
 	
 	SymbolList& operator+=(SymbolList const& rhs)
 	{

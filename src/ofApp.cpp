@@ -40,6 +40,23 @@ void ofApp::setup()
 }
 
 //--------------------------------------------------------------
+void ofApp::exit()
+{
+	reset();
+}
+
+//--------------------------------------------------------------
+void ofApp::reset()
+{
+	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
+	{
+		ofxLSystemNode* system = *i;
+		delete system;
+	}
+	mSystems.clear();
+}
+
+//--------------------------------------------------------------
 void ofApp::update()
 {
 	mSpotlight.setPosition(mCamera.getPosition());

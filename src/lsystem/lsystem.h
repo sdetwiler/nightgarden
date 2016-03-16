@@ -1,9 +1,8 @@
 //
 //  lsystem.h
-//  parser
 //
 //  Created by Stephen Detwiler on 2/15/16.
-//  Copyright Â© 2016 Pirate Studios. All rights reserved.
+//  Copyright © 2016 Pirate Studios. All rights reserved.
 //
 
 #ifndef lsystem_h
@@ -22,7 +21,7 @@ class LSystem
 public:
 	LSystem();
 	
-	~LSystem();
+	virtual ~LSystem();
 	
 	void setAxiom(Result* axiom);
 	

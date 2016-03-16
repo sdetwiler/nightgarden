@@ -19,14 +19,14 @@ using namespace std;
 //--------------------------------------------------------------
 ofxLSystemNode::ofxLSystemNode()
 {
-	mSystem = new LSystem();
+	mSystem = new ofxThreadedLSystem();
 	mCurrMesh = nullptr;
 }
 
 //--------------------------------------------------------------
 ofxLSystemNode::ofxLSystemNode(char const* filename)
 {
-	mSystem = new LSystem();
+	mSystem = new ofxThreadedLSystem();
 	mCurrMesh = nullptr;
 
 	load(filename);
@@ -95,7 +95,7 @@ void ofxLSystemNode::setDrawWireframe(bool v)
 }
 
 //--------------------------------------------------------------
-LSystem const& ofxLSystemNode::getLSystem() const
+ofxThreadedLSystem& ofxLSystemNode::getLSystem()
 {
 	return *mSystem;
 }
@@ -133,24 +133,25 @@ void ofxLSystemNode::update()
 		float now = ofGetElapsedTimef();
 		if(now-mStepInterval > mLastStepTime)
 		{
-			mLastStepTime = now;
-			mSystem->step(mStepInterval);
-			mSystem->reduce();
-			++mCurrSteps;
-			float afterStep = ofGetElapsedTimef();
-			
-			mLastStepDuration = afterStep - now;
-			
-			if(mCurrSteps == mMaxSteps)
+			mSystem->update(mStepInterval);
+			if(mSystem->isUpdateAvailable())
 			{
-				SymbolList const* state = getLSystem().getState();
-				if(state)
+				mLastStepTime = now;
+				++mCurrSteps;
+				float afterStep = ofGetElapsedTimef();
+				
+				mLastStepDuration = afterStep - now;
+				
+				if(mCurrSteps == mMaxSteps)
 				{
-					cout << "state:   " << state->toString() << endl;
+					SymbolList state;
+					getLSystem().getState(&state);
+					cout << "state:   " << state.toString() << endl;
 				}
+				
+				buildMeshes();
+				
 			}
-			
-			buildMeshes();
 		}
 	}
 }
@@ -339,225 +340,223 @@ void ofxLSystemNode::buildMeshes()
 	matrixStack.push(rootMatrix);
 	ofMatrix4x4 currMatrix = matrixStack.top();
 	
-	SymbolList const* state = getLSystem().getState();
-	if(state)
+	SymbolList state;
+	getLSystem().getState(&state);
+	ofMesh* poly = nullptr;
+	ofColor polyColor(0,180,0);
+	
+	for(SymbolVec::const_iterator i = state.symbols.begin(); i!=state.symbols.end(); ++i)
 	{
-		ofMesh* poly = nullptr;
-		ofColor polyColor(0,180,0);
-		
-		for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
+		Symbol* s = *i;
+		if(s->value == "F")
 		{
-			Symbol* s = *i;
-			if(s->value == "F")
+			if(mCurrMesh == nullptr)
 			{
-				if(mCurrMesh == nullptr)
-				{
-					mCurrMesh = new ofMesh();
-					mCurrMesh->setMode(OF_PRIMITIVE_TRIANGLES);
-					// Create initial mesh verts.
-					makeMeshFaces(s, currMatrix);
-				}
-				
-				// Scale n by the symbol's age into a local version of n.
-				float ln = n*(MIN(s->age/s->terminalAge, 1.0));
-
-				currMatrix.glTranslate(0,ln,0);
+				mCurrMesh = new ofMesh();
+				mCurrMesh->setMode(OF_PRIMITIVE_TRIANGLES);
+				// Create initial mesh verts.
 				makeMeshFaces(s, currMatrix);
 			}
 			
-			if(s->value == "G")
-			{
-				currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
-			}
-			
-			else if(s->value == "." || s->value == "f")
-			{
-				if(poly)
-				{
-					ofVec4f v2(0,0,0,1);
-					v2 = v2 * currMatrix;
-					poly->addVertex(v2);
-					poly->addColor(polyColor);
-					
-					ofIndexType numVerts = poly->getNumVertices();
-					if(numVerts == 3)
-					{
-						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f v1 = poly->getVertex(numVerts-2);
+			// Scale n by the symbol's age into a local version of n.
+			float ln = n*(MIN(s->age/s->terminalAge, 1.0));
 
-						ofVec3f v1v0 = v1-v0;
-						ofVec3f v2v0 = v2-v0;
-						ofVec3f cp = v1v0.cross(v2v0).normalize();
+			currMatrix.glTranslate(0,ln,0);
+			makeMeshFaces(s, currMatrix);
+		}
+		
+		if(s->value == "G")
+		{
+			currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
+		}
+		
+		else if(s->value == "." || s->value == "f")
+		{
+			if(poly)
+			{
+				ofVec4f v2(0,0,0,1);
+				v2 = v2 * currMatrix;
+				poly->addVertex(v2);
+				poly->addColor(polyColor);
+				
+				ofIndexType numVerts = poly->getNumVertices();
+				if(numVerts == 3)
+				{
+					ofVec3f v0 = poly->getVertex(0);
+					ofVec3f v1 = poly->getVertex(numVerts-2);
+
+					ofVec3f v1v0 = v1-v0;
+					ofVec3f v2v0 = v2-v0;
+					ofVec3f cp = v1v0.cross(v2v0).normalize();
 
 //						cout << "\nnumVerts==3\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
-						
-						if(cp[2] > 0)
-						{
-							poly->addNormal(getSurfaceNormal(v0, v2, v1));
-							poly->addNormal(getSurfaceNormal(v1, v0, v2));
-							poly->addNormal(getSurfaceNormal(v2, v1, v0));
-						}
-						else
-						{
-							poly->addNormal(getSurfaceNormal(v0, v1, v2));
-							poly->addNormal(getSurfaceNormal(v1, v2, v0));
-							poly->addNormal(getSurfaceNormal(v2, v0, v1));
-						}
-
-						poly->addIndex(0);			// v0
-						poly->addIndex(1);			// v1
-						poly->addIndex(2);			// v2
-					}
 					
-					if(numVerts > 3)
+					if(cp[2] > 0)
 					{
-						ofVec3f v0 = poly->getVertex(0);
-						ofVec3f v1 = poly->getVertex(numVerts-2);
+						poly->addNormal(getSurfaceNormal(v0, v2, v1));
+						poly->addNormal(getSurfaceNormal(v1, v0, v2));
+						poly->addNormal(getSurfaceNormal(v2, v1, v0));
+					}
+					else
+					{
+						poly->addNormal(getSurfaceNormal(v0, v1, v2));
+						poly->addNormal(getSurfaceNormal(v1, v2, v0));
+						poly->addNormal(getSurfaceNormal(v2, v0, v1));
+					}
 
-						ofVec3f v1v0 = v1-v0;
-						ofVec3f v2v0 = v2-v0;
-						ofVec3f cp = v1v0.cross(v2v0).normalize();
-						
+					poly->addIndex(0);			// v0
+					poly->addIndex(1);			// v1
+					poly->addIndex(2);			// v2
+				}
+				
+				if(numVerts > 3)
+				{
+					ofVec3f v0 = poly->getVertex(0);
+					ofVec3f v1 = poly->getVertex(numVerts-2);
+
+					ofVec3f v1v0 = v1-v0;
+					ofVec3f v2v0 = v2-v0;
+					ofVec3f cp = v1v0.cross(v2v0).normalize();
+					
 //						cout << "\nnumVerts==" << to_string(numVerts) << "\nv0: (" << v0 << ")\n" << "v1: (" << v1 << ")\n" << "v2: (" << v2 << ")" << "\ncross: " << cp << endl;
 
-						if(cp[2] > 0)
-						{
-							poly->addNormal(getSurfaceNormal(v2, v1, v0));
-						}
-						else
-						{
-							poly->addNormal(getSurfaceNormal(v2, v0, v1));
-						}
-
-						poly->addIndex(0);			// v0
-						poly->addIndex(numVerts-2);	// v1
-						poly->addIndex(numVerts-1);	// v2
-					}
-				}
-				
-				if(s->value == "f")
-				{
-					float ln = n;
-
-					if(s->expressions && s->expressions->expressions.size() == 1)
+					if(cp[2] > 0)
 					{
-						ln = stof((*(s->expressions->expressions[0])).value);
+						poly->addNormal(getSurfaceNormal(v2, v1, v0));
+					}
+					else
+					{
+						poly->addNormal(getSurfaceNormal(v2, v0, v1));
 					}
 
-					currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
+					poly->addIndex(0);			// v0
+					poly->addIndex(numVerts-2);	// v1
+					poly->addIndex(numVerts-1);	// v2
 				}
 			}
 			
-			
-			else if(s->value == "{")
+			if(s->value == "f")
 			{
-				if(poly)
-				{
-					cout << "Warning: New poly started while an existing poly was being built. Deleting existing poly.\n";
-					delete poly;
-				}
-				
-				poly = new ofMesh();
-				
-				if(s->expressions && s->expressions->expressions.size() == 3)
-				{
-					//					cout << s->expressions->toString() << endl;
-					polyColor.r = stoi((*(s->expressions->expressions[0])).value);
-					polyColor.g = stoi((*(s->expressions->expressions[1])).value);
-					polyColor.b = stoi((*(s->expressions->expressions[2])).value);
-				}
-			}
-			
-			else if(s->value == "}")
-			{
-				if(poly)
-				{
-					poly->setMode(OF_PRIMITIVE_TRIANGLES);
-					of3dPrimitive* prim = new of3dPrimitive(*poly);
-					mPrimitives.push_back(prim);
+				float ln = n;
 
-					delete poly;
-					poly = nullptr;
-				}
-			}
-			
-			else if(s->value == "[")
-			{
-				closeMesh();
-				matrixStack.push(currMatrix);
-			}
-			
-			else if(s->value == "]")
-			{
-				closeMesh();
-				currMatrix = matrixStack.top();
-				matrixStack.pop();
-			}
-			
-			else if(s->value == "+")
-			{
-				float d = delta;
 				if(s->expressions && s->expressions->expressions.size() == 1)
 				{
-					d = stof((*(s->expressions->expressions[0])).value);
+					ln = stof((*(s->expressions->expressions[0])).value);
 				}
-				currMatrix.glRotate(s->applyGrowthFunction(d), 0, 0, 1);
+
+				currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
+			}
+		}
+		
+		
+		else if(s->value == "{")
+		{
+			if(poly)
+			{
+				cout << "Warning: New poly started while an existing poly was being built. Deleting existing poly.\n";
+				delete poly;
 			}
 			
-			else if(s->value == "-")
-			{
-				float d = delta;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 0, 1);
-			}
+			poly = new ofMesh();
 			
-			else if(s->value == "&")
+			if(s->expressions && s->expressions->expressions.size() == 3)
 			{
-				float d = delta;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				currMatrix.glRotate(-s->applyGrowthFunction(d), 1, 0, 0);
+				//					cout << s->expressions->toString() << endl;
+				polyColor.r = stoi((*(s->expressions->expressions[0])).value);
+				polyColor.g = stoi((*(s->expressions->expressions[1])).value);
+				polyColor.b = stoi((*(s->expressions->expressions[2])).value);
 			}
-			
-			else if(s->value == "^")
+		}
+		
+		else if(s->value == "}")
+		{
+			if(poly)
 			{
-				float d = delta;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				currMatrix.glRotate(s->applyGrowthFunction(d), 1, 0, 0);
+				poly->setMode(OF_PRIMITIVE_TRIANGLES);
+				of3dPrimitive* prim = new of3dPrimitive(*poly);
+				mPrimitives.push_back(prim);
+
+				delete poly;
+				poly = nullptr;
 			}
-			
-			else if(s->value == "/")
+		}
+		
+		else if(s->value == "[")
+		{
+			closeMesh();
+			matrixStack.push(currMatrix);
+		}
+		
+		else if(s->value == "]")
+		{
+			closeMesh();
+			currMatrix = matrixStack.top();
+			matrixStack.pop();
+		}
+		
+		else if(s->value == "+")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
 			{
-				float d = delta;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 1, 0);
+				d = stof((*(s->expressions->expressions[0])).value);
 			}
-			
-			else if(s->value == "\\")
+			currMatrix.glRotate(s->applyGrowthFunction(d), 0, 0, 1);
+		}
+		
+		else if(s->value == "-")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
 			{
-				float d = delta;
-				if(s->expressions && s->expressions->expressions.size() == 1)
-				{
-					d = stof((*(s->expressions->expressions[0])).value);
-				}
-				currMatrix.glRotate(s->applyGrowthFunction(d), 0, 1, 0);
+				d = stof((*(s->expressions->expressions[0])).value);
 			}
-			
-			else if(s->value == "|")
+			currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 0, 1);
+		}
+		
+		else if(s->value == "&")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
 			{
-				currMatrix.glRotate(180, 0, 0, 1);
+				d = stof((*(s->expressions->expressions[0])).value);
 			}
+			currMatrix.glRotate(-s->applyGrowthFunction(d), 1, 0, 0);
+		}
+		
+		else if(s->value == "^")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
+			{
+				d = stof((*(s->expressions->expressions[0])).value);
+			}
+			currMatrix.glRotate(s->applyGrowthFunction(d), 1, 0, 0);
+		}
+		
+		else if(s->value == "/")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
+			{
+				d = stof((*(s->expressions->expressions[0])).value);
+			}
+			currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 1, 0);
+		}
+		
+		else if(s->value == "\\")
+		{
+			float d = delta;
+			if(s->expressions && s->expressions->expressions.size() == 1)
+			{
+				d = stof((*(s->expressions->expressions[0])).value);
+			}
+			currMatrix.glRotate(s->applyGrowthFunction(d), 0, 1, 0);
+		}
+		
+		else if(s->value == "|")
+		{
+			currMatrix.glRotate(180, 0, 0, 1);
 		}
 
 		closeMesh();
