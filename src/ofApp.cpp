@@ -161,39 +161,30 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+	mMouseDragged = true;
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+	mMouseDragged = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
-	cout << "mouseReleased" << endl;
-	cout << "screen: " << to_string(x) << "," << to_string(y) << endl;
-	
-	
-	ofVec3f screenToWorld = mCamera.screenToWorld(ofVec3f(x,y,0.0));
-	ofRay ray(mCamera.getPosition(),screenToWorld - mCamera.getPosition());
-	bool intersection = false;
-	float t = 0;
-	intersection = ray.calcPlaneIntersection(ofVec3f(0,0,0), ofVec3f(0,1,0), &t);
-	if (intersection) {
-		ofLog() << "Intersection Point(in world space) = " << ray.calcPosition(t);
-	}
-	
-	
-	
-	
-	
-	if(mEdit)
+	if(mEdit && !mMouseDragged)
 	{
-		ofxLSystemNode* system = loadSystem(mFilename.c_str());
-		ofVec3f p = ray.calcPosition(t);
-		system->setPosition(p.x, 0, p.z);
+		ofVec3f screenToWorld = mCamera.screenToWorld(ofVec3f(x,y,0.0));
+		ofRay ray(mCamera.getPosition(),screenToWorld - mCamera.getPosition());
+		bool intersection = false;
+		float t = 0;
+		intersection = ray.calcPlaneIntersection(ofVec3f(0,0,0), ofVec3f(0,1,0), &t);
+		if (intersection)
+		{
+			ofxLSystemNode* system = loadSystem(mFilename.c_str());
+			ofVec3f p = ray.calcPosition(t);
+			system->setPosition(p.x, 0, p.z);
+		}
 	}
 }
 

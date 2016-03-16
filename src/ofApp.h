@@ -65,5 +65,6 @@ private:
 	std::string mFilename;
 	
 	
+	bool mMouseDragged;
 
 };
