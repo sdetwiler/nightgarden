@@ -202,28 +202,13 @@ void ofxLSystemNode::closeMesh()
 		mPrimitives.push_back(prim);
 		delete mCurrMesh;
 		mCurrMesh = nullptr;
+		
+		cout << "closeMesh\n";
 	}
 }
 
-float ofxLSystemNode::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
+float ofxLSystemNode::makeMeshFaces(float radius, ofColor color, ofMatrix4x4 const& currMatrix)
 {
-	float const n = getLSystem().getGlobalVariable("n", 5);
-	float const r = getLSystem().getGlobalVariable("r", 0.25);
-
-	// Scale n and r by the symbol's age into a local version of n and r.
-	float ln = n*(MIN(s->age/s->terminalAge, 1.0));
-	float lr = r*(MIN(s->age/s->terminalAge, 1.0));
-	
-	
-	ofColor color(139,69,19);
-	if(s->expressions && s->expressions->expressions.size() == 3)
-	{
-		//					cout << s->expressions->toString() << endl;
-		color.r = stoi((*(s->expressions->expressions[0])).value);
-		color.g = stoi((*(s->expressions->expressions[1])).value);
-		color.b = stoi((*(s->expressions->expressions[2])).value);
-	}
-	
 	int sides = 6;
 	
 	float theta = (PI*2)/sides;
@@ -246,8 +231,8 @@ float ofxLSystemNode::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
 		 
 		 ***********/
 		
-		float x = lr * sinf(theta*j);
-		float z = lr * cosf(theta*j);
+		float x = radius * sinf(theta*j);
+		float z = radius * cosf(theta*j);
 		
 		ofVec4f v(x,0,z,1);
 		v = v * currMatrix;
@@ -300,9 +285,6 @@ float ofxLSystemNode::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
 			mCurrMesh->addIndex(i1n);	// v1n
 			mCurrMesh->addIndex(i0n);	// v0n
 			
-			//						cout << "(" << v0p << "), (" << v1n << "), (" << v0n << ")" << endl;
-			
-			
 			mCurrMesh->addIndex(i1p);	// v1p
 			mCurrMesh->addIndex(i1n);	// v1n
 			mCurrMesh->addIndex(i0p);	// v0p
@@ -311,15 +293,6 @@ float ofxLSystemNode::makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix)
 			++prevIdx;
 		}
 	}
-	//				cout << "Indicies: " << mCurrMesh->getNumIndices() << endl;
-	//
-	//				for(vector<ofIndexType>::iterator k = mCurrMesh->getIndices().begin(); k!=mCurrMesh->getIndices().end(); ++k)
-	//				{
-	//					cout << *k << endl;
-	//				}
-	//
-	//				cout << endl;
-	return ln;
 }
 
 
@@ -350,19 +323,30 @@ void ofxLSystemNode::buildMeshes()
 		Symbol* s = *i;
 		if(s->value == "F")
 		{
+			// Scale n by the symbol's age into a local version of n.
+			float ln = s->applyGrowthFunction(n);
+			float lr = s->applyGrowthFunction(r);
+
+			ofColor color(139,69,19);
+			if(s->expressions && s->expressions->expressions.size() == 3)
+			{
+				//					cout << s->expressions->toString() << endl;
+				color.r = stoi((*(s->expressions->expressions[0])).value);
+				color.g = stoi((*(s->expressions->expressions[1])).value);
+				color.b = stoi((*(s->expressions->expressions[2])).value);
+			}
+
 			if(mCurrMesh == nullptr)
 			{
 				mCurrMesh = new ofMesh();
 				mCurrMesh->setMode(OF_PRIMITIVE_TRIANGLES);
 				// Create initial mesh verts.
-				makeMeshFaces(s, currMatrix);
+				makeMeshFaces(lr, color, currMatrix);
 			}
 			
-			// Scale n by the symbol's age into a local version of n.
-			float ln = n*(MIN(s->age/s->terminalAge, 1.0));
 
-			currMatrix.glTranslate(0,ln,0);
-			makeMeshFaces(s, currMatrix);
+			currMatrix.glTranslate(0, ln, 0);
+			makeMeshFaces(lr, color, currMatrix);
 		}
 		
 		if(s->value == "G")

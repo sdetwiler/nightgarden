@@ -58,7 +58,7 @@ private:
 	void buildMeshes();
 
 	void closeMesh();
-	float makeMeshFaces(Symbol* s, ofMatrix4x4 const& currMatrix);
+	float makeMeshFaces(float radius, ofColor color, ofMatrix4x4 const& currMatrix);
 	
 	ofMesh* mCurrMesh;
 };
