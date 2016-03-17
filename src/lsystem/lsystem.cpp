@@ -363,6 +363,7 @@ void LSystem::step(float dt)
 		symbol->age+=dt;
 		if(symbol->age > symbol->terminalAge && !symbol->isTerminal)
 		{
+			cout << "+";
 			symbol->isTerminal = true;
 		
 			Rule const* rule = getRuleForSymbol(context, symbol, next);
@@ -433,23 +434,25 @@ bool LSystem::compile(char const* outputFilename)
 	int currSteps = 0;
 	float lastStepTime = 0;
 
-	cout << "\tComputing " << maxSteps << " steps." << endl;
+	cout << "\tComputing " << maxSteps << " steps with stepInterval of " << stepInterval << endl;
+	cout << "\n\tSaving to " << outputFilename << endl;
+
+	ofstream outfile(outputFilename);
 	
 	for(int i=0; i<maxSteps; ++i)
 	{
 		cout << ".";
 		cout.flush();
 		step(stepInterval);
+		reduce();
 		output+= getState()->toString();
-		output+= "\n";
+		outfile << getState()->toString() << endl;
 	}
 
-	cout << "\n\tSaving to " << outputFilename << endl;
-	
-	ofstream outfile(outputFilename);
-	outfile << output;
 	outfile.close();
 
+	cout << endl;
 	cout << "\tDone\n";
+	cout.flush();
 	return true;
 }

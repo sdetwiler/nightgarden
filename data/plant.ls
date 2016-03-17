@@ -2,11 +2,9 @@
 
 # Explicit step configuration
 # var steps 300
-var steps 5
-var stepInterval 1
 # Time based step configuration
-#var stepInterval 0.016666
-#var duration 5
+var stepInterval 0.016666
+var duration 5
 
 var r 1
 var n 10
