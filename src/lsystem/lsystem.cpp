@@ -90,7 +90,6 @@ bool LSystem::parse(char const* input)
 
 	if(ret)
 	{
-//		cout << "yyparse returns " << ret << endl;
 		return false;
 	}
 
@@ -404,3 +403,53 @@ void LSystem::step(float dt)
 	LOG_TIME_DELTA(step, "end");
 }
 
+
+
+bool LSystem::compile(char const* outputFilename)
+{
+	cout << "LSystem::compile" << endl;
+	string output;
+	
+	float stepInterval;
+	int maxSteps;
+	
+	// Is the system configured to step through time, or over an explicit number of steps.
+	float duration = getGlobalVariable("duration", -1);
+	if(duration > 0)
+	{
+		stepInterval = getGlobalVariable("stepInterval", 1);
+		maxSteps = duration/stepInterval;
+	}
+	else
+	{
+		stepInterval = getGlobalVariable("stepInterval", -1);
+		if(stepInterval < 0)
+		{
+			stepInterval = 1/30.;
+		}
+		maxSteps = getGlobalVariable("steps", 4) / stepInterval;
+	}
+	
+	int currSteps = 0;
+	float lastStepTime = 0;
+
+	cout << "\tComputing " << maxSteps << " steps." << endl;
+	
+	for(int i=0; i<maxSteps; ++i)
+	{
+		cout << ".";
+		cout.flush();
+		step(stepInterval);
+		output+= getState()->toString();
+		output+= "\n";
+	}
+
+	cout << "\n\tSaving to " << outputFilename << endl;
+	
+	ofstream outfile(outputFilename);
+	outfile << output;
+	outfile.close();
+
+	cout << "\tDone\n";
+	return true;
+}

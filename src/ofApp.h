@@ -35,6 +35,7 @@ public:
 
 	
 	void fileButtonPressed();
+	void compileButtonPressed();
 	
 private:
 	
@@ -56,6 +57,8 @@ private:
 	ofxLabel mLastDurationlabel;
 	
 	ofxButton mFileButton;
+	ofxButton mCompileButton;
+
 	ofxToggle mAxisButton;
 	ofxToggle mEditButton;
 	

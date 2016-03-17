@@ -28,6 +28,8 @@ void ofApp::setup()
 	
 	mGui.add(mFileButton.setup("File..."));
 	mFileButton.addListener(this, &ofApp::fileButtonPressed);
+	mGui.add(mCompileButton.setup("Compile..."));
+	mCompileButton.addListener(this, &ofApp::compileButtonPressed);
 
 	mShowAxis = false;
 	mShowAxis.setName("Axis");
@@ -111,6 +113,31 @@ void ofApp::draw()
 	ofDisableDepthTest();
 	ofDisableLighting();
 	mGui.draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::compileButtonPressed()
+{
+	string inFilename;
+	string outFilename;
+	ofFileDialogResult res = ofSystemLoadDialog();
+	
+	if(res.bSuccess)
+	{
+		inFilename =res.getPath();
+		outFilename = res.getName() + "c";
+		res = ofSystemSaveDialog(outFilename, "Save As");
+		
+		if(res.bSuccess)
+		{
+			outFilename = res.getPath();
+			LSystem system;
+			if(system.load(inFilename.c_str()))
+			{
+				system.compile(outFilename.c_str());
+			}
+		}
+	}
 }
 
 //--------------------------------------------------------------

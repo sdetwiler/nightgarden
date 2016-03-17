@@ -28,6 +28,9 @@ public:
 	bool load(char const* filename);
 	bool parse(char const* input);
 
+	
+	bool compile(char const* outputFilename);
+	
 	void addRule(Rule* rule);
 	void dumpRules();
 
