@@ -17,7 +17,6 @@ extern int expression_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 #include <math.h>
 #include "types.h"
 #include "lsystem.h"
-
 // #define DEBUG_PARSER
 
 int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, const char* msg) {
@@ -29,7 +28,7 @@ int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, con
 
 
 %union {
-	float     value;
+	class Variable*  value;
 	char*     identifier;
 }
 
@@ -45,9 +44,11 @@ int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, con
 %token NEQ
 
 %type <value> expr
-%type <value> number
+%type <value> val
 
 %destructor { free($$); } IDENTIFIER
+%destructor { if($$) delete $$; } INTEGER
+%destructor { if($$) delete $$; } FLOAT
 
 %left '+' '-'
 %left '*' '/'
@@ -58,7 +59,7 @@ calc : expr
 {
 	if(retVal)
 	{
-		retVal->value = $1;
+		*retVal = *$1;
 	}
 
 	#ifdef DEBUG_PARSER
@@ -67,55 +68,56 @@ calc : expr
 	
 }
 
-expr : number { $$ = $1; }
-| expr '*' expr { $$ = $1 * $3; }
-| expr '/' expr { $$ = $1 / $3; }
-| expr '+' expr { $$ = $1 + $3; }
-| expr '-' expr { $$ = $1 - $3; }
-| expr '^' expr { $$ = pow($1, $3); }
-| expr LT expr { $$ = $1 < $3; }
-| expr LTE expr { $$ = $1 <= $3; }
-| expr GT expr { $$ = $1 > $3; }
-| expr GTE expr { $$ = $1 >= $3; }
-| expr EQ expr { $$ = $1 == $3; }
-| expr NEQ expr { $$ = $1 != $3; }
+expr : val { $$ = $1; }
+| expr '*' expr { *$$ = *$1 * *$3; }
+| expr '/' expr { *$$ = *$1 / *$3; }
+| expr '+' expr { *$$ = *$1 + *$3; }
+| expr '-' expr { *$$ = *$1 - *$3; }
+| expr '^' expr { *$$ = pow($1->value, $3->value); }
+| expr LT expr { *$$ = *$1 < *$3; }
+| expr LTE expr { *$$ = *$1 <= *$3; }
+| expr GT expr { *$$ = *$1 > *$3; }
+| expr GTE expr { *$$ = *$1 >= *$3; }
+| expr EQ expr { *$$ = *$1 == *$3; }
+| expr NEQ expr { *$$ = *$1 != *$3; }
 
-number : INTEGER
-{
-	$$ = $1;
-	#ifdef DEBUG_PARSER
-	printf("INTEGER \t%f\n", $1);
-	#endif
-}
-
-| FLOAT
-{
-	$$ = $1;
-	#ifdef DEBUG_PARSER
-	printf("FLOAT \t%f\n", $1);
-	#endif
-}
-
-| IDENTIFIER
-{
-	Variable* v = nullptr;
-	if(scope)
+val :
+	INTEGER
 	{
-		string k($1);
-		StringVariableMap::iterator i = scope->variables.find(k);
-		if(i!=scope->variables.end())
+		$$ = $1;
+		#ifdef DEBUG_PARSER
+		printf("INTEGER \t%f\n", $1);
+		#endif
+	}
+
+	| FLOAT
+	{
+		$$ = $1;
+		#ifdef DEBUG_PARSER
+		printf("FLOAT \t%f\n", $1);
+		#endif
+	}
+
+	| IDENTIFIER
+	{
+		Variable* v = nullptr;
+		if(scope)
 		{
-			v = i->second;
+			string k($1);
+			StringVariableMap::iterator i = scope->variables.find(k);
+			if(i!=scope->variables.end())
+			{
+				v = i->second;
+			}
+		}
+		if(v)
+		{
+			$$ = new Variable(*v);
+		}
+		else
+		{
+			yyerror(scanner, scope, retVal, "Variable not defined");
 		}
 	}
-	if(v)
-	{
-		$$ = v->value;
-	}
-	else
-	{
-		yyerror(scanner, scope, retVal, "Variable not defined");
-	}
-}
 
 %%

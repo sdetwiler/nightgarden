@@ -3,6 +3,7 @@ Done		Multithreading
 Done		Loading and playback of precomputed step sequences
 DONE		Memory management for sharing loaded compiled files across multiple instances
 
+Sub LSystem support through ~ operator
 
 Fast forward and rewind
 

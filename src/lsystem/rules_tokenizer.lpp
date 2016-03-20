@@ -17,6 +17,8 @@
 
 [a-zA-Z] { yylval->symbol = new Symbol(); yylval->symbol->value = yytext; return SYMBOL; }
 
+\".+\" { yylval->str = strndup(yytext+1, strlen(yytext)-2); printf("STRING: %s\n", yylval->str); return STRING; }
+
 
 
 "->" { return TRANSITION; }

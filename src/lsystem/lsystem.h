@@ -56,17 +56,12 @@ private:
 	Result*		mAxiom;
 	SymbolList const* mState;
 	
-	
-//	typedef std::vector<std::string> StringVec;
-//	StringVec mCompiledStates;
+	// Assigned compiled state.
 	size_t mCurrCompiledState;
-	
 	SymbolListVec const* mStates;
-//	bool mCompiled;
 
+	// Compiled state cache.
 	typedef std::map<std::string, SymbolListVec*> StringSymbolListVecMap;
-	
-	
 	static SymbolListVec const* getCompiledStates(char const* name);
 	static SymbolListVec* loadCompiled(char const* filename);
 	

@@ -67,7 +67,14 @@ SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) 
 
 				if(e->eval(scope, &v))
 				{
-					e->value = to_string(v.value);
+					if(v.type == Variable::Float)
+					{
+						e->value = to_string(v.value);
+					}
+					else if(v.type == Variable::String)
+					{
+						e->value = v.stringValue;
+					}
 				}
 			}
 		}

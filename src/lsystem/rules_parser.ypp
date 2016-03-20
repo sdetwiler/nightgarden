@@ -139,11 +139,23 @@ variable_dec :
 		$$->value = $3;
 
 		#ifdef DEBUG_PARSER
-		printf("variable_dec to VAR VARIABLE number\n\t%s %f\n", $2->toString().c_str(), $3);
+		printf("variable_dec to VAR variable number\n\t%s %f\n", $2->toString().c_str(), $3);
 		#endif
 
 		lsystem->addVariable($$);
 	}
+	| VAR variable STRING
+	{
+		$$ = $2;
+		$$->stringValue = $3;
+		$$->type = Variable::String;
+		#ifdef DEBUG_PARSER
+		printf("variable_dec to VAR variable STRING\n\t%s %f\n", $2->toString().c_str(), $3);
+		#endif
+		
+		lsystem->addVariable($$);
+	}
+
 
 variable :
 	symbol_list

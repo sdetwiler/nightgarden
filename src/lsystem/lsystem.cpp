@@ -281,6 +281,12 @@ SymbolList const* LSystem::getState() const
 
 Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next)
 {
+	if(symbol->value == "~")
+	{
+		// Reference operator.
+		cout << symbol->toTimedString() << endl;
+	}
+	
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		Rule const* curr = (*i);
