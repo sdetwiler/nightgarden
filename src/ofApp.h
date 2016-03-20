@@ -35,11 +35,12 @@ public:
 
 	
 	void fileButtonPressed();
+	void compiledFileButtonPressed();
 	void compileButtonPressed();
 	
 private:
 	
-	ofxLSystemNode* loadSystem(char const* filename);
+	ofxLSystemNode* loadSystem(char const* filename, bool isCompiled);
 	
 //	ofxLSystem mSystem;
 	SystemVec mSystems;
@@ -57,6 +58,8 @@ private:
 	ofxLabel mLastDurationlabel;
 	
 	ofxButton mFileButton;
+	ofxButton mCompiledFileButton;
+
 	ofxButton mCompileButton;
 
 	ofxToggle mAxisButton;
@@ -66,6 +69,7 @@ private:
 	ofParameter<bool> mEdit;
 	
 	std::string mFilename;
+	bool mCompiled;
 	
 	
 	bool mMouseDragged;

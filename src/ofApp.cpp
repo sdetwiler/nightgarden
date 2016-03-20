@@ -28,6 +28,10 @@ void ofApp::setup()
 	
 	mGui.add(mFileButton.setup("File..."));
 	mFileButton.addListener(this, &ofApp::fileButtonPressed);
+
+	mGui.add(mCompiledFileButton.setup("Compiled File..."));
+	mCompiledFileButton.addListener(this, &ofApp::compiledFileButtonPressed);
+
 	mGui.add(mCompileButton.setup("Compile..."));
 	mCompileButton.addListener(this, &ofApp::compileButtonPressed);
 
@@ -148,15 +152,31 @@ void ofApp::fileButtonPressed()
 	if(res.bSuccess)
 	{
 		mFilename =res.getPath();
+		mCompiled = false;
 //		loadSystem(res.getPath().c_str());
 	}
 }
 
 
 //--------------------------------------------------------------
-ofxLSystemNode* ofApp::loadSystem(char const* filename)
+void ofApp::compiledFileButtonPressed()
 {
-	ofxLSystemNode* system = new ofxLSystemNode(filename);
+	ofFileDialogResult res = ofSystemLoadDialog();
+	
+	if(res.bSuccess)
+	{
+		mFilename =res.getPath();
+		mCompiled = true;
+		//		loadSystem(res.getPath().c_str());
+	}
+}
+
+
+
+//--------------------------------------------------------------
+ofxLSystemNode* ofApp::loadSystem(char const* filename, bool isCompiled)
+{
+	ofxLSystemNode* system = new ofxLSystemNode(filename, isCompiled);
 	mSystems.push_back(system);
 //	mSystem.load(filename);
 	
@@ -208,7 +228,7 @@ void ofApp::mouseReleased(int x, int y, int button)
 		intersection = ray.calcPlaneIntersection(ofVec3f(0,0,0), ofVec3f(0,1,0), &t);
 		if (intersection)
 		{
-			ofxLSystemNode* system = loadSystem(mFilename.c_str());
+			ofxLSystemNode* system = loadSystem(mFilename.c_str(), mCompiled);
 			ofVec3f p = ray.calcPosition(t);
 			system->setPosition(p.x, 0, p.z);
 		}

@@ -16,10 +16,10 @@ class ofxLSystemNode : public ofNode
 {
 public:
 	ofxLSystemNode();
-	ofxLSystemNode(char const* filename);
+	ofxLSystemNode(char const* filename, bool isCompiled);
 	virtual ~ofxLSystemNode();
 	
-	void load(char const* filename);
+	void load(char const* filename, bool isCompiled);
 	void update();
 	virtual void customDraw();
 	
@@ -40,8 +40,8 @@ public:
 	ofxThreadedLSystem& getLSystem();
 	
 private:
-	int mMaxSteps;				// The maximum number of steps to take.
-	int mCurrSteps;				// The current count of steps taken.
+	size_t mMaxSteps;				// The maximum number of steps to take.
+	size_t mCurrSteps;				// The current count of steps taken.
 	float mLastStepTime;		// The time the last step occurred.
 	float mStepInterval;		// Time to wait between steps in seconds.
 

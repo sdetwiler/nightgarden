@@ -61,6 +61,16 @@ bool ofxThreadedLSystem::load(char const* filename)
 	return ret;
 }
 
+bool ofxThreadedLSystem::loadCompiled(char const* filename, size_t* numStates)
+{
+	lock();
+	bool ret = mSystem.loadCompiled(filename, numStates);
+	unlock();
+	
+	return ret;
+}
+
+
 void ofxThreadedLSystem::clear()
 {
 	lock();

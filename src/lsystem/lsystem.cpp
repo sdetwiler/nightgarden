@@ -67,7 +67,7 @@ bool LSystem::load(char const* filename)
 	if(infile.bad())
 	{
 		cout << "Error while reading from " << filename << endl;
-		return -1;
+		return false;
 	}
 	
 	return parse(data.c_str());
@@ -97,6 +97,41 @@ bool LSystem::parse(char const* input)
 }
 
 
+
+bool LSystem::loadCompiled(char const* filename, size_t* numStates)
+{
+	clear();
+
+
+	ifstream infile(filename);
+	if(!infile.is_open())
+	{
+		cout << "Failed to open " << filename << endl;
+		return -1;
+	}
+	string data;
+	string line;
+	while(getline(infile, line))
+	{
+		line += "\n";
+		mCompiledStates.push_back(line);
+		if(numStates)
+		{
+			++*numStates;
+		}
+	}
+	
+	if(infile.bad())
+	{
+		cout << "Error while reading from " << filename << endl;
+		return false;
+	}
+	
+	mCompiled = true;
+	return true;
+}
+
+
 void LSystem::setAxiom(Result* axiom)
 {
 	if(mAxiom)
@@ -112,6 +147,17 @@ void LSystem::setAxiom(Result* axiom)
 	mState = new SymbolList(*(mAxiom->symbolList));
 }
 
+void LSystem::setState(Result* state)
+{
+	if(mState)
+	{
+		delete mState;
+	}
+	
+	mState = state->symbolList;
+	state->symbolList = nullptr;
+	delete state;
+}
 
 void LSystem::addRule(Rule* rule)
 {
@@ -163,6 +209,10 @@ void LSystem::clear()
 		delete mState;
 		mState = nullptr;
 	}
+	
+	mCompiledStates.clear();
+	mCurrCompiledState = 0;
+	mCompiled = false;
 }
 
 float LSystem::getGlobalVariable(char const* name, float def) const
@@ -271,6 +321,19 @@ void LSystem::reduce()
 
 void LSystem::step(float dt)
 {
+	if(mCompiled)
+	{
+		if(mCurrCompiledState < mCompiledStates.size())
+		{
+			string state = mCompiledStates[mCurrCompiledState];
+			cout << "Compiled step: " << state << endl;
+			parse(state.c_str());
+			++mCurrCompiledState;
+		}
+		
+		return;
+	}
+	
 	bool reduce = true;
 	
 	START_TIME_MEASURE(step);
@@ -359,11 +422,11 @@ void LSystem::step(float dt)
 //		cout << "next is " << (next?next->toString():"null") << " scanned ahead " << to_string(peekDistance) << " symbols\n";
 //////////////////////////////////////////////////////
 		
-		// Age the symbol by the delta time.
 		symbol->age+=dt;
+
+		// Age the symbol by the delta time.
 		if(symbol->age > symbol->terminalAge && !symbol->isTerminal)
 		{
-			cout << "+";
 			symbol->isTerminal = true;
 		
 			Rule const* rule = getRuleForSymbol(context, symbol, next);
@@ -409,7 +472,6 @@ void LSystem::step(float dt)
 bool LSystem::compile(char const* outputFilename)
 {
 	cout << "LSystem::compile" << endl;
-	string output;
 	
 	float stepInterval;
 	int maxSteps;
@@ -445,8 +507,7 @@ bool LSystem::compile(char const* outputFilename)
 		cout.flush();
 		step(stepInterval);
 		reduce();
-		output+= getState()->toString();
-		outfile << getState()->toString() << endl;
+		outfile << "state " << getState()->toTimedString() << endl;
 	}
 
 	outfile.close();

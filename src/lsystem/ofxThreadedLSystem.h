@@ -25,6 +25,7 @@ public:
 
 	bool isUpdateAvailable();
 	bool load(char const* filename);
+	bool loadCompiled(char const* filename, size_t* numStates);
 	void clear();
 	
 	float getGlobalVariable(char const* name, float def=0);

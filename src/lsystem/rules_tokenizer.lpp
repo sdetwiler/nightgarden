@@ -46,6 +46,7 @@
 
 "rule" { return RULE; }
 "axiom" { return AXIOM; }
+"state" { return STATE; }
 "var" { return VAR; }
 
 [\t ] { }

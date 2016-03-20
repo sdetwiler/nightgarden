@@ -63,6 +63,8 @@ Expression& Expression::operator+=(Expression const& rhs)
 
 bool Expression::eval(VariableMap* scope, Variable* ret)
 {
+	// HACK
+//	cout << "Expression::eval \"" << value << "\"\n";
 	
 	void* scanner;
 	
@@ -79,7 +81,7 @@ bool Expression::eval(VariableMap* scope, Variable* ret)
 	
 	if(r)
 	{
-		//		cout << "yyparse returns " << ret << endl;
+		cout << "yyparse returns " << r << endl;
 		return false;
 	}
 	

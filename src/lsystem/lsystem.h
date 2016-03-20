@@ -24,9 +24,12 @@ public:
 	virtual ~LSystem();
 	
 	void setAxiom(Result* axiom);
+	void setState(Result* state);
 	
 	bool load(char const* filename);
 	bool parse(char const* input);
+
+	bool loadCompiled(char const* filename, size_t* numStates);
 
 	
 	bool compile(char const* outputFilename);
@@ -52,6 +55,13 @@ private:
 	VariableMap mVariables;
 	Result*		mAxiom;
 	SymbolList* mState;
+	
+	
+	typedef std::vector<std::string> StringVec;
+	StringVec mCompiledStates;
+	size_t mCurrCompiledState;
+	bool mCompiled;
+	
 	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);
 };

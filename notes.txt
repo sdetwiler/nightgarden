@@ -6,6 +6,8 @@ Loading and playback of precomputed step sequences
 
 Fast forward and rewind
 
+Fix contextual evaluation
+
 LSystem environmental awareness
 	Collision detection with environment geometry
 	Tropism

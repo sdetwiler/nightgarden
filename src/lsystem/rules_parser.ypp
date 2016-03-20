@@ -1,5 +1,6 @@
 %name-prefix="rules_"
 %pure-parser
+%error-verbose
 %lex-param { yyscan_t scanner }
 %parse-param { yyscan_t scanner }
 %parse-param { LSystem* lsystem }
@@ -17,7 +18,7 @@ extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 #include "predicate.h"
 #include "lsystem.h"
 
-// #define DEBUG_PARSER
+#define DEBUG_PARSER
 
 int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 	cout << "Rules: " << msg << endl;
@@ -68,6 +69,7 @@ int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 
 %token NEWLINE
 %token AXIOM
+%token STATE
 %token RULE
 %token VAR
 
@@ -78,9 +80,11 @@ int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 %type <predicate>       predicate_symbols
 %type <result>          result
 %type <symbol>          symbol
+%type <symbol>          timed_symbol
 %type <symbolList>      symbol_list
 %type <symbol>          result_symbol
-%type <symbol>          symbol_add_sub_exp
+%type <symbol>          symbol_with_vars
+%type <symbol>          symbol_operator
 %type <symbolList>      result_symbol_list
 %type <variableList>    variable_list
 %type <expression>		condition_expr
@@ -101,6 +105,7 @@ start : statement
 
 statement : rule eol
 	| axiom eol
+	| state eol
 	| variable_dec eol
 	| NEWLINE
 	| COMMENT
@@ -114,6 +119,16 @@ axiom :
 		#endif
 		
 		lsystem->setAxiom($2);
+	}
+
+state :
+	STATE result
+	{
+		#ifdef DEBUG_PARSER
+		printf("state %s\n", $2->toString().c_str());
+		#endif
+		
+		lsystem->setState($2);
 	}
 
 
@@ -135,20 +150,34 @@ variable :
 	{
 		$$ = new Variable();
 		$$->name = $1->toString();
+
+		#ifdef DEBUG_PARSER
+		printf("variable to symbol_list\n\t%s\n", $$->toString().c_str());
+		#endif
 	}
 
 number :
 	FLOAT
 	{
 		$$=$1;
+		#ifdef DEBUG_PARSER
+		printf("number to FLOAT\n\t%f\n", $$);
+		#endif
 	}
 	| ADD FLOAT
 	{
 		$$=$2;
+
+		#ifdef DEBUG_PARSER
+		printf("number to ADD FLOAT\n\t%f\n", $$);
+		#endif
 	}
 	| SUB FLOAT
 	{
 		$$=-$2;
+		#ifdef DEBUG_PARSER
+		printf("number to SUB FLOAT\n\t%f\n", $$);
+		#endif
 	}
 
 rule :
@@ -165,7 +194,7 @@ rule :
 		lsystem->addRule($$);
 	}
 
-predicate:
+predicate :
 	predicate_symbols condition_expr
 	{
 		#ifdef DEBUG_PARSER
@@ -201,7 +230,7 @@ predicate_symbols :
 	| symbol GT symbol
 	{
 		#ifdef DEBUG_PARSER
-		printf("predicate to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		printf("predicate_symbols to symbol GT symbol\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 		
 		$$ = new Predicate(lsystem);
@@ -254,26 +283,67 @@ variable_list :
 		$$->variables.push_back($1);
 	}
 
-
 symbol :
+	timed_symbol
+	{
+		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to timed_symbol\n\t%s\n", $$->toTimedString().c_str());
+		#endif
+	}
+
+	| symbol_with_vars
+	{
+		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol to symbol_with_vars\n\t%s\n", $$->toString().c_str());
+		#endif
+	}
+
+timed_symbol :
+	LP symbol_with_vars COMMA number RP
+	{
+		$$ = $2;
+		$$->age = $4;
+		
+		#ifdef DEBUG_PARSER
+		printf("timed_symbol to LP symbol_with_vars COMMA number RP\n\t%s\n", $$->toString().c_str());
+		#endif
+	}
+
+	| LP symbol_with_vars COMMA number COMMA number RP
+	{
+		$$ = $2;
+		$$->age = $4;
+		$$->terminalAge = $6;
+		
+		#ifdef DEBUG_PARSER
+		printf("timed_symbol to LP symbol COMMA number COMMA number RP\n\t%s\n", $$->toTimedString().c_str());
+		#endif
+	}
+
+symbol_with_vars :
 	SYMBOL LP variable_list RP
 	{
 		$$ = $1;
 		$$->variables = $3;
-
+		
 		#ifdef DEBUG_PARSER
-		printf("symbol to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
+		printf("symbol_with_vars to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
 		#endif
 	}
 
 	| SYMBOL
 	{
 		$$ = $1;
-
+		
 		#ifdef DEBUG_PARSER
-		printf("symbol to SYMBOL\n\tsymbol:[%s]\n", $1->toString().c_str());
+		printf("symbol_with_vars to SYMBOL\n\tsymbol:%s\n", $$->toTimedString().c_str());
 		#endif
 	}
+
 
 
 symbol_list :
@@ -334,53 +404,59 @@ result_symbol_list :
 
 
 result_symbol :
-	symbol_add_sub_exp LP expr_list RP
+	symbol_operator LP expr_list RP
 	{
-		#ifdef DEBUG_PARSER
-		printf("result_symbol to SYMBOL LP expr RP\n\t%s %s\n", $1->value.c_str(), $3->toString().c_str());
-		#endif
 		$$ = $1;
 		$$->expressions = $3;
-	}
-	| symbol_add_sub_exp
-	{
+
 		#ifdef DEBUG_PARSER
-		printf("result_symbol to symbol_add_sub\n\t%s\n", $1->value.c_str());
+		printf("result_symbol to symbol_operator LP expr_list RP\n\t%s %s\n", $$->value.c_str(), $3->toString().c_str());
 		#endif
+	}
+	| symbol_operator
+	{
 		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to symbol_operator\n\t%s\n", $$->value.c_str());
+		#endif
 	}
 
-symbol_add_sub_exp :
-	SYMBOL
+symbol_operator :
+	symbol
 	{
-		#ifdef DEBUG_PARSER
-		printf("result_symbol to SYMBOL\n\t%s\n", $1->value.c_str());
-		#endif
 		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("symbol_operator to symbol\n\t%s\n", $$->value.c_str());
+		#endif
 	}
 
 	| ADD
 	{
 		$$ = new Symbol();
 		$$->value = "+";
+		$$->isOperator = true;
 		
 		#ifdef DEBUG_PARSER
-		printf("symbol_add_sub_exp to ADD\n\tsymbol:[%s]\n", $$->toString().c_str());
+		printf("symbol_operator to ADD\n\tsymbol:[%s]\n", $$->toString().c_str());
 		#endif
 	}
 	| SUB
 	{
 		$$ = new Symbol();
 		$$->value = "-";
+		$$->isOperator = true;
 		
 		#ifdef DEBUG_PARSER
-		printf("symbol_add_sub_exp to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
+		printf("symbol_operator to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
 		#endif
 	}
 	| EXP
 	{
 		$$ = new Symbol();
 		$$->value = "^";
+		$$->isOperator = true;
 		
 		#ifdef DEBUG_PARSER
 		printf("symbol_add_sub_exp to SUB\n\tsymbol:[%s]\n", $$->toString().c_str());
@@ -398,7 +474,7 @@ expr_list :
 	expr_list COMMA expr
 	{
 		#ifdef DEBUG_PARSER
-		printf("expr to expr COMMA expr\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
+		printf("expr_list to expr_list COMMA expr\n\t%s %s\n", $1->toString().c_str(), $3->toString().c_str());
 		#endif
 
 
@@ -407,7 +483,7 @@ expr_list :
 	| expr
 	{
 		#ifdef DEBUG_PARSER
-		printf("expr to expr\n\t%s\n", $1->toString().c_str());
+		printf("expr_list to expr\n\t%s\n", $1->toString().c_str());
 		#endif
 
 		$$ = new ExpressionList();
@@ -446,6 +522,10 @@ expr :
 	{
 		$$ = new Expression();
 		$$->value = $1->toString();
+
+		#ifdef DEBUG_PARSER
+		printf("expr to symbol_list\n\t%f\n", $1);
+		#endif
 	}
 
 

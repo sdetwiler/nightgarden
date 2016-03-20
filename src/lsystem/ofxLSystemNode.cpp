@@ -24,12 +24,12 @@ ofxLSystemNode::ofxLSystemNode()
 }
 
 //--------------------------------------------------------------
-ofxLSystemNode::ofxLSystemNode(char const* filename)
+ofxLSystemNode::ofxLSystemNode(char const* filename, bool isCompiled)
 {
 	mSystem = new ofxThreadedLSystem();
 	mCurrMesh = nullptr;
 
-	load(filename);
+	load(filename, isCompiled);
 }
 
 //--------------------------------------------------------------
@@ -101,27 +101,34 @@ ofxThreadedLSystem& ofxLSystemNode::getLSystem()
 }
 
 //--------------------------------------------------------------
-void ofxLSystemNode::load(char const* filename)
+void ofxLSystemNode::load(char const* filename, bool isCompiled)
 {
-	if(mSystem->load(filename))
+	if(isCompiled)
 	{
-		// Is the system configured to step through time, or over an explicit number of steps.
-		float duration = getLSystem().getGlobalVariable("duration", -1);
-		if(duration > 0)
-		{
-			mStepInterval = getLSystem().getGlobalVariable("stepInterval", 1);
-			mMaxSteps = duration/mStepInterval;
-		}
-		else
-		{
-			mStepInterval = 1/30.;
-			mMaxSteps = getLSystem().getGlobalVariable("steps", 4) / mStepInterval;
-		}
-		
-		mCurrSteps = 0;
-		mLastStepTime = 0;
+		mSystem->loadCompiled(filename, &mMaxSteps);
 	}
-	
+	else
+	{
+		if(mSystem->load(filename))
+		{
+			// Is the system configured to step through time, or over an explicit number of steps.
+			float duration = getLSystem().getGlobalVariable("duration", -1);
+			if(duration > 0)
+			{
+				mStepInterval = getLSystem().getGlobalVariable("stepInterval", 1);
+				mMaxSteps = duration/mStepInterval;
+			}
+			else
+			{
+				mStepInterval = 1/30.;
+				mMaxSteps = getLSystem().getGlobalVariable("steps", 4) / mStepInterval;
+			}
+			
+			mLastStepTime = 0;
+		}
+	}
+
+	mCurrSteps = 0;
 	mDrawWireframe = false;
 }
 

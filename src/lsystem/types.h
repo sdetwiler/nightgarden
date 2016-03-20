@@ -278,6 +278,33 @@ public:
 	std::string toString() const
 	{
 		std::string s;
+		
+		s+= value;
+		if(variables && variables->variables.size())
+		{
+			s+= "(";
+			
+			s+= variables->toString();
+			
+			s+= ")";
+		}
+		
+		if(expressions && expressions->expressions.size())
+		{
+			
+			s+= "(";
+			s+= expressions->toString();
+			s+= ")";
+		}
+		
+		return s;
+	}
+	
+	std::string toTimedString() const
+	{
+		std::string s;
+		s+= "(";
+		
 		s+= value;
 		if(variables && variables->variables.size())
 		{
@@ -295,6 +322,12 @@ public:
 			s+= expressions->toString();
 			s+= ")";
 		}
+		
+		s+=", ";
+		s+=to_string(age);
+		s+=", ";
+		s+=to_string(terminalAge);
+		s+=")";
 		
 		return s;
 	}
@@ -360,6 +393,17 @@ public:
 		{
 			delete (*i);
 		}
+	}
+	
+	std::string toTimedString() const
+	{
+		std::string s;
+		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
+		{
+			s+= (*i)->toTimedString();
+		}
+		
+		return s;
 	}
 	
 	std::string toString() const
@@ -538,6 +582,7 @@ public:
 	
 	size_t addToMap(VariableList* variables, Symbol const* s, size_t idx=0)
 	{
+//		cout << "VariableMap::addToMap\nvariables[" << variables->variables.size() << "]:" << variables->toString() << "\nSymbol: " << s->toString() << endl;
 		for(VariableVec::iterator vi = variables->variables.begin(); vi!= variables->variables.end(); ++vi)
 		{
 //			std::cout << (*vi)->name << "=" << (*vi)->value << std::endl;
@@ -548,6 +593,7 @@ public:
 				{
 					Expression* e = s->expressions->expressions.at(idx);
 					
+//					cout << "\teval: " << e->toString() << endl;
 					if(e->eval(this, variable))
 					{
 						this->variables[variable->name] = variable;
@@ -564,7 +610,7 @@ public:
 			}
 			else
 			{
-				std::cout << "no expresions" << std::endl;
+			//	std::cout << "no expresions" << std::endl;
 			}
 			++idx;
 		}
