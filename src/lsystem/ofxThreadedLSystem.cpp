@@ -33,7 +33,6 @@ void ofxThreadedLSystem::threadedFunction()
 			dt = mDt;
 			unlock();
 			mSystem.step(dt);
-			mSystem.reduce();
 			lock();
 			mUpdateRequested = false;
 			mUpdateAvailable = true;

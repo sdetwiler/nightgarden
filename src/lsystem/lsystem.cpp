@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <stack>
+#include <map>
 
 #include "rules_parser.tab.h"
 
@@ -33,6 +34,64 @@ int rules_lex_destroy(yyscan_t scanner);
 
 #endif
 
+
+SymbolListVec* LSystem::loadCompiled(char const* filename)
+{
+	ifstream infile(filename);
+	if(!infile.is_open())
+	{
+		cout << "Failed to open " << filename << endl;
+		return nullptr;
+	}
+
+	SymbolListVec* states = new SymbolListVec;
+
+	LSystem system;
+	string line;
+	while(getline(infile, line))
+	{
+		line += "\n";
+		if(system.parse(line.c_str()))
+		{
+			// FIXME Blarg so many memory copies.
+			SymbolList* state = new SymbolList(*system.getState());
+			states->push_back(state);
+		}
+	}
+	
+	if(infile.bad())
+	{
+		cout << "Error while reading from " << filename << endl;
+		return nullptr;
+	}
+	
+	return states;
+}
+
+
+// TODO This is a big, fat memory leak.
+SymbolListVec const* LSystem::getCompiledStates(char const* name)
+{
+	static StringSymbolListVecMap cache;
+	
+	SymbolListVec* states;
+	
+	StringSymbolListVecMap::iterator i = cache.find(name);
+	if(i == cache.end())
+	{
+		states = LSystem::loadCompiled(name);
+		if(states)
+		{
+			cache[name] = states;
+		}
+	}
+	else
+	{
+		states = i->second;
+	}
+	
+	return states;
+}
 
 
 LSystem::LSystem()
@@ -101,34 +160,14 @@ bool LSystem::parse(char const* input)
 bool LSystem::loadCompiled(char const* filename, size_t* numStates)
 {
 	clear();
-
-
-	ifstream infile(filename);
-	if(!infile.is_open())
-	{
-		cout << "Failed to open " << filename << endl;
-		return -1;
-	}
-	string data;
-	string line;
-	while(getline(infile, line))
-	{
-		line += "\n";
-		mCompiledStates.push_back(line);
-		if(numStates)
-		{
-			++*numStates;
-		}
-	}
 	
-	if(infile.bad())
+	mStates = LSystem::getCompiledStates(filename);
+	if(mStates && numStates)
 	{
-		cout << "Error while reading from " << filename << endl;
-		return false;
+		*numStates = mStates->size();
 	}
-	
-	mCompiled = true;
-	return true;
+		
+	return mStates != nullptr;
 }
 
 
@@ -210,9 +249,8 @@ void LSystem::clear()
 		mState = nullptr;
 	}
 	
-	mCompiledStates.clear();
 	mCurrCompiledState = 0;
-	mCompiled = false;
+	mStates = nullptr;
 }
 
 float LSystem::getGlobalVariable(char const* name, float def) const
@@ -256,9 +294,9 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 	return nullptr;
 }
 
-void LSystem::reduce()
+void LSystem::reduce(SymbolList* state)
 {
-	if(!mState)
+	if(!state)
 	{
 		return;
 	}
@@ -272,7 +310,7 @@ void LSystem::reduce()
 	SymbolVec* currFrame = new SymbolVec();
 	frames.push(currFrame);
 	
-	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
+	for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
 	{
 		Symbol* symbol = (*i);
 		
@@ -303,10 +341,10 @@ void LSystem::reduce()
 	for(SymbolVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
 	{
 		
-		SymbolVec::iterator j = find(mState->symbols.begin(), mState->symbols.end(), *i);
-		if(j!=mState->symbols.end())
+		SymbolVec::iterator j = find(state->symbols.begin(), state->symbols.end(), *i);
+		if(j!=state->symbols.end())
 		{
-			mState->symbols.erase(j);
+			state->symbols.erase(j);
 		}
 	}
 
@@ -321,20 +359,16 @@ void LSystem::reduce()
 
 void LSystem::step(float dt)
 {
-	if(mCompiled)
+	if(mStates)
 	{
-		if(mCurrCompiledState < mCompiledStates.size())
+		if(mCurrCompiledState < mStates->size())
 		{
-			string state = mCompiledStates[mCurrCompiledState];
-//			cout << "Compiled step: " << state << endl;
-			parse(state.c_str());
+			mState = (*mStates)[mCurrCompiledState];
 			++mCurrCompiledState;
 		}
 		
 		return;
 	}
-	
-	bool reduce = true;
 	
 	START_TIME_MEASURE(step);
 	
@@ -462,6 +496,8 @@ void LSystem::step(float dt)
 		delete mState;
 	}
 	
+	reduce(output);
+
 	mState = output;
 	
 	LOG_TIME_DELTA(step, "end");
@@ -506,7 +542,6 @@ bool LSystem::compile(char const* outputFilename)
 		cout << ".";
 		cout.flush();
 		step(stepInterval);
-		reduce();
 		outfile << "state " << getState()->toTimedString() << endl;
 	}
 

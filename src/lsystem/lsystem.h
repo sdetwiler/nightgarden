@@ -47,20 +47,28 @@ public:
 	
 	SymbolList const* getState() const;
 	void step(float dt);
-	void reduce();
-	
+	void reduce(SymbolList* state);
+
 private:
 	typedef std::vector< Rule* > RuleVec;
 	RuleVec		mRules;
 	VariableMap mVariables;
 	Result*		mAxiom;
-	SymbolList* mState;
+	SymbolList const* mState;
 	
 	
-	typedef std::vector<std::string> StringVec;
-	StringVec mCompiledStates;
+//	typedef std::vector<std::string> StringVec;
+//	StringVec mCompiledStates;
 	size_t mCurrCompiledState;
-	bool mCompiled;
+	
+	SymbolListVec const* mStates;
+//	bool mCompiled;
+
+	typedef std::map<std::string, SymbolListVec*> StringSymbolListVecMap;
+	
+	
+	static SymbolListVec const* getCompiledStates(char const* name);
+	static SymbolListVec* loadCompiled(char const* filename);
 	
 	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);

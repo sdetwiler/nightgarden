@@ -1,8 +1,8 @@
 Done		Interactive placement of LSystem nodes
-
 Done		Multithreading
+Done		Loading and playback of precomputed step sequences
+DONE		Memory management for sharing loaded compiled files across multiple instances
 
-Loading and playback of precomputed step sequences
 
 Fast forward and rewind
 
