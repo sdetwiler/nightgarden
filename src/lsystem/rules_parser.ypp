@@ -18,7 +18,7 @@ extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 #include "predicate.h"
 #include "lsystem.h"
 
-#define DEBUG_PARSER
+// #define DEBUG_PARSER
 
 int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 	cout << "Rules: " << msg << endl;
@@ -80,10 +80,10 @@ int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 %type <predicate>       predicate_symbols
 %type <result>          result
 %type <symbol>          symbol
-%type <symbol>          timed_symbol
 %type <symbolList>      symbol_list
 %type <symbol>          result_symbol
 %type <symbol>          symbol_with_vars
+%type <symbol>          symbol_operator_with_expr
 %type <symbol>          symbol_operator
 %type <symbolList>      result_symbol_list
 %type <variableList>    variable_list
@@ -125,7 +125,7 @@ state :
 	STATE result
 	{
 		#ifdef DEBUG_PARSER
-		printf("state %s\n", $2->toString().c_str());
+		printf("state %s\n", $2->toTimedString().c_str());
 		#endif
 		
 		lsystem->setState($2);
@@ -284,54 +284,12 @@ variable_list :
 	}
 
 symbol :
-	timed_symbol
+	symbol_with_vars
 	{
 		$$ = $1;
-
-		#ifdef DEBUG_PARSER
-		printf("symbol to timed_symbol\n\t%s\n", $$->toTimedString().c_str());
-		#endif
-	}
-
-	| symbol_with_vars
-	{
-		$$ = $1;
-
+		
 		#ifdef DEBUG_PARSER
 		printf("symbol to symbol_with_vars\n\t%s\n", $$->toString().c_str());
-		#endif
-	}
-
-timed_symbol :
-	LP symbol_with_vars COMMA number RP
-	{
-		$$ = $2;
-		$$->age = $4;
-		
-		#ifdef DEBUG_PARSER
-		printf("timed_symbol to LP symbol_with_vars COMMA number RP\n\t%s\n", $$->toString().c_str());
-		#endif
-	}
-
-	| LP symbol_with_vars COMMA number COMMA number RP
-	{
-		$$ = $2;
-		$$->age = $4;
-		$$->terminalAge = $6;
-		
-		#ifdef DEBUG_PARSER
-		printf("timed_symbol to LP symbol COMMA number COMMA number RP\n\t%s\n", $$->toTimedString().c_str());
-		#endif
-	}
-
-symbol_with_vars :
-	SYMBOL LP variable_list RP
-	{
-		$$ = $1;
-		$$->variables = $3;
-		
-		#ifdef DEBUG_PARSER
-		printf("symbol_with_vars to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
 		#endif
 	}
 
@@ -345,7 +303,20 @@ symbol_with_vars :
 	}
 
 
+symbol_with_vars :
+	SYMBOL LP variable_list RP
+	{
+		$$ = $1;
+		$$->variables = $3;
+		
+		#ifdef DEBUG_PARSER
+		printf("symbol_with_vars to SYMBOL LP variable_list RP\n\tsymbol:[%s] variable_list:[%s]\n", $$->toString().c_str(), $$->variables->toString().c_str());
+		#endif
+	}
 
+
+
+/* Used to stitch symbols together into multi character variable names or expressions */
 symbol_list :
 	symbol_list SYMBOL
 	{
@@ -404,26 +375,59 @@ result_symbol_list :
 
 
 result_symbol :
+	LP symbol_operator_with_expr COMMA number RP
+	{
+		$$ = $2;
+		$$->age = $4;
+		
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to LP symbol_with_expr COMMA number RP\n\t%s\n", $$->toString().c_str());
+		#endif
+	}
+
+	| LP symbol_operator_with_expr COMMA number COMMA number RP
+	{
+		$$ = $2;
+		$$->age = $4;
+		$$->terminalAge = $6;
+		
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to LP symbol_operator_with_expr COMMA number COMMA number RP\n\t%s\n", $$->toTimedString().c_str());
+		#endif
+	}
+
+	| symbol_operator_with_expr
+	{
+		$$ = $1;
+
+		#ifdef DEBUG_PARSER
+		printf("result_symbol to symbol_operator_with_expr\n\t%s %s\n", $$->value.c_str());
+		#endif
+	}
+
+symbol_operator_with_expr :
 	symbol_operator LP expr_list RP
 	{
 		$$ = $1;
 		$$->expressions = $3;
-
+		
 		#ifdef DEBUG_PARSER
-		printf("result_symbol to symbol_operator LP expr_list RP\n\t%s %s\n", $$->value.c_str(), $3->toString().c_str());
+		printf("symbol_operator_with_expr to symbol_operator LP expr_list RP\n\t%s %s\n", $$->value.c_str(), $3->toString().c_str());
 		#endif
 	}
+
 	| symbol_operator
 	{
 		$$ = $1;
-
+		
 		#ifdef DEBUG_PARSER
 		printf("result_symbol to symbol_operator\n\t%s\n", $$->value.c_str());
 		#endif
 	}
 
+
 symbol_operator :
-	symbol
+	SYMBOL
 	{
 		$$ = $1;
 
@@ -524,7 +528,7 @@ expr :
 		$$->value = $1->toString();
 
 		#ifdef DEBUG_PARSER
-		printf("expr to symbol_list\n\t%f\n", $1);
+		printf("expr to symbol_list\n\t%s\n", $1->toString().c_str());
 		#endif
 	}
 

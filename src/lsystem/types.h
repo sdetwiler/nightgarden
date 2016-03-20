@@ -503,6 +503,19 @@ public:
 			return "null";
 		}
 	}
+
+	std::string toTimedString() const
+	{
+		if(symbolList)
+		{
+			return symbolList->toTimedString();
+		}
+		else
+		{
+			return "null";
+		}
+	}
+
 };
 
 
