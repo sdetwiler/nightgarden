@@ -42,17 +42,21 @@ void ofApp::setup()
 	mEdit = false;
 	mEdit.setName("Edit");
 	mGui.add(mEditButton.setup(mEdit));
+
+	
+	mGui.add(mClearButton.setup("Clear"));
+	mClearButton.addListener(this, &ofApp::clearButtonPressed);
 	
 }
 
 //--------------------------------------------------------------
 void ofApp::exit()
 {
-	reset();
+	clear();
 }
 
 //--------------------------------------------------------------
-void ofApp::reset()
+void ofApp::clear()
 {
 	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 	{
@@ -91,7 +95,7 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	ofBackground(0,0,0);
+//	ofBackground(0,0,0);
 	ofEnableDepthTest();
 
 	mSpotlight.enable();
@@ -117,6 +121,12 @@ void ofApp::draw()
 	ofDisableDepthTest();
 	ofDisableLighting();
 	mGui.draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::clearButtonPressed()
+{
+	clear();
 }
 
 //--------------------------------------------------------------
@@ -167,7 +177,6 @@ void ofApp::compiledFileButtonPressed()
 	{
 		mFilename =res.getPath();
 		mCompiled = true;
-		//		loadSystem(res.getPath().c_str());
 	}
 }
 
@@ -178,7 +187,6 @@ ofxLSystemNode* ofApp::loadSystem(char const* filename, bool isCompiled)
 {
 	ofxLSystemNode* system = new ofxLSystemNode(filename, isCompiled);
 	mSystems.push_back(system);
-//	mSystem.load(filename);
 	
 	return system;
 }

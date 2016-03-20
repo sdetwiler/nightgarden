@@ -18,7 +18,7 @@ public:
 	void draw();
 	void exit();
 	
-	void reset();
+	void clear();
 
 
 	void keyPressed(int key);
@@ -37,6 +37,7 @@ public:
 	void fileButtonPressed();
 	void compiledFileButtonPressed();
 	void compileButtonPressed();
+	void clearButtonPressed();
 	
 private:
 	
@@ -61,6 +62,8 @@ private:
 	ofxButton mCompiledFileButton;
 
 	ofxButton mCompileButton;
+
+	ofxButton mClearButton;
 
 	ofxToggle mAxisButton;
 	ofxToggle mEditButton;

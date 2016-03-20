@@ -242,13 +242,14 @@ void LSystem::clear()
 		delete mAxiom;
 		mAxiom = nullptr;
 	}
-	
-	if(mState)
+	if(mStates == nullptr)
 	{
-		delete mState;
-		mState = nullptr;
+		if(mState)
+		{
+			delete mState;
+		}
 	}
-	
+	mState = nullptr;
 	mCurrCompiledState = 0;
 	mStates = nullptr;
 }
