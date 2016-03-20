@@ -77,11 +77,11 @@ bool LSystem::parse(char const* input)
 {
 	void* scanner;
 	
-	rules_lex_init (&scanner);
+	rules_lex_init(&scanner);
 
 	YY_BUFFER_STATE buf = NULL;
 	
-	buf = rules__scan_string (input, scanner );
+	buf = rules__scan_string(input, scanner );
 	
 	int ret = rules_parse(scanner, this);
 	
@@ -326,7 +326,7 @@ void LSystem::step(float dt)
 		if(mCurrCompiledState < mCompiledStates.size())
 		{
 			string state = mCompiledStates[mCurrCompiledState];
-			cout << "Compiled step: " << state << endl;
+//			cout << "Compiled step: " << state << endl;
 			parse(state.c_str());
 			++mCurrCompiledState;
 		}
