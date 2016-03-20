@@ -26,11 +26,26 @@ public:
 	
 	Rule();
 	
-	~Rule();
+	virtual ~Rule();
 	
-	std::string toString() const;
+	virtual std::string toString() const;
 	
-	SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
+	virtual SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+class ReferenceRule : public Rule
+{
+public:
+	ReferenceRule();
+	
+	virtual ~ReferenceRule();
+	
+	virtual std::string toString() const;
+	
+	virtual SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
 };
 
 

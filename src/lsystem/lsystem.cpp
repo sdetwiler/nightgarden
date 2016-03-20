@@ -285,6 +285,9 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 	{
 		// Reference operator.
 		cout << symbol->toTimedString() << endl;
+		
+		static ReferenceRule refRule;
+		return &refRule;
 	}
 	
 	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)

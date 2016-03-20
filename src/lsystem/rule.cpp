@@ -83,3 +83,66 @@ SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) 
 //	cout << "rslt: " << res->toString() << endl << endl;
 	return res;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ReferenceRule::ReferenceRule()
+{
+}
+
+ReferenceRule::~ReferenceRule()
+{
+}
+
+string ReferenceRule::toString() const
+{
+	return "ReferenceRule";
+}
+
+
+SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
+{
+	if(s->expressions && s->expressions->expressions.size())
+	{
+		string filename = s->expressions->expressions[0]->value;
+		SymbolListVec const* slv = LSystem::getCompiledStates(filename.c_str());
+		if(slv)
+		{
+			float pct = s->age / s->terminalAge;
+			if(pct > 1)
+			{
+				pct = 1;
+			}
+			if(pct < 0)
+			{
+				pct = 0;
+			}
+			size_t idx = (slv->size() * pct)-1;
+			// Another copy? FIXME
+			return new SymbolList(*(*slv)[idx]);
+		}
+	}
+	
+	return nullptr;
+}
+
+

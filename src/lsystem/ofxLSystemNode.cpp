@@ -358,7 +358,13 @@ void ofxLSystemNode::buildMeshes()
 		
 		if(s->value == "G")
 		{
-			currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
+			
+			float ln = n;
+			if(s->expressions && s->expressions->expressions.size() == 1)
+			{
+				ln = stof((*(s->expressions->expressions[0])).value);
+			}
+			currMatrix.glTranslate(0, s->applyGrowthFunction(ln), 0);
 		}
 		
 		else if(s->value == "." || s->value == "f")
@@ -435,7 +441,7 @@ void ofxLSystemNode::buildMeshes()
 					ln = stof((*(s->expressions->expressions[0])).value);
 				}
 
-				currMatrix.glTranslate(0, s->applyGrowthFunction(n), 0);
+				currMatrix.glTranslate(0, s->applyGrowthFunction(ln), 0);
 			}
 		}
 		

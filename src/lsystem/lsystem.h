@@ -50,6 +50,8 @@ public:
 	void reduce(SymbolList* state);
 
 private:
+	friend ReferenceRule;
+	
 	typedef std::vector< Rule* > RuleVec;
 	RuleVec		mRules;
 	VariableMap mVariables;

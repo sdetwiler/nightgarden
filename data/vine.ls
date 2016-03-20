@@ -7,9 +7,9 @@ var delta 10
 var n 20
 var r 1
 
-var leaf "cordateLeaf.ls"
+var leaf "/Users/steve/projects/nightgarden/data/cordateLeaf.lsc"
 
 axiom A
 rule A -> FF[-B]C[+C]
-rule B -> ~(leaf)FF+F-F-F[FFFC][+C]-F-FC
-rule C -> ~(leaf)FF-F+F+F[B][-B]+F+FB
+rule B -> [^(110)~(leaf)]FF+F-F-F[FFFC][+C]-F-FC
+rule C -> [^(80)~(leaf)]FF-F+F+F[B][-B]+F+FB
