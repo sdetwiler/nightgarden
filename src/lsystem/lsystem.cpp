@@ -68,21 +68,30 @@ SymbolListVec* LSystem::loadCompiled(char const* filename)
 	return states;
 }
 
+LSystem::StringSymbolListVecMap LSystem::sCache;
+
+void LSystem::clearCompiledCache()
+{
+	for(StringSymbolListVecMap::iterator i = sCache.begin(); i!=sCache.end(); ++i)
+	{
+		delete i->second;
+	}
+	sCache.clear();
+}
 
 // TODO This is a big, fat memory leak.
 SymbolListVec const* LSystem::getCompiledStates(char const* name)
 {
-	static StringSymbolListVecMap cache;
 	
 	SymbolListVec* states;
 	
-	StringSymbolListVecMap::iterator i = cache.find(name);
-	if(i == cache.end())
+	StringSymbolListVecMap::iterator i = sCache.find(name);
+	if(i == sCache.end())
 	{
 		states = LSystem::loadCompiled(name);
 		if(states)
 		{
-			cache[name] = states;
+			sCache[name] = states;
 		}
 	}
 	else
@@ -284,8 +293,6 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 	if(symbol->value == "~")
 	{
 		// Reference operator.
-		cout << symbol->toTimedString() << endl;
-		
 		static ReferenceRule refRule;
 		return &refRule;
 	}

@@ -64,6 +64,8 @@ void ofApp::clear()
 		delete system;
 	}
 	mSystems.clear();
+	
+	LSystem::clearCompiledCache();
 }
 
 //--------------------------------------------------------------

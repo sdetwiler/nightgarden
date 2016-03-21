@@ -49,6 +49,8 @@ public:
 	void step(float dt);
 	void reduce(SymbolList* state);
 
+	static void clearCompiledCache();
+
 private:
 	friend ReferenceRule;
 	
@@ -66,7 +68,8 @@ private:
 	typedef std::map<std::string, SymbolListVec*> StringSymbolListVecMap;
 	static SymbolListVec const* getCompiledStates(char const* name);
 	static SymbolListVec* loadCompiled(char const* filename);
-	
+	static StringSymbolListVecMap sCache;
+
 	
 	Rule const* getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next);
 };
