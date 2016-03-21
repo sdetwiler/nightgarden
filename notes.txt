@@ -2,8 +2,13 @@ Done		Interactive placement of LSystem nodes
 Done		Multithreading
 Done		Loading and playback of precomputed step sequences
 DONE		Memory management for sharing loaded compiled files across multiple instances
+DONE		Sub LSystem support through ~ operator
 
-Sub LSystem support through ~ operator
+DONE		Broke axiom specifing values that map to variables for subsequent rules.
+				Some expressions not getting mapped to values forwarded in from predicate or state? progressiveRotation.ls demonstrates problem.
+				Has something to do with using referenced compiled lsystems.
+				Fix was the compiled systems contained intermediate symbols that referenced other rules.
+
 
 Fast forward and rewind
 
