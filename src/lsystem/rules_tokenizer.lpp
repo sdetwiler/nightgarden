@@ -14,6 +14,7 @@
 #.* { return COMMENT; }
 
 
+[FfG.\[\]\*&!/\'|{}~] { yylval->symbol = new Symbol(); yylval->symbol->isOperator=true; yylval->symbol->value = yytext; return SYMBOL; }
 
 [a-zA-Z] { yylval->symbol = new Symbol(); yylval->symbol->value = yytext; return SYMBOL; }
 
@@ -39,7 +40,6 @@
 "-" { return SUB; }
 "^" { return EXP; }
 
-[.\[\]\*&!/\'|{}~] { yylval->symbol = new Symbol(); yylval->symbol->isOperator=true; yylval->symbol->value = yytext; return SYMBOL; }
 
 
 [0-9]*\.?[0-9]* { yylval->num_float = atof(yytext); return FLOAT; }

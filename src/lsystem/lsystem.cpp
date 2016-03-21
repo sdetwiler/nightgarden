@@ -62,6 +62,7 @@ SymbolListVec* LSystem::loadCompiled(char const* filename)
 	if(infile.bad())
 	{
 		cout << "Error while reading from " << filename << endl;
+		delete states;
 		return nullptr;
 	}
 	
@@ -559,7 +560,7 @@ bool LSystem::compile(char const* outputFilename)
 		cout << ".";
 		cout.flush();
 		step(stepInterval);
-		outfile << "state " << getState()->toTimedString() << endl;
+		outfile << "state " << getState()->toOperatorTimedString() << endl;
 	}
 
 	outfile.close();

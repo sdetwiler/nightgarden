@@ -610,7 +610,21 @@ public:
 			delete (*i);
 		}
 	}
-	
+
+	std::string toOperatorTimedString() const
+	{
+		std::string s;
+		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
+		{
+			if((*i)->isOperator)
+			{
+				s+= (*i)->toTimedString();
+			}
+		}
+		
+		return s;
+	}
+
 	std::string toTimedString() const
 	{
 		std::string s;
