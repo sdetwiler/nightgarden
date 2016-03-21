@@ -10,6 +10,8 @@ var r 1
 var leaf "/Users/steve/projects/nightgarden/data/cordateLeaf.lsc"
 
 axiom A
-rule A -> FF[-B]C[+C]
-rule B -> [^(110)~(leaf)]FF+F-F-F[FFFC][+C]-F-FC
-rule C -> [^(80)~(leaf)]FF-F+F+F[B][-B]+F+FB
+rule A -> ST[-B]C[+C]
+rule B -> ST+S-T-S[STSC][+C]-S-TC
+rule C -> ST-S+T+S[B][-B]+S+TB
+rule S -> F[^(110)~(leaf)]
+rule T -> F[^(80)~(leaf)]
