@@ -80,6 +80,8 @@ SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) 
 		}
 	}
 	
+	delete scope;
+	
 //	cout << "rslt: " << res->toString() << endl << endl;
 	return res;
 }
@@ -136,7 +138,7 @@ SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbo
 			{
 				pct = 0;
 			}
-			size_t idx = (slv->size() * pct)-1;
+			size_t idx = ((slv->size()-1) * pct);
 			// Another copy? FIXME
 			return new SymbolList(*(*slv)[idx]);
 		}
