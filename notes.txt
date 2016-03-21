@@ -9,10 +9,11 @@ DONE		Broke axiom specifing values that map to variables for subsequent rules.
 				Has something to do with using referenced compiled lsystems.
 				Fix was the compiled systems contained intermediate symbols that referenced other rules.
 
+DONE		Fix animation for referenced systems.
 
 Fast forward and rewind
 
-Fix contextual evaluation
+Fix contextual, look ahead evaluation
 
 LSystem environmental awareness
 	Collision detection with environment geometry

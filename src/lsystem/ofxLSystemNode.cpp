@@ -153,7 +153,7 @@ void ofxLSystemNode::update()
 				{
 					SymbolList state;
 					getLSystem().getState(&state);
-					cout << "state:   " << state.toString() << endl;
+					//cout << "state:   " << state.toString() << endl;
 				}
 				
 				buildMeshes();

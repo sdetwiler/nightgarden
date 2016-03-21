@@ -45,6 +45,7 @@ public:
 	
 	void clear();
 	
+	SymbolList* getDereferencedState() const;
 	SymbolList const* getState() const;
 	void step(float dt);
 	void reduce(SymbolList* state);

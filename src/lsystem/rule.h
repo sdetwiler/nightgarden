@@ -46,6 +46,7 @@ public:
 	virtual std::string toString() const;
 	
 	virtual SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
+	SymbolList* getReferencedSymbols(Symbol* s) const;
 };
 
 

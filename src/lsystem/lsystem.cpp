@@ -283,6 +283,39 @@ VariableMap const& LSystem::getGlobalVariables() const
 }
 
 
+SymbolList* LSystem::getDereferencedState() const
+{
+	// TODO copy and walk mState and replace ~ operators with referenced lsystem state.
+	SymbolList* state = new SymbolList;
+	
+	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
+	{
+		Symbol* symbol = (*i);
+
+		if(symbol->value == "~")
+		{
+			ReferenceRule refRule;
+			SymbolList* refSymbols = refRule.getReferencedSymbols(symbol);
+			if(refSymbols)
+			{
+				for(SymbolVec::const_iterator j = refSymbols->symbols.begin(); j !=refSymbols->symbols.end(); ++j)
+				{
+					state->symbols.push_back(*j);
+				}
+				
+				refSymbols->symbols.clear();
+				delete refSymbols;
+			}
+		}
+		else
+		{
+			state->symbols.push_back(new Symbol(*symbol));
+		}
+	}
+
+	return state;
+}
+
 SymbolList const* LSystem::getState() const
 {
 	return mState;

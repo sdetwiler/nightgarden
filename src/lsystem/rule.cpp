@@ -120,8 +120,7 @@ string ReferenceRule::toString() const
 	return "ReferenceRule";
 }
 
-
-SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
+SymbolList* ReferenceRule::getReferencedSymbols(Symbol* s) const
 {
 	if(s->expressions && s->expressions->expressions.size())
 	{
@@ -145,6 +144,11 @@ SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbo
 	}
 	
 	return nullptr;
+}
+
+SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
+{
+	return getReferencedSymbols(s);
 }
 
 
