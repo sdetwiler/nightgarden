@@ -21,7 +21,7 @@ extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 // #define DEBUG_PARSER
 
 int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
-	cout << "Rules: " << msg << endl;
+	std::cout << "Rules: " << msg << std::endl;
 	return 0;
 }
 

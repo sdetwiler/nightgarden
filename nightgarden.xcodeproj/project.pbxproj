@@ -30,6 +30,7 @@
 		AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582751C9379F40066FAF1 /* ofxSliderGroup.cpp */; };
 		AA8582801C9379F40066FAF1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582771C9379F40066FAF1 /* ofxToggle.cpp */; };
 		AABCD3A01C8FECDC00110C5C /* ofxLSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */; };
+		AAF5AB6A1CA08CE900D723D4 /* variable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF5AB681CA08CE900D723D4 /* variable.cpp */; };
 		B897E464ACB53193F29FB87B /* predicate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4273183C29A4430F22FA560A /* predicate.cpp */; };
 		B9098255620D086C965C5AE5 /* ofxAssimpMeshHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D737DC18DFB108292C691CAF /* ofxAssimpMeshHelper.cpp */; };
 		CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3937A0E5CFB2248F4F2685C6 /* ofxCvImage.cpp */; };
@@ -276,6 +277,8 @@
 		AABCD3A51C8FF91B00110C5C /* test.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.ls; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		AACA91DC1C974FD30059190F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AACA91DE1C9759A40059190F /* progressiveRotation.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressiveRotation.ls; sourceTree = "<group>"; };
+		AAF5AB681CA08CE900D723D4 /* variable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = variable.cpp; path = lsystem/variable.cpp; sourceTree = "<group>"; };
+		AAF5AB691CA08CE900D723D4 /* variable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = variable.h; path = lsystem/variable.h; sourceTree = "<group>"; };
 		AC63D10602ACB40AEEEEC864 /* util_inl.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = util_inl.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/util_inl.hpp; sourceTree = SOURCE_ROOT; };
 		AD47B1892DAD250DD34A40A7 /* openfabmap.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = openfabmap.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/contrib/openfabmap.hpp; sourceTree = SOURCE_ROOT; };
 		AE2C34D095F8CF81BC86784D /* background_segm.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = background_segm.hpp; path = ../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/include/opencv2/video/background_segm.hpp; sourceTree = SOURCE_ROOT; };
@@ -676,6 +679,8 @@
 				09765D66A641E24A9E44595D /* types.h */,
 				AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */,
 				AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */,
+				AAF5AB681CA08CE900D723D4 /* variable.cpp */,
+				AAF5AB691CA08CE900D723D4 /* variable.h */,
 			);
 			name = lsystem;
 			sourceTree = "<group>";
@@ -1159,6 +1164,7 @@
 				AABCD3A01C8FECDC00110C5C /* ofxLSystemNode.cpp in Sources */,
 				79E0E81BA5F148548A86FF14 /* ofxCvHaarFinder.cpp in Sources */,
 				CFE1B9409640814753720212 /* ofxCvImage.cpp in Sources */,
+				AAF5AB6A1CA08CE900D723D4 /* variable.cpp in Sources */,
 				5E3D87E182F2624C32F8375B /* ofxCvShortImage.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

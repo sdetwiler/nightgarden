@@ -20,7 +20,7 @@ extern int expression_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 // #define DEBUG_PARSER
 
 int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, const char* msg) {
-	cout << "Expression: " << msg << endl;
+	std::cout << "Expression: " << msg << std::endl;
 	return 0;
 }
 %}
@@ -59,7 +59,7 @@ calc : expr
 {
 	if(retVal)
 	{
-		string n = retVal->name;
+		std::string n = retVal->name;
 		*retVal = *$1;
 		retVal->name = n;
 	}
@@ -102,7 +102,7 @@ val :
 
 	| IDENTIFIER
 	{
-		string k($1);
+		std::string k($1);
 		Variable* v = nullptr;
 		if(scope)
 		{
