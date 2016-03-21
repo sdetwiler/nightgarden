@@ -166,7 +166,7 @@ VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* cu
 	}
 	if(next && next->variables)
 	{
-		idx = scope->addToMap(next->variables, nextSymbol, idx);
+		scope->addToMap(next->variables, nextSymbol, idx);
 	}
 
 	return scope;
