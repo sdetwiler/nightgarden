@@ -668,29 +668,29 @@
 		877C37091A21DA50EB372D30 /* lsystem */ = {
 			isa = PBXGroup;
 			children = (
-				AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */,
-				AA3477121C991050006342B9 /* ofxThreadedLSystem.h */,
-				1126A71A6C3746D505F285E7 /* expression.cpp */,
-				00B84041DA7F8DAD808067C8 /* expression.h */,
 				45C697DC38E89E013B8EF9FC /* expression_parser.ypp */,
 				6681710A2743341DC9A9CA43 /* expression_tokenizer.lpp */,
+				1126A71A6C3746D505F285E7 /* expression.cpp */,
+				00B84041DA7F8DAD808067C8 /* expression.h */,
 				9B21D354542A482ADB463A72 /* lsystem.cpp */,
 				7A0E32A6126E0A9C6C39C6E9 /* lsystem.h */,
+				AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */,
+				AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */,
+				AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */,
+				AA3477121C991050006342B9 /* ofxThreadedLSystem.h */,
 				4273183C29A4430F22FA560A /* predicate.cpp */,
 				8E2B389709D41CA78CD35052 /* predicate.h */,
+				AAF5AB711CA08FCA00D723D4 /* result.cpp */,
+				AAF5AB721CA08FCA00D723D4 /* result.h */,
 				7C8DD9380A8CEB8111A0CC98 /* rule.cpp */,
 				1FEE1036D3F78C21B0356C42 /* rule.h */,
 				E2BEA0F5E6D7D898FE177A5F /* rules_parser.ypp */,
 				90B18E35667C1FC1AA20A553 /* rules_tokenizer.lpp */,
-				09765D66A641E24A9E44595D /* types.h */,
-				AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */,
-				AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */,
-				AAF5AB681CA08CE900D723D4 /* variable.cpp */,
-				AAF5AB691CA08CE900D723D4 /* variable.h */,
 				AAF5AB6E1CA08EA500D723D4 /* symbol.cpp */,
 				AAF5AB6F1CA08EA500D723D4 /* symbol.h */,
-				AAF5AB711CA08FCA00D723D4 /* result.cpp */,
-				AAF5AB721CA08FCA00D723D4 /* result.h */,
+				09765D66A641E24A9E44595D /* types.h */,
+				AAF5AB681CA08CE900D723D4 /* variable.cpp */,
+				AAF5AB691CA08CE900D723D4 /* variable.h */,
 			);
 			name = lsystem;
 			sourceTree = "<group>";
@@ -996,12 +996,12 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				AA34770E1C9909B3006342B9 /* ofRay.cpp */,
-				AA34770F1C9909B3006342B9 /* ofRay.h */,
+				877C37091A21DA50EB372D30 /* lsystem */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
-				877C37091A21DA50EB372D30 /* lsystem */,
+				AA34770E1C9909B3006342B9 /* ofRay.cpp */,
+				AA34770F1C9909B3006342B9 /* ofRay.h */,
 				1011130FC525759ED70D058F /* timing.h */,
 			);
 			path = src;
