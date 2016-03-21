@@ -33,7 +33,7 @@ LSystem Keywords
 | rule    | Declares a production rule. | `rule A -> AB` |
 
 
-LSystem Symbol Commands
+LSystem Symbol Operators
 ---
 
 Implemented symbols as defined in The Algorithmic Beauty of Plants.
@@ -53,10 +53,10 @@ Implemented symbols as defined in The Algorithmic Beauty of Plants.
 | [      | Start a branch. | Implemented |
 | ]      | Complete a branch. | Implemented |
 | {      | Start a polygon. | Implemented |
-| G      | Move forward and draw a line. Do not record a vertex. | Not implemented |
+| G      | Move forward and draw a line. Do not record a vertex. | Partially implemented |
 | .      | Record a vertex in the current polygon. | Implemented |
 | }      | Complete a polygon. | Implemented |
-| ~      | Incorporate a predefined surface. | Not implemented |
+| ~      | Incorporate a predefined surface. | Implemented |
 | !      | Decrement the diameter of segments. | Not implemented |
 | '      | Increment the current color index. | Not implemented |
 | %      | Cut off the remainter of the branch. | Not implemented |
