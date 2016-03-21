@@ -21,6 +21,7 @@
 #include "expression.h"
 #include "variable.h"
 #include "symbol.h"
+#include "result.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 typedef std::vector< Variable* > VariableVec;
@@ -270,63 +271,6 @@ public:
 
 typedef std::vector< SymbolList* >SymbolListVec;
 
-
-////////////////////////////////////////////////////////////////////////////////
-class Result
-{
-public:
-	SymbolList* symbolList;
-	
-	Result()
-	{
-		symbolList = nullptr;
-	}
-	
-	Result(Result const& rhs)
-	{
-		if(rhs.symbolList)
-		{
-			symbolList = new SymbolList(*rhs.symbolList);
-		}
-		else
-		{
-			symbolList = nullptr;
-		}
-	}
-	
-	~Result()
-	{
-		if(symbolList)
-		{
-			delete symbolList;
-		}
-	}
-	
-	std::string toString() const
-	{
-		if(symbolList)
-		{
-			return symbolList->toString();
-		}
-		else
-		{
-			return "null";
-		}
-	}
-
-	std::string toTimedString() const
-	{
-		if(symbolList)
-		{
-			return symbolList->toTimedString();
-		}
-		else
-		{
-			return "null";
-		}
-	}
-
-};
 
 
 
