@@ -46,9 +46,9 @@ int expression_error(yyscan_t scanner, VariableMap* scope, Variable* retVal, con
 %type <value> expr
 %type <value> val
 
-%destructor { free($$); } IDENTIFIER
-%destructor { if($$) delete $$; } INTEGER
-%destructor { if($$) delete $$; } FLOAT
+%destructor { printf("free IDENTIFIER Variable\n"); free($$); } IDENTIFIER
+%destructor { printf("delete INTEGER Variable\n"); if($$) delete $$; } INTEGER
+%destructor { printf("delete FLOAT Variable\n"); if($$) delete $$; } FLOAT
 
 %left '+' '-'
 %left '*' '/'
@@ -59,34 +59,36 @@ calc : expr
 {
 	if(retVal)
 	{
+		string n = retVal->name;
 		*retVal = *$1;
+		retVal->name = n;
 	}
 
 	#ifdef DEBUG_PARSER
-	printf("calc : expr\t%f\n", $1);
+	printf("calc : expr\t%s\n", $1->toString().c_str());
 	#endif
 	
 }
-
+/* FIXME this is stupid */
 expr : val { $$ = $1; }
-| expr '*' expr { *$$ = *$1 * *$3; }
-| expr '/' expr { *$$ = *$1 / *$3; }
-| expr '+' expr { *$$ = *$1 + *$3; }
-| expr '-' expr { *$$ = *$1 - *$3; }
-| expr '^' expr { *$$ = pow($1->value, $3->value); }
-| expr LT expr { *$$ = *$1 < *$3; }
-| expr LTE expr { *$$ = *$1 <= *$3; }
-| expr GT expr { *$$ = *$1 > *$3; }
-| expr GTE expr { *$$ = *$1 >= *$3; }
-| expr EQ expr { *$$ = *$1 == *$3; }
-| expr NEQ expr { *$$ = *$1 != *$3; }
+| expr '*' expr { $$ = new Variable(); *$$ = *$1 * *$3; delete $1; delete $3; }
+| expr '/' expr { $$ = new Variable(); *$$ = *$1 / *$3; delete $1; delete $3; }
+| expr '+' expr { $$ = new Variable(); *$$ = *$1 + *$3; delete $1; delete $3; }
+| expr '-' expr { $$ = new Variable(); *$$ = *$1 - *$3; delete $1; delete $3; }
+| expr '^' expr { $$ = new Variable(); *$$ = pow($1->value, $3->value); delete $1; delete $3; }
+| expr LT expr { $$ = new Variable(); *$$ = *$1 < *$3; delete $1; delete $3; }
+| expr LTE expr { $$ = new Variable(); *$$ = *$1 <= *$3; delete $1; delete $3; }
+| expr GT expr { $$ = new Variable(); *$$ = *$1 > *$3; delete $1; delete $3; }
+| expr GTE expr { $$ = new Variable(); *$$ = *$1 >= *$3; delete $1; delete $3; }
+| expr EQ expr { $$ = new Variable(); *$$ = *$1 == *$3; delete $1; delete $3; }
+| expr NEQ expr { $$ = new Variable(); *$$ = *$1 != *$3; delete $1; delete $3; }
 
 val :
 	INTEGER
 	{
 		$$ = $1;
 		#ifdef DEBUG_PARSER
-		printf("INTEGER \t%f\n", $1);
+		printf("INTEGER \t%s\n", $1->toString().c_str());
 		#endif
 	}
 
@@ -94,16 +96,16 @@ val :
 	{
 		$$ = $1;
 		#ifdef DEBUG_PARSER
-		printf("FLOAT \t%f\n", $1);
+		printf("FLOAT \t%s\n", $1->toString().c_str());
 		#endif
 	}
 
 	| IDENTIFIER
 	{
+		string k($1);
 		Variable* v = nullptr;
 		if(scope)
 		{
-			string k($1);
 			StringVariableMap::iterator i = scope->variables.find(k);
 			if(i!=scope->variables.end())
 			{
@@ -116,7 +118,10 @@ val :
 		}
 		else
 		{
-			yyerror(scanner, scope, retVal, "Variable not defined");
+			std::string msg = "Variable '" + k + "' is not defined";
+			$$ = new Variable();
+			yyerror(scanner, scope, retVal, msg.c_str());
+
 		}
 	}
 
