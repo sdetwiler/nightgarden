@@ -18,20 +18,25 @@ class ExpressionList;
 class Symbol
 {
 public:
-	std::string value;
-	bool isOperator;
+	std::string value;				// The symbol value.
+	bool isOperator;				// True if the symbol is an lsystem turtle operator.
 	
-	bool isTerminal;
-	float terminalAge;
-	float age;
+	bool isTerminal;				// Has the symbol reached it's terminal age.
+	float terminalAge;				// The symbol's terminal age.
+	float age;						// The symbol's current age.
 	
-	VariableList* variables; // (parameters)
-	ExpressionList* expressions;
+	VariableList* variables;		// parameter variable names in Predicate.
+	ExpressionList* expressions;	// Parameter variable values in Result.
 	
 	Symbol();
 	Symbol(Symbol const& rhs);
+	
 	~Symbol();
+	
+	// Returns lsystem string encoding of symbol.
 	std::string toString() const;
+	
+	// Returns timed lsystem string encoding of symbol.
 	std::string toTimedString() const;
 
 	bool operator==(Symbol const& rhs) const;

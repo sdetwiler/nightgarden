@@ -45,7 +45,6 @@ Symbol::Symbol(Symbol const& rhs)
 	{
 		expressions = nullptr;
 	}
-	
 }
 
 Symbol::~Symbol()
@@ -90,23 +89,7 @@ std::string Symbol::toTimedString() const
 	string s;
 	s+= "(";
 	
-	s+= value;
-	if(variables && variables->variables.size())
-	{
-		s+= "(";
-		
-		s+= variables->toString();
-		
-		s+= ")";
-	}
-	
-	if(expressions && expressions->expressions.size())
-	{
-		
-		s+= "(";
-		s+= expressions->toString();
-		s+= ")";
-	}
+	s+= toString();
 	
 	s+=", ";
 	s+=to_string(age);
@@ -127,8 +110,6 @@ bool Symbol::operator!=(Symbol const& rhs) const
 	return value != rhs.value;
 }
 
-// Use the symbol's current age to scale the value v by a growth function.
-// Used to animate the current symbol.
 float Symbol::applyGrowthFunction(float v)
 {
 	// TODO: Implement more than linear growth functions.

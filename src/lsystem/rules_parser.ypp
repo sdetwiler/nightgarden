@@ -142,7 +142,7 @@ variable_dec :
 		printf("variable_dec to VAR variable number\n\t%s %f\n", $2->toString().c_str(), $3);
 		#endif
 
-		lsystem->addVariable($$);
+		lsystem->addGlobalVariable($$);
 	}
 	| VAR variable STRING
 	{
@@ -153,7 +153,7 @@ variable_dec :
 		printf("variable_dec to VAR variable STRING\n\t%s %f\n", $2->toString().c_str(), $3);
 		#endif
 		
-		lsystem->addVariable($$);
+		lsystem->addGlobalVariable($$);
 	}
 
 

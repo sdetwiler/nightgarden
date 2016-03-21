@@ -213,10 +213,15 @@ void LSystem::addRule(Rule* rule)
 	mRules.push_back(rule);
 }
 
-void LSystem::dumpRules()
+void LSystem::addGlobalVariable(Variable* variable)
+{
+	mVariables.variables[variable->name] = variable;
+}
+
+void LSystem::dumpRules() const
 {
 	cout << "LSystem::dumpRules" << endl;
-	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
+	for(RuleVec::const_iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		cout << (*i)->toString() << endl;
 	}
@@ -224,12 +229,7 @@ void LSystem::dumpRules()
 	
 }
 
-void LSystem::addVariable(Variable* variable)
-{
-	mVariables.variables[variable->name] = variable;
-}
-
-void LSystem::dumpVariables()
+void LSystem::dumpVariables() const
 {
 	cout << "LSystem::dumpVariables" << endl;
 	cout << mVariables.toString() << endl;
@@ -322,7 +322,7 @@ SymbolList const* LSystem::getState() const
 }
 
 
-Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next)
+Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next) const
 {
 	if(symbol->value == "~")
 	{
@@ -331,7 +331,7 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 		return &refRule;
 	}
 	
-	for(RuleVec::iterator i = mRules.begin(); i!=mRules.end(); ++i)
+	for(RuleVec::const_iterator i = mRules.begin(); i!=mRules.end(); ++i)
 	{
 		Rule const* curr = (*i);
 		
