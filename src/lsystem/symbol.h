@@ -66,7 +66,7 @@ class SymbolList : public std::forward_list< Symbol >
 public:
 	SymbolList()
 	{
-		mLast = before_begin();
+		clear();
 	}
 	
 	std::string toOperatorTimedString() const
@@ -107,20 +107,24 @@ public:
 
 	void append(Symbol const& symbol)
 	{
-		// FIXME Need to cache this value... 
-		SymbolList::iterator last;
-		last = before_begin();
-		std::advance(last, std::distance(begin(), end()));
-
-		insert_after(last, symbol);
+		mLast = insert_after(mLast, symbol);
+	}
+	
+	void append(SymbolList const& symbolList)
+	{
+		mLast = insert_after(mLast, symbolList.begin(), symbolList.end());
+	}
+	
+	virtual void clear()
+	{
+		std::forward_list< Symbol >::clear();
+		mLast = before_begin();
 	}
 	
 	void claim(SymbolList& rhs)
 	{
 		clear();
 		splice_after(before_begin(), rhs);
-		
-//		std::cout << "SymbolList::claim after " << toTimedString() << std::endl;
 	}
 	
 private:

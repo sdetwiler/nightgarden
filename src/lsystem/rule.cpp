@@ -122,14 +122,7 @@ bool ReferenceRule::getReferencedSymbols(Symbol const* s, SymbolList& res) const
 
 			// TODO can this avoid a copy?
 			SymbolList const* src = &(*slv)[idx];
-			
-			// FIXME Need to cache this value.
-			SymbolList::iterator last;
-			last = res.before_begin();
-			size_t dist = std::distance(res.begin(), res.end());
-			std::advance(last, dist);
-
-			res.insert_after(last, src->begin(), src->end());
+			res.append(*src);
 			return true;
 		}
 	}
