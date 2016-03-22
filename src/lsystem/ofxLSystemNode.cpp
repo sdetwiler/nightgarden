@@ -325,22 +325,22 @@ void ofxLSystemNode::buildMeshes()
 	ofMesh* poly = nullptr;
 	ofColor polyColor(0,180,0);
 	
-	for(SymbolVec::const_iterator i = state.symbols.begin(); i!=state.symbols.end(); ++i)
+	for(SymbolList::const_iterator i = state.begin(); i!=state.end(); ++i)
 	{
-		Symbol* s = *i;
-		if(s->value == "F")
+		Symbol const& s = *i;
+		if(s.value == "F")
 		{
 			// Scale n by the symbol's age into a local version of n.
-			float ln = s->applyGrowthFunction(n);
-			float lr = s->applyGrowthFunction(r);
+			float ln = s.applyGrowthFunction(n);
+			float lr = s.applyGrowthFunction(r);
 
 			ofColor color(139,69,19);
-			if(s->expressions && s->expressions->expressions.size() == 3)
+			if(s.expressions && s.expressions->expressions.size() == 3)
 			{
 				//					cout << s->expressions->toString() << endl;
-				color.r = stoi((*(s->expressions->expressions[0])).value);
-				color.g = stoi((*(s->expressions->expressions[1])).value);
-				color.b = stoi((*(s->expressions->expressions[2])).value);
+				color.r = stoi((*(s.expressions->expressions[0])).value);
+				color.g = stoi((*(s.expressions->expressions[1])).value);
+				color.b = stoi((*(s.expressions->expressions[2])).value);
 			}
 
 			if(mCurrMesh == nullptr)
@@ -356,18 +356,18 @@ void ofxLSystemNode::buildMeshes()
 			makeMeshFaces(lr, color, currMatrix);
 		}
 		
-		if(s->value == "G")
+		if(s.value == "G")
 		{
 			
 			float ln = n;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				ln = stof((*(s->expressions->expressions[0])).value);
+				ln = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glTranslate(0, s->applyGrowthFunction(ln), 0);
+			currMatrix.glTranslate(0, s.applyGrowthFunction(ln), 0);
 		}
 		
-		else if(s->value == "." || s->value == "f")
+		else if(s.value == "." || s.value == "f")
 		{
 			if(poly)
 			{
@@ -432,21 +432,21 @@ void ofxLSystemNode::buildMeshes()
 				}
 			}
 			
-			if(s->value == "f")
+			if(s.value == "f")
 			{
 				float ln = n;
 
-				if(s->expressions && s->expressions->expressions.size() == 1)
+				if(s.expressions && s.expressions->expressions.size() == 1)
 				{
-					ln = stof((*(s->expressions->expressions[0])).value);
+					ln = stof((*(s.expressions->expressions[0])).value);
 				}
 
-				currMatrix.glTranslate(0, s->applyGrowthFunction(ln), 0);
+				currMatrix.glTranslate(0, s.applyGrowthFunction(ln), 0);
 			}
 		}
 		
 		
-		else if(s->value == "{")
+		else if(s.value == "{")
 		{
 			if(poly)
 			{
@@ -456,16 +456,16 @@ void ofxLSystemNode::buildMeshes()
 			
 			poly = new ofMesh();
 			
-			if(s->expressions && s->expressions->expressions.size() == 3)
+			if(s.expressions && s.expressions->expressions.size() == 3)
 			{
 				//					cout << s->expressions->toString() << endl;
-				polyColor.r = stoi((*(s->expressions->expressions[0])).value);
-				polyColor.g = stoi((*(s->expressions->expressions[1])).value);
-				polyColor.b = stoi((*(s->expressions->expressions[2])).value);
+				polyColor.r = stoi((*(s.expressions->expressions[0])).value);
+				polyColor.g = stoi((*(s.expressions->expressions[1])).value);
+				polyColor.b = stoi((*(s.expressions->expressions[2])).value);
 			}
 		}
 		
-		else if(s->value == "}")
+		else if(s.value == "}")
 		{
 			if(poly)
 			{
@@ -478,80 +478,80 @@ void ofxLSystemNode::buildMeshes()
 			}
 		}
 		
-		else if(s->value == "[")
+		else if(s.value == "[")
 		{
 			closeMesh();
 			matrixStack.push(currMatrix);
 		}
 		
-		else if(s->value == "]")
+		else if(s.value == "]")
 		{
 			closeMesh();
 			currMatrix = matrixStack.top();
 			matrixStack.pop();
 		}
 		
-		else if(s->value == "+")
+		else if(s.value == "+")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(s->applyGrowthFunction(d), 0, 0, 1);
+			currMatrix.glRotate(s.applyGrowthFunction(d), 0, 0, 1);
 		}
 		
-		else if(s->value == "-")
+		else if(s.value == "-")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 0, 1);
+			currMatrix.glRotate(-s.applyGrowthFunction(d), 0, 0, 1);
 		}
 		
-		else if(s->value == "&")
+		else if(s.value == "&")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(-s->applyGrowthFunction(d), 1, 0, 0);
+			currMatrix.glRotate(-s.applyGrowthFunction(d), 1, 0, 0);
 		}
 		
-		else if(s->value == "^")
+		else if(s.value == "^")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(s->applyGrowthFunction(d), 1, 0, 0);
+			currMatrix.glRotate(s.applyGrowthFunction(d), 1, 0, 0);
 		}
 		
-		else if(s->value == "/")
+		else if(s.value == "/")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(-s->applyGrowthFunction(d), 0, 1, 0);
+			currMatrix.glRotate(-s.applyGrowthFunction(d), 0, 1, 0);
 		}
 		
-		else if(s->value == "\\")
+		else if(s.value == "\\")
 		{
 			float d = delta;
-			if(s->expressions && s->expressions->expressions.size() == 1)
+			if(s.expressions && s.expressions->expressions.size() == 1)
 			{
-				d = stof((*(s->expressions->expressions[0])).value);
+				d = stof((*(s.expressions->expressions[0])).value);
 			}
-			currMatrix.glRotate(s->applyGrowthFunction(d), 0, 1, 0);
+			currMatrix.glRotate(s.applyGrowthFunction(d), 0, 1, 0);
 		}
 		
-		else if(s->value == "|")
+		else if(s.value == "|")
 		{
 			currMatrix.glRotate(180, 0, 0, 1);
 		}

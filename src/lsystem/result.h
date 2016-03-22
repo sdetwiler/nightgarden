@@ -10,15 +10,14 @@
 #define result_h
 
 #include <string>
-
-class SymbolList;
+#include "symbol.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
 class Result
 {
 public:
-	SymbolList* symbolList;
+	SymbolList symbolList;
 	
 	Result();
 	Result(Result const& rhs);

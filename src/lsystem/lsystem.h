@@ -23,8 +23,8 @@ public:
 	
 	virtual ~LSystem();
 	
-	void setAxiom(Result* axiom);
-	void setState(Result* state);
+	void setAxiom(SymbolList const& axiom);
+	void setState(SymbolList const& state);
 	void addRule(Rule* rule);
 	void addGlobalVariable(Variable* variable);
 	float getGlobalVariable(char const* name, float def=0) const;
@@ -47,18 +47,20 @@ public:
 	// Clears any data managed by the system.
 	void clear();
 	
-	// Returns the curent state of the system. References to external systems dereferenced and expanded to replace the reference symbols.
-	// Caller is responsible for deleting returned memory.
-	SymbolList* getDereferencedState() const;
+	// Appends the curent state of the system to passed SymbolList state.
+	bool getDereferencedState(SymbolList& state) const;
 
 	// Returns the curent state of the system. References to external systems are preserved as reference symbols.
-	SymbolList const* getState() const;
+	SymbolList const& getState() const;
+
+	// Claims the currrent system state into passed rhs and removes memory ownership from this system.
+	void claimState(SymbolList& rhs);
 
 	// Step the system by time delta dt.
 	void step(float dt);
 	
 	// Remove empty or redundant branches from the provided state.
-	void reduce(SymbolList* state);
+	void reduce(SymbolList& state);
 
 	// Call to clear the global compiled cache.
 	static void clearCompiledCache();
@@ -72,8 +74,8 @@ private:
 	// State if the system is processing in real-time and not compiled.
 	RuleVec					mRules;			// All rules.
 	VariableMap				mVariables;		// All global variables.
-	Result*					mAxiom;			// The axiom.
-	SymbolList const*		mState;			// The current system state.
+	SymbolList				mAxiom;			// The axiom.
+	SymbolList				mState;			// The current system state.
 	
 	VariableMap const& getGlobalVariables() const;
 	
@@ -85,9 +87,9 @@ private:
 	SymbolListVec const*	mStates;				// All compiled states for the system.
 
 	// Compiled state cache.
-	typedef std::map<std::string, SymbolListVec*> StringSymbolListVecMap;
+	typedef std::map<std::string, SymbolListVec> StringSymbolListVecMap;
 	static SymbolListVec const* getCompiledStates(char const* name);
-	static SymbolListVec* loadCompiled(char const* filename);
+	static bool loadCompiled(char const* filename, SymbolListVec& states);
 	static StringSymbolListVecMap sCache;
 
 };

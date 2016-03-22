@@ -34,17 +34,17 @@ int rules_lex_destroy(yyscan_t scanner);
 
 #endif
 
-
-SymbolListVec* LSystem::loadCompiled(char const* filename)
+//------------------------------------------------------------------------------------------
+// Static methods
+//------------------------------------------------------------------------------------------
+bool LSystem::loadCompiled(char const* filename, SymbolListVec& states)
 {
 	ifstream infile(filename);
 	if(!infile.is_open())
 	{
 		cout << "Failed to open " << filename << endl;
-		return nullptr;
+		return false;
 	}
-
-	SymbolListVec* states = new SymbolListVec;
 
 	LSystem system;
 	string line;
@@ -53,61 +53,46 @@ SymbolListVec* LSystem::loadCompiled(char const* filename)
 		line += "\n";
 		if(system.parse(line.c_str()))
 		{
-			// FIXME Blarg so many memory copies.
-			SymbolList* state = new SymbolList(*system.getState());
-			states->push_back(state);
+			SymbolListVec::iterator i = states.insert(states.end(), SymbolList());
+			system.claimState(*i);
 		}
 	}
 	
 	if(infile.bad())
 	{
 		cout << "Error while reading from " << filename << endl;
-		delete states;
-		return nullptr;
+		return false;
 	}
 	
-	return states;
+	return true;
 }
 
 LSystem::StringSymbolListVecMap LSystem::sCache;
 
 void LSystem::clearCompiledCache()
 {
-	for(StringSymbolListVecMap::iterator i = sCache.begin(); i!=sCache.end(); ++i)
-	{
-		delete i->second;
-	}
 	sCache.clear();
 }
 
-// TODO This is a big, fat memory leak.
 SymbolListVec const* LSystem::getCompiledStates(char const* name)
 {
-	
-	SymbolListVec* states;
-	
 	StringSymbolListVecMap::iterator i = sCache.find(name);
 	if(i == sCache.end())
 	{
-		states = LSystem::loadCompiled(name);
-		if(states)
+		sCache[name] = SymbolListVec();
+		if(LSystem::loadCompiled(name, sCache[name]) == false)
 		{
-			sCache[name] = states;
+			sCache.erase(name);
+			return nullptr;
 		}
 	}
-	else
-	{
-		states = i->second;
-	}
 	
-	return states;
+	return &sCache[name];
 }
 
 
 LSystem::LSystem()
 {
-	mAxiom = nullptr;
-	mState = nullptr;
 }
 
 LSystem::~LSystem()
@@ -181,31 +166,16 @@ bool LSystem::loadCompiled(char const* filename, size_t* numStates)
 }
 
 
-void LSystem::setAxiom(Result* axiom)
+void LSystem::setAxiom(SymbolList const& axiom)
 {
-	if(mAxiom)
-	{
-		delete mAxiom;
-	}
-	
 	mAxiom = axiom;
-	if(mState)
-	{
-		delete mState;
-	}
-	mState = new SymbolList(*(mAxiom->symbolList));
+	mState = mAxiom;
 }
 
-void LSystem::setState(Result* state)
+void LSystem::setState(SymbolList const& state)
 {
-	if(mState)
-	{
-		delete mState;
-	}
-	
-	mState = state->symbolList;
-	state->symbolList = nullptr;
-	delete state;
+
+	mState = state;
 }
 
 void LSystem::addRule(Rule* rule)
@@ -247,19 +217,9 @@ void LSystem::clear()
 
 	mVariables.clear();
 
-	if(mAxiom)
-	{
-		delete mAxiom;
-		mAxiom = nullptr;
-	}
-	if(mStates == nullptr)
-	{
-		if(mState)
-		{
-			delete mState;
-		}
-	}
-	mState = nullptr;
+	mAxiom.clear();
+	mState.clear();
+	
 	mCurrCompiledState = 0;
 	mStates = nullptr;
 }
@@ -283,42 +243,38 @@ VariableMap const& LSystem::getGlobalVariables() const
 }
 
 
-SymbolList* LSystem::getDereferencedState() const
+bool LSystem::getDereferencedState(SymbolList& state) const
 {
-	// TODO copy and walk mState and replace ~ operators with referenced lsystem state.
-	SymbolList* state = new SymbolList;
-	
-	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
+	for(SymbolList::const_iterator i = mState.begin(); i !=mState.end(); ++i)
 	{
-		Symbol* symbol = (*i);
+		Symbol const* symbol = &(*i);
 
 		if(symbol->value == "~")
 		{
 			ReferenceRule refRule;
-			SymbolList* refSymbols = refRule.getReferencedSymbols(symbol);
-			if(refSymbols)
+			if(refRule.getReferencedSymbols(symbol, state) == false)
 			{
-				for(SymbolVec::const_iterator j = refSymbols->symbols.begin(); j !=refSymbols->symbols.end(); ++j)
-				{
-					state->symbols.push_back(*j);
-				}
-				
-				refSymbols->symbols.clear();
-				delete refSymbols;
+				return false;
 			}
 		}
 		else
 		{
-			state->symbols.push_back(new Symbol(*symbol));
+			state.append(*symbol);
+
 		}
 	}
 
-	return state;
+	return true;
 }
 
-SymbolList const* LSystem::getState() const
+SymbolList const& LSystem::getState() const
 {
 	return mState;
+}
+
+void LSystem::claimState(SymbolList& rhs)
+{
+	mState.claim(rhs);
 }
 
 
@@ -345,39 +301,40 @@ Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* 
 	return nullptr;
 }
 
-void LSystem::reduce(SymbolList* state)
+void LSystem::reduce(SymbolList& state)
 {
-	if(!state)
-	{
-		return;
-	}
+	
+	
+	typedef vector<SymbolList::const_iterator>SymbolListIteratorVec;
 
-	typedef stack<SymbolVec*> SymbolVecStack;
+	typedef stack<SymbolListIteratorVec*> SymbolListIteratorVecStack;
 	
-	SymbolVecStack frames;
-	SymbolVec toRemove;
+	SymbolListIteratorVecStack frames;
+
+	SymbolListIteratorVec toRemove;
 	
 	
-	SymbolVec* currFrame = new SymbolVec();
+	SymbolListIteratorVec* currFrame = new SymbolListIteratorVec;
 	frames.push(currFrame);
 	
-	for(SymbolVec::const_iterator i = state->symbols.begin(); i!=state->symbols.end(); ++i)
+	SymbolList::const_iterator prev = state.before_begin();
+	for(SymbolList::const_iterator i = state.begin(); i!=state.end(); ++i)
 	{
-		Symbol* symbol = (*i);
+		Symbol const& symbol = (*i);
 		
-		if(symbol->value == "[")
+		if(symbol.value == "[")
 		{
-			currFrame = new SymbolVec();
+			currFrame = new SymbolListIteratorVec();
 			frames.push(currFrame);
-			currFrame->push_back(symbol);
+			currFrame->push_back(i);
 		}
-		else if(symbol->value == "]")
+		else if(symbol.value == "]")
 		{
 			// Check frame contents and if only [ then drop those symbols from the symbollist.
 			if(currFrame->size() == 1 && currFrame->at(0)->value == "[")
 			{
 				toRemove.push_back(currFrame->at(0));
-				toRemove.push_back(symbol);
+				toRemove.push_back(prev);
 			}
 			delete currFrame;
 			frames.pop();
@@ -385,18 +342,15 @@ void LSystem::reduce(SymbolList* state)
 		}
 		else
 		{
-			currFrame->push_back(symbol);
+			currFrame->push_back(i);
 		}
+		
+		prev = i;
 	}
 	
-	for(SymbolVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
+	for(SymbolListIteratorVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
 	{
-		
-		SymbolVec::iterator j = find(state->symbols.begin(), state->symbols.end(), *i);
-		if(j!=state->symbols.end())
-		{
-			state->symbols.erase(j);
-		}
+		state.erase_after(*i);
 	}
 
 	while(frames.size())
@@ -423,11 +377,7 @@ void LSystem::step(float dt)
 	
 	START_TIME_MEASURE(step);
 	
-	if(!mState)
-	{
-		return;
-	}
-	SymbolList* output = new SymbolList;
+	SymbolList output;
 
 	SymbolStack context;
 	Symbol root;
@@ -435,17 +385,17 @@ void LSystem::step(float dt)
 	SymbolStack branches;
 	
 //	cout << " LSystem::step processing " << to_string(mState->symbols.size()) << " symbols\n";
-	for(SymbolVec::const_iterator i = mState->symbols.begin(); i!=mState->symbols.end(); ++i)
+	for(SymbolList::iterator i = mState.begin(); i!=mState.end(); ++i)
 	{
 		START_TIME_MEASURE(itr);
 
-		Symbol* symbol = (*i);
+		Symbol* symbol = &(*i);
 
 		// If a push branch symbol...
 		if(symbol->value == "[")
 		{
 			// Add the symbol to the output.
-			*(output)+= *symbol;
+			output.append(*symbol);
 
 			// Store the current head of the context in the branches vector.
 			branches.push(context.top());
@@ -455,7 +405,7 @@ void LSystem::step(float dt)
 		else if(symbol->value == "]")
 		{
 			// Add the symbol to the output.
-			*(output)+= *symbol;
+			output.append(*symbol);
 
 			// Get and pop location of the last branch and rewind the context back to that point.
 			if(branches.size() == 0)
@@ -465,7 +415,7 @@ void LSystem::step(float dt)
 			}
 			else
 			{
-				Symbol* b = branches.top();
+				Symbol const* b = branches.top();
 				branches.pop();
 				while(context.size())
 				{
@@ -481,7 +431,7 @@ void LSystem::step(float dt)
 		// HACK: Only one lookahead symbol currently provided.
 		// Peek at the next symbol.
 		Symbol* next = nullptr;
-		SymbolVec::const_iterator peek = i+1;
+//		SymbolList::const_iterator peek = i+1;
 		size_t peekDistance = 0;
 
 //////////////////////////////////////////////////////
@@ -518,21 +468,23 @@ void LSystem::step(float dt)
 			// Rule exists, evaluate it and replace current symbol with the results.
 			if(rule)
 			{
-				SymbolList* result = rule->evaluate(context, symbol, next);
-				*(output)+= *result;
-				delete result;
+				if(rule->evaluate(context, symbol, next, output) == false)
+				{
+					cout << "ERROR" << endl;
+					return;
+				}
 			}
 			// If no rule is found that matches the current symbol, append the original symbol to the output.
 			else
 			{
 				// cout << "No rule to match " << symbol->toString() << " so keeping symbol" << endl;
-				*(output)+= *symbol;
+				output.append(*symbol);
 			}
 		}
 		// Not yet terminal so keep the current symbol.
 		else
 		{
-			*(output)+= *symbol;
+			output.append(*symbol);
 		}
 		
 		// Add the current symbol to the context.
@@ -542,14 +494,9 @@ void LSystem::step(float dt)
 
 	}
 	
-	if(mState)
-	{
-		delete mState;
-	}
-	
 	reduce(output);
-
-	mState = output;
+	
+	claimState(output);
 	
 	LOG_TIME_DELTA(step, "end");
 }
@@ -593,7 +540,7 @@ bool LSystem::compile(char const* outputFilename)
 		cout << ".";
 		cout.flush();
 		step(stepInterval);
-		outfile << "state " << getState()->toOperatorTimedString() << endl;
+		outfile << "state " << getState().toOperatorTimedString() << endl;
 	}
 
 	outfile.close();

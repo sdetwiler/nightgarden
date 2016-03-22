@@ -22,7 +22,7 @@ class Rule
 {
 public:
 	Predicate* predicate;
-	Result* result;
+	Result result;
 	
 	Rule();
 	
@@ -30,7 +30,8 @@ public:
 	
 	virtual std::string toString() const;
 	
-	virtual SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
+	// Evaluates the rule and appends the results to the passed SymbolList result.
+	virtual bool evaluate(SymbolStack const& context, Symbol* currSymbol, Symbol* next, SymbolList& result) const;
 };
 
 
@@ -45,8 +46,9 @@ public:
 	
 	virtual std::string toString() const;
 	
-	virtual SymbolList* evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const;
-	SymbolList* getReferencedSymbols(Symbol* s) const;
+	// Evaluates the rule and appends the results to the passed SymbolList result.
+	virtual bool evaluate(SymbolStack const& context, Symbol* currSymbol, Symbol* next, SymbolList& result) const;
+	bool getReferencedSymbols(Symbol const* currSymbol, SymbolList& result) const;
 };
 
 

@@ -34,7 +34,7 @@ public:
 	
 	Expression& operator+=(Expression const& rhs);
 	
-	bool eval(VariableMap* scope, Variable* ret);
+	bool eval(VariableMap* scope, Variable* ret) const;
 };
 
 

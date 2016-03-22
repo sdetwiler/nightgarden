@@ -15,7 +15,6 @@ using namespace std;
 Rule::Rule()
 {
 	predicate = nullptr;
-	result = nullptr;
 }
 
 Rule::~Rule()
@@ -23,11 +22,6 @@ Rule::~Rule()
 	if(predicate)
 	{
 		delete predicate;
-	}
-	
-	if(result)
-	{
-		delete result;
 	}
 }
 
@@ -37,34 +31,31 @@ string Rule::toString() const
 	
 	s+= predicate->toString();
 	s+= " -> ";
-	s+= result->toString();
+	s+= result.toString();
 	
 	return s;
 }
 
 
-SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
+bool Rule::evaluate(SymbolStack const& context, Symbol* currSymbol, Symbol* next, SymbolList& res) const
 {
 //	cout << "Rule::evaluate" << endl
 //	<< "rule: " << this->toString() << endl
 //	<< "smbl: " << s->toString() << endl;
 	
-	VariableMap* scope = predicate->createScope(context, s, next);
+	VariableMap* scope = predicate->createScope(context, currSymbol, next);
 	
-	SymbolList* res = new SymbolList(*(result->symbolList));
-	
-	// For every symbol in the symbol list, evaluate their expressions using the computed scope.
-	for(SymbolVec::iterator i = res->symbols.begin(); i!=res->symbols.end(); ++i)
+	// For every symbol in the rule's result, evaluate any expressions using the computed scope and then append to res.
+ 	for(SymbolList::const_iterator i = result.symbolList.begin(); i!=result.symbolList.end(); ++i)
 	{
-		Symbol* s = *i;
-		if(s->expressions)
+		Symbol s = *i;
+		if(s.expressions)
 		{
-			for(ExpressionVec::iterator j = s->expressions->expressions.begin(); j!=s->expressions->expressions.end(); ++j)
+			for(ExpressionVec::iterator j = s.expressions->expressions.begin(); j!=s.expressions->expressions.end(); ++j)
 			{
 				Expression* e = *j;
-				
 				Variable v;
-
+				
 				if(e->eval(scope, &v))
 				{
 					if(v.type == Variable::Float)
@@ -76,32 +67,22 @@ SymbolList* Rule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) 
 						e->value = v.stringValue;
 					}
 				}
+				else
+				{
+					delete scope;
+					return false;
+				}
 			}
 		}
+		
+		res.append(s);
 	}
 	
 	delete scope;
 	
 //	cout << "rslt: " << res->toString() << endl << endl;
-	return res;
+	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -120,7 +101,7 @@ string ReferenceRule::toString() const
 	return "ReferenceRule";
 }
 
-SymbolList* ReferenceRule::getReferencedSymbols(Symbol* s) const
+bool ReferenceRule::getReferencedSymbols(Symbol const* s, SymbolList& res) const
 {
 	if(s->expressions && s->expressions->expressions.size())
 	{
@@ -138,17 +119,22 @@ SymbolList* ReferenceRule::getReferencedSymbols(Symbol* s) const
 				pct = 0;
 			}
 			size_t idx = ((slv->size()-1) * pct);
-			// Another copy? FIXME
-			return new SymbolList(*(*slv)[idx]);
+
+			// TODO can this avoid a copy?
+			SymbolList const* src = &(*slv)[idx];
+			
+			// FIXME SCD WRONG
+			res.insert_after(res.end(), src->before_begin(), src->end());
+			return true;
 		}
 	}
 	
-	return nullptr;
+	return false;
 }
 
-SymbolList* ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next) const
+bool ReferenceRule::evaluate(SymbolStack const& context, Symbol* s, Symbol* next, SymbolList& res) const
 {
-	return getReferencedSymbols(s);
+	return getReferencedSymbols(s, res);
 }
 
 

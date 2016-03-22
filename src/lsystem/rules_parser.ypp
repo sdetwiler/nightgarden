@@ -118,7 +118,8 @@ axiom :
 		printf("axiom %s\n", $2->toString().c_str());
 		#endif
 		
-		lsystem->setAxiom($2);
+		lsystem->setAxiom($2->symbolList);
+		delete $2;
 	}
 
 state :
@@ -128,7 +129,9 @@ state :
 		printf("state %s\n", $2->toTimedString().c_str());
 		#endif
 		
-		lsystem->setState($2);
+		//lsystem->setState($2);
+		lsystem->claimState($2->symbolList);
+		delete $2;
 	}
 
 
@@ -150,7 +153,7 @@ variable_dec :
 		$$->stringValue = $3;
 		$$->type = Variable::String;
 		#ifdef DEBUG_PARSER
-		printf("variable_dec to VAR variable STRING\n\t%s %f\n", $2->toString().c_str(), $3);
+		printf("variable_dec to VAR variable STRING\n\t%s %s\n", $2->toString().c_str(), $3);
 		#endif
 		
 		lsystem->addGlobalVariable($$);
@@ -196,12 +199,13 @@ rule :
 	RULE predicate TRANSITION result
 	{
 		#ifdef DEBUG_PARSER
-		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList->toString().c_str());
+		printf("rule to RULE predicate TRANSITION result\n%s -> %s\n", $2->symbol->value.c_str(), $4->symbolList.toString().c_str());
 		#endif
 		
 		$$ = new Rule();
 		$$->predicate = $2;
-		$$->result = $4;
+		$$->result = *$4;
+		delete $4;
 		
 		lsystem->addRule($$);
 	}
@@ -336,7 +340,8 @@ symbol_list :
 		printf("symbol_list to symbol_List SYMBOL\n\t%s\n", $2->value.c_str());
 		#endif
 		
-		$$->symbols.push_back($2);
+		$$->append(*$2);
+		delete $2;
 	}
 
 	| SYMBOL
@@ -346,7 +351,8 @@ symbol_list :
 		#endif
 		
 		$$ = new SymbolList();
-		$$->symbols.push_back($1);
+		$$->append(*$1);
+		delete $1;
 	}
 
 
@@ -361,7 +367,8 @@ result :
 		#endif
 		
 		$$ = new Result();
-		$$->symbolList = $1;
+		$$->symbolList.claim(*$1);
+		delete $1;
 	}
 
 
@@ -372,7 +379,8 @@ result_symbol_list :
 		printf("result_symbol_list to result_symbol_List result_symbol\n\t%s\n", $2->value.c_str());
 		#endif
 		
-		$$->symbols.push_back($2);
+		$$->append(*$2);
+		delete $2;
 	}
 
 	| result_symbol
@@ -382,7 +390,8 @@ result_symbol_list :
 		#endif
 		
 		$$ = new SymbolList();
-		$$->symbols.push_back($1);
+		$$->append(*$1);
+		delete $1;
 	}
 
 

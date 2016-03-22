@@ -61,7 +61,7 @@ Expression& Expression::operator+=(Expression const& rhs)
 	return *this;
 }
 
-bool Expression::eval(VariableMap* scope, Variable* ret)
+bool Expression::eval(VariableMap* scope, Variable* ret) const
 {
 //	cout << "Expression::eval \"" << value << "\"\n";
 	

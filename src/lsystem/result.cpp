@@ -12,51 +12,25 @@
 
 Result::Result()
 {
-	symbolList = nullptr;
 }
 
 Result::Result(Result const& rhs)
 {
-	if(rhs.symbolList)
-	{
-		symbolList = new SymbolList(*rhs.symbolList);
-	}
-	else
-	{
-		symbolList = nullptr;
-	}
+	symbolList = rhs.symbolList;
 }
 
 Result::~Result()
 {
-	if(symbolList)
-	{
-		delete symbolList;
-	}
 }
 
 std::string Result::toString() const
 {
-	if(symbolList)
-	{
-		return symbolList->toString();
-	}
-	else
-	{
-		return "null";
-	}
+	return symbolList.toString();
 }
 
 std::string Result::toTimedString() const
 {
-	if(symbolList)
-	{
-		return symbolList->toTimedString();
-	}
-	else
-	{
-		return "null";
-	}
+	return symbolList.toTimedString();
 }
 
 

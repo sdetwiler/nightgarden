@@ -23,6 +23,23 @@ Symbol::Symbol()
 
 Symbol::Symbol(Symbol const& rhs)
 {
+	assign(rhs);
+}
+
+Symbol::~Symbol()
+{
+	if(variables)
+	{
+		delete variables;
+	}
+	if(expressions)
+	{
+		delete expressions;
+	}
+}
+
+Symbol& Symbol::assign(Symbol const& rhs)
+{
 	isOperator = rhs.isOperator;
 	value = rhs.value;
 	terminalAge = rhs.terminalAge;
@@ -45,18 +62,8 @@ Symbol::Symbol(Symbol const& rhs)
 	{
 		expressions = nullptr;
 	}
-}
 
-Symbol::~Symbol()
-{
-	if(variables)
-	{
-		delete variables;
-	}
-	if(expressions)
-	{
-		delete expressions;
-	}
+	return *this;
 }
 
 std::string Symbol::toString() const
@@ -110,13 +117,18 @@ bool Symbol::operator!=(Symbol const& rhs) const
 	return value != rhs.value;
 }
 
-float Symbol::applyGrowthFunction(float v)
+Symbol& Symbol::operator=(Symbol const& rhs)
+{
+	return assign(rhs);
+}
+
+float Symbol::applyGrowthFunction(float v) const
 {
 	// TODO: Implement more than linear growth functions.
 	return linearGrowthFunction(v);
 }
 
-float Symbol::linearGrowthFunction(float v)
+float Symbol::linearGrowthFunction(float v) const
 {
 	float max = 1.0;
 	float pct = age/terminalAge;
@@ -126,3 +138,4 @@ float Symbol::linearGrowthFunction(float v)
 	}
 	return v*pct;
 }
+

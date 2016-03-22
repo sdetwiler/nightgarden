@@ -153,7 +153,7 @@ VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* cu
 	if(prev && prev->variables)
 	{
 		// TODO multi symbol previous components...
-		Symbol* prevSymbol = nullptr;
+		Symbol const* prevSymbol = nullptr;
 		if(context.size())
 		{
 			prevSymbol = context.top();
@@ -166,7 +166,7 @@ VariableMap* Predicate::createScope(SymbolStack const& context, Symbol const* cu
 	}
 	if(next && next->variables)
 	{
-		scope->addToMap(next->variables, nextSymbol, idx);
+		idx = scope->addToMap(next->variables, nextSymbol, idx);
 	}
 
 	return scope;

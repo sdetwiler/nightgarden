@@ -85,12 +85,8 @@ void ofxThreadedLSystem::getState(SymbolList* state)
 	{
 		// TODO FIXME Memory copies again!
 		mUpdateAvailable = false;
-		SymbolList* t = mSystem.getDereferencedState();
-		if(t)
-		{
-			mState = *t;
-			delete t;
-		}
+		mState.clear();
+		mSystem.getDereferencedState(mState);
 	}
 	unlock();
 	
