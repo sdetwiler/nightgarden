@@ -119,6 +119,8 @@ public:
 	{
 		clear();
 		splice_after(before_begin(), rhs);
+		
+//		std::cout << "SymbolList::claim after " << toTimedString() << std::endl;
 	}
 	
 private:

@@ -54,7 +54,7 @@ bool LSystem::loadCompiled(char const* filename, SymbolListVec& states)
 		if(system.parse(line.c_str()))
 		{
 			SymbolListVec::iterator i = states.insert(states.end(), SymbolList());
-			system.claimState(*i);
+			system.handoffState(*i);
 		}
 	}
 	
@@ -277,6 +277,12 @@ void LSystem::claimState(SymbolList& rhs)
 	mState.claim(rhs);
 }
 
+void LSystem::handoffState(SymbolList& rhs)
+{
+	rhs.claim(mState);
+}
+
+
 
 Rule const* LSystem::getRuleForSymbol(SymbolStack const& context, Symbol const* symbol, Symbol const* next) const
 {
@@ -470,7 +476,7 @@ void LSystem::step(float dt)
 			{
 				if(rule->evaluate(context, symbol, next, output) == false)
 				{
-					cout << "ERROR" << endl;
+					cout << "ERROR: rule evaluation failed.\nRule: " << rule->toString() << endl << "Symbol: " << symbol->toString() << endl;
 					return;
 				}
 			}

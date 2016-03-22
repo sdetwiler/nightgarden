@@ -53,8 +53,11 @@ public:
 	// Returns the curent state of the system. References to external systems are preserved as reference symbols.
 	SymbolList const& getState() const;
 
-	// Claims the currrent system state into passed rhs and removes memory ownership from this system.
+	// Claims the passed state into the system and assumes memory ownership for the state.
 	void claimState(SymbolList& rhs);
+
+	// Handoff the system's current state into passed rhs and removes memory ownership from this system.
+	void handoffState(SymbolList& rhs);
 
 	// Step the system by time delta dt.
 	void step(float dt);
