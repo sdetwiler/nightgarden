@@ -1,6 +1,6 @@
-Done		Interactive placement of LSystem nodes
-Done		Multithreading
-Done		Loading and playback of precomputed step sequences
+DONE		Interactive placement of LSystem nodes
+DONE		Multithreading
+DONE		Loading and playback of precomputed step sequences
 DONE		Memory management for sharing loaded compiled files across multiple instances
 DONE		Sub LSystem support through ~ operator
 
@@ -10,6 +10,7 @@ DONE		Broke axiom specifing values that map to variables for subsequent rules.
 				Fix was the compiled systems contained intermediate symbols that referenced other rules.
 
 DONE		Fix animation for referenced systems.
+DONE		Memory management improvements for SymbolList copies
 
 Fast forward and rewind
 
@@ -19,10 +20,13 @@ LSystem environmental awareness
 	Collision detection with environment geometry
 	Tropism
 
+
 Rendering Improvements
+	Optimize streaming geometry. This is currently the biggest performance problem.
 	Fix normal computation bugs
 	Textures and materials
 	Shader and lighting model
 
+
+
 Perfomance
-	Memory management improvements for SymbolList copies
