@@ -205,6 +205,11 @@ openFrameworks
 The project expects a directory `of_latest_osx_release/` to exist at the same level as the `nightgarden/` directory. This can be symlinked to the 
 version of openFrameworks to use. Currently building with version 0.9.3.
 
+Include the following OpenFrameworks addons in the of_latest_osx_release/addons/ directory:
+
+* <a href="https://github.com/NickHardeman/ofxBullet">ofxBullet</a>
+
+
 
 Flex and Bison Support
 ---

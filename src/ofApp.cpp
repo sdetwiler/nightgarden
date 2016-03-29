@@ -159,7 +159,7 @@ void ofApp::compileButtonPressed()
 //--------------------------------------------------------------
 void ofApp::fileButtonPressed()
 {
-	ofFileDialogResult res = ofSystemLoadDialog();
+	ofFileDialogResult res = ofSystemLoadDialog("Load system", false, "data/systems/");
 	
 	if(res.bSuccess)
 	{

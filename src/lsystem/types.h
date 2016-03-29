@@ -90,9 +90,6 @@ public:
 
 
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 typedef std::vector< Expression* > ExpressionVec;
 class ExpressionList
@@ -157,121 +154,6 @@ public:
 	}
 	
 };
-
-
-/*
-////////////////////////////////////////////////////////////////////////////////
-typedef std::stack< Symbol* > SymbolStack;
-typedef std::vector< Symbol* > SymbolVec;
-class SymbolList
-{
-public:
-	SymbolVec symbols;
-
-	
-	SymbolList()
-	{
-	}
-	
-	SymbolList(SymbolList const& rhs)
-	{
-		for(SymbolVec::const_iterator i = rhs.symbols.begin(); i!=rhs.symbols.end(); ++i)
-		{
-			Symbol* s = new Symbol(*(*i));
-			symbols.push_back(s);
-		}
-		
-	}
-	
-	~SymbolList()
-	{
-		for(SymbolVec::iterator i = symbols.begin(); i!=symbols.end(); ++i)
-		{
-			delete (*i);
-		}
-	}
-
-	std::string toOperatorTimedString() const
-	{
-		std::string s;
-		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
-		{
-			if((*i)->isOperator)
-			{
-				s+= (*i)->toTimedString();
-			}
-		}
-		
-		return s;
-	}
-
-	std::string toTimedString() const
-	{
-		std::string s;
-		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
-		{
-			s+= (*i)->toTimedString();
-		}
-		
-		return s;
-	}
-	
-	std::string toString() const
-	{
-		std::string s;
-		for(SymbolVec::const_iterator i = symbols.begin(); i!=symbols.end(); ++i)
-		{
-			s+= (*i)->toString();
-		}
-		
-		return s;
-	}
-
-	void clear()
-	{
-		for(SymbolVec::iterator i = symbols.begin(); i!=symbols.end(); ++i)
-		{
-			delete *i;
-		}
-		symbols.clear();
-	}
-	
-	SymbolList& operator=(SymbolList const& rhs)
-	{
-		clear();
-		for(SymbolVec::const_iterator i = rhs.symbols.begin(); i!=rhs.symbols.end(); ++i)
-		{
-			symbols.push_back(new Symbol(*(*i)));
-		}
-		
-		
-		return *this;
-	}
-	
-	
-	SymbolList& operator+=(SymbolList const& rhs)
-	{
-		for(SymbolVec::const_iterator i = rhs.symbols.begin(); i!=rhs.symbols.end(); ++i)
-		{
-			symbols.push_back(new Symbol(*(*i)));
-		}
-		
-		
-		return *this;
-	}
-
-	SymbolList& operator+=(Symbol const& rhs)
-	{
-		symbols.push_back(new Symbol(rhs));
-		
-		return *this;
-	}
-
-};
-
-typedef std::vector< SymbolList* >SymbolListVec;
-
-*/
 
 
 ////////////////////////////////////////////////////////////////////////////////

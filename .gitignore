@@ -1,8 +1,8 @@
 ## Build generated
 build/
 DerivedData/
-bin/
-
+bin/*
+!bin/data/
 ## Various settings
 *.pbxuser
 !default.pbxuser

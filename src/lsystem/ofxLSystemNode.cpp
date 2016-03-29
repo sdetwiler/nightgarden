@@ -149,12 +149,12 @@ void ofxLSystemNode::update()
 				
 				mLastStepDuration = afterStep - now;
 				
-				if(mCurrSteps == mMaxSteps)
-				{
-					SymbolList state;
-					getLSystem().getState(&state);
-					//cout << "state:   " << state.toString() << endl;
-				}
+//				if(mCurrSteps == mMaxSteps)
+//				{
+//					SymbolList state;
+//					getLSystem().getState(&state);
+//					cout << "state:   " << state.toString() << endl;
+//				}
 				
 				buildMeshes();
 				

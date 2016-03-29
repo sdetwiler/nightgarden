@@ -1,4 +1,4 @@
-//
+ //
 //  lsystem.cpp
 //
 //  Created by Stephen Detwiler on 2/15/16.
@@ -12,6 +12,8 @@
 #include <fstream>
 #include <stack>
 #include <map>
+
+#include <unistd.h>
 
 #include "rules_parser.tab.h"
 
@@ -43,6 +45,9 @@ bool LSystem::loadCompiled(char const* filename, SymbolListVec& states)
 	if(!infile.is_open())
 	{
 		cout << "Failed to open " << filename << endl;
+		char cwd[512];
+		getcwd(cwd, sizeof(cwd));
+		cout << "Current working directory is " << cwd << endl;
 		return false;
 	}
 
@@ -90,6 +95,11 @@ SymbolListVec const* LSystem::getCompiledStates(char const* name)
 	return &sCache[name];
 }
 
+
+
+//------------------------------------------------------------------------------------------
+// Instance methods
+//------------------------------------------------------------------------------------------
 
 LSystem::LSystem()
 {
@@ -354,6 +364,7 @@ void LSystem::reduce(SymbolList& state)
 		prev = i;
 	}
 	
+	// FIXME BUG: If the last item is removed, this will make state.mLast invalid.
 	for(SymbolListIteratorVec::iterator i = toRemove.begin(); i != toRemove.end(); ++i)
 	{
 		state.erase_after(*i);
