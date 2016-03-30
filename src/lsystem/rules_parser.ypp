@@ -18,7 +18,7 @@ extern int rules_lex(YYSTYPE* yylval_param ,yyscan_t yyscanner);
 #include "predicate.h"
 #include "lsystem.h"
 
-// #define DEBUG_PARSER
+//#define DEBUG_PARSER
 
 int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 	std::cout << "Rules: " << msg << std::endl;
@@ -56,6 +56,8 @@ int rules_error(yyscan_t scanner, LSystem* lsystem, const char* msg) {
 %token LP
 %token RP
 
+%token DIV
+%token MUL
 %token ADD
 %token SUB
 %token EXP
@@ -422,7 +424,7 @@ result_symbol :
 		$$ = $1;
 
 		#ifdef DEBUG_PARSER
-		printf("result_symbol to symbol_operator_with_expr\n\t%s %s\n", $$->value.c_str());
+		printf("result_symbol to symbol_operator_with_expr\n\t%s\n", $$->value.c_str());
 		#endif
 	}
 
@@ -456,7 +458,26 @@ symbol_operator :
 		printf("symbol_operator to symbol\n\t%s\n", $$->value.c_str());
 		#endif
 	}
-
+	| DIV
+	{
+		$$ = new Symbol();
+		$$->value = "/";
+		$$->isOperator = true;
+		
+		#ifdef DEBUG_PARSER
+		printf("symbol_operator to DIV\n\tsymbol:[%s]\n", $$->toString().c_str());
+		#endif
+	}
+	| MUL
+	{
+		$$ = new Symbol();
+		$$->value = "*";
+		$$->isOperator = true;
+		
+		#ifdef DEBUG_PARSER
+		printf("symbol_operator to MUL\n\tsymbol:[%s]\n", $$->toString().c_str());
+		#endif
+	}
 	| ADD
 	{
 		$$ = new Symbol();
@@ -555,12 +576,12 @@ expr :
 
 
 operator :
-	'*'
+	MUL
 	{
 		$$ = strdup("*");
 	}
 
-	| '/'
+	| DIV
 	{
 		$$ = strdup("/");
 	}

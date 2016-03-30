@@ -14,7 +14,7 @@
 #.* { return COMMENT; }
 
 
-[FfG.\[\]\*&!/\'|{}~] { yylval->symbol = new Symbol(); yylval->symbol->isOperator=true; yylval->symbol->value = yytext; return SYMBOL; }
+[FfG.\[\]&!\'|{}~] { yylval->symbol = new Symbol(); yylval->symbol->isOperator=true; yylval->symbol->value = yytext; return SYMBOL; }
 
 [a-zA-Z] { yylval->symbol = new Symbol(); yylval->symbol->value = yytext; return SYMBOL; }
 
@@ -36,6 +36,8 @@
 "(" { return LP; }
 ")" { return RP; }
 
+"/" { return DIV; }
+"*" { return MUL; }
 "+" { return ADD; }
 "-" { return SUB; }
 "^" { return EXP; }
