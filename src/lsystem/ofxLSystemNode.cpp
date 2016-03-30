@@ -135,31 +135,24 @@ void ofxLSystemNode::load(char const* filename, bool isCompiled)
 //--------------------------------------------------------------
 void ofxLSystemNode::update()
 {
+	float framerate = 1/60.0f;
 	if(mCurrSteps < mMaxSteps)
 	{
 		float now = ofGetElapsedTimef();
-		if(now-mStepInterval > mLastStepTime)
+		if(now-framerate > mLastStepTime)
 		{
 			mSystem->update(mStepInterval);
-			if(mSystem->isUpdateAvailable())
-			{
-				mLastStepTime = now;
-				++mCurrSteps;
-				float afterStep = ofGetElapsedTimef();
-				
-				mLastStepDuration = afterStep - now;
-				
-//				if(mCurrSteps == mMaxSteps)
-//				{
-//					SymbolList state;
-//					getLSystem().getState(&state);
-//					cout << "state:   " << state.toString() << endl;
-//				}
-				
-				buildMeshes();
-				
-			}
+			mLastStepTime = now;
+			++mCurrSteps;
+			float afterStep = ofGetElapsedTimef();
+			
+			mLastStepDuration = afterStep - now;
 		}
+	}
+
+	if(mSystem->isUpdateAvailable())
+	{
+		buildMeshes();
 	}
 }
 
