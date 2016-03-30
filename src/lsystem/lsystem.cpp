@@ -68,7 +68,7 @@ bool LSystem::loadCompiled(char const* filename, SymbolListVec& states)
 		cout << "Error while reading from " << filename << endl;
 		return false;
 	}
-	
+	cout << "Loaded " << filename << endl;
 	return true;
 }
 
@@ -77,6 +77,7 @@ LSystem::StringSymbolListVecMap LSystem::sCache;
 void LSystem::clearCompiledCache()
 {
 	sCache.clear();
+	cout << "Cleared compiled cache" << endl;
 }
 
 SymbolListVec const* LSystem::getCompiledStates(char const* name)
@@ -133,6 +134,8 @@ bool LSystem::load(char const* filename)
 		cout << "Error while reading from " << filename << endl;
 		return false;
 	}
+
+	cout << "Loaded " << filename << endl;
 	
 	return parse(data.c_str());
 }
@@ -401,7 +404,7 @@ void LSystem::step(float dt)
 	context.push(&root);
 	SymbolStack branches;
 	
-//	cout << " LSystem::step processing " << to_string(mState->symbols.size()) << " symbols\n";
+//	cout << " LSystem::step processing symbols\n";
 	for(SymbolList::iterator i = mState.begin(); i!=mState.end(); ++i)
 	{
 		START_TIME_MEASURE(itr);
