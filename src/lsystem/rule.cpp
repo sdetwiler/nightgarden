@@ -114,13 +114,11 @@ bool ReferenceRule::getReferencedSymbols(Symbol const* s, SymbolList& res) const
 			{
 				pct = 1;
 			}
-			if(pct < 0)
+			else if(pct < 0)
 			{
 				pct = 0;
 			}
 			size_t idx = ((slv->size()-1) * pct);
-
-			// TODO can this avoid a copy?
 			SymbolList const* src = &(*slv)[idx];
 			res.append(*src);
 			return true;

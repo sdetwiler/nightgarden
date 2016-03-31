@@ -273,7 +273,6 @@ bool LSystem::getDereferencedState(SymbolList& state) const
 		else
 		{
 			state.append(*symbol);
-
 		}
 	}
 
