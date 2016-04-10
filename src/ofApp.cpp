@@ -1,9 +1,10 @@
 #include "ofApp.h"
-#include "lsystem.h"
 #include "types.h"
 
 #include "of3dUtils.h"
 #include "ofRay.h"
+
+#include "ofxBulletLSystemNode.h"
 
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -19,13 +20,6 @@ void ofApp::setup()
 	
 	mGui.setup();
 	
-	mGui.add(mNLabel.setup("n", ""));
-	mGui.add(mDeltaLabel.setup("delta", ""));
-	mGui.add(mMaxStepsLabel.setup("steps", ""));
-	mGui.add(mCurrStepsLabel.setup("currSteps", ""));
-	mGui.add(mSystemLenLabel.setup("system len", ""));
-	mGui.add(mLastDurationlabel.setup("step duration", ""));
-	
 	mGui.add(mFileButton.setup("File..."));
 	mFileButton.addListener(this, &ofApp::fileButtonPressed);
 
@@ -35,6 +29,10 @@ void ofApp::setup()
 	mGui.add(mCompileButton.setup("Compile..."));
 	mCompileButton.addListener(this, &ofApp::compileButtonPressed);
 
+	mPhysics = false;
+	mPhysics.setName("Physics");
+	mGui.add(mPhysicsButton.setup(mPhysics));
+
 	mShowAxis = false;
 	mShowAxis.setName("Axis");
 	mGui.add(mAxisButton.setup(mShowAxis));
@@ -43,10 +41,13 @@ void ofApp::setup()
 	mEdit.setName("Edit");
 	mGui.add(mEditButton.setup(mEdit));
 
-	
 	mGui.add(mClearButton.setup("Clear"));
 	mClearButton.addListener(this, &ofApp::clearButtonPressed);
 	
+	mWorld.setup();
+	mWorld.enableGrabbing();
+	mWorld.setCamera(&mCamera);
+	mWorld.setGravity( ofVec3f(0, 25., 0) );
 }
 
 //--------------------------------------------------------------
@@ -74,23 +75,14 @@ void ofApp::update()
 	mSpotlight.setPosition(mCamera.getPosition());
 	mSpotlight.lookAt(mCamera.getLookAtDir());
 
+	mWorld.update();
+	
 	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 	{
 		ofxLSystemNode* system = *i;
 		
 		system->update();
 	}
-	
-//	float n = mSystem.getLSystem().getGlobalVariable("n", 5);
-//	mNLabel = to_string(n);
-//	
-//	float delta = mSystem.getLSystem().getGlobalVariable("delta", 22.5);
-//	mDeltaLabel = to_string(delta);
-//	
-//	mMaxStepsLabel = to_string(mSystem.getMaxSteps());
-//	mCurrStepsLabel = to_string(mSystem.getCurrSteps());
-//	mSystemLenLabel = to_string(mSystem.getLSystem().getState()?mSystem.getLSystem().getState()->symbols.size():0);
-//	mLastDurationlabel = to_string(mSystem.getLastStepDuration()*1000) + " ms";
 }
 
 
@@ -102,6 +94,8 @@ void ofApp::draw()
 
 	mSpotlight.enable();
 	mCamera.begin();
+	
+	mWorld.drawDebug();
 	
 	for(SystemVec::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
 	{
@@ -187,7 +181,16 @@ void ofApp::compiledFileButtonPressed()
 //--------------------------------------------------------------
 ofxLSystemNode* ofApp::loadSystem(char const* filename, bool isCompiled)
 {
-	ofxLSystemNode* system = new ofxLSystemNode(filename, isCompiled);
+	ofxLSystemNode* system;
+	if(mPhysics)
+	{
+		system = new ofxBulletLSystemNode(filename, isCompiled, &mWorld);
+	}
+	else
+	{
+		system = new ofxLSystemNode(filename, isCompiled);
+	}
+	
 	mSystems.push_back(system);
 	
 	return system;

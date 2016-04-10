@@ -5,6 +5,8 @@
 
 #include "ofxLSystemNode.h"
 #include "ofxGui.h"
+#include "ofxBullet.h"
+
 #include <vector>
 
 typedef std::vector<ofxLSystemNode*> SystemVec;
@@ -43,20 +45,13 @@ private:
 	
 	ofxLSystemNode* loadSystem(char const* filename, bool isCompiled);
 	
-//	ofxLSystem mSystem;
 	SystemVec mSystems;
+	ofxBulletWorldRigid mWorld;
 	
 	ofEasyCam mCamera;
 	ofLight mSpotlight;
 	
 	ofxPanel mGui;
-	
-	ofxLabel mNLabel;
-	ofxLabel mDeltaLabel;
-	ofxLabel mMaxStepsLabel;
-	ofxLabel mCurrStepsLabel;
-	ofxLabel mSystemLenLabel;
-	ofxLabel mLastDurationlabel;
 	
 	ofxButton mFileButton;
 	ofxButton mCompiledFileButton;
@@ -67,9 +62,13 @@ private:
 
 	ofxToggle mAxisButton;
 	ofxToggle mEditButton;
+
+	ofxToggle mPhysicsButton;
+
 	
 	ofParameter<bool> mShowAxis;
 	ofParameter<bool> mEdit;
+	ofParameter<bool> mPhysics;
 	
 	std::string mFilename;
 	bool mCompiled;

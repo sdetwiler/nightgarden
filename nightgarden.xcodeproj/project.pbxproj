@@ -29,6 +29,7 @@
 		AA85827E1C9379F40066FAF1 /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582731C9379F40066FAF1 /* ofxSlider.cpp */; };
 		AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582751C9379F40066FAF1 /* ofxSliderGroup.cpp */; };
 		AA8582801C9379F40066FAF1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8582771C9379F40066FAF1 /* ofxToggle.cpp */; };
+		AAB3C3621CB1DD0C00E47D55 /* ofxBulletLSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB3C3601CB1DD0C00E47D55 /* ofxBulletLSystemNode.cpp */; };
 		AABCD3A01C8FECDC00110C5C /* ofxLSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */; };
 		AAECA9FC1CAA379A00F93E85 /* ofxBulletJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAECA87C1CAA379900F93E85 /* ofxBulletJoint.cpp */; };
 		AAECA9FD1CAA379A00F93E85 /* ofxBulletWorldRigid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAECA8821CAA379900F93E85 /* ofxBulletWorldRigid.cpp */; };
@@ -302,6 +303,9 @@
 		AA8582761C9379F40066FAF1 /* ofxSliderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSliderGroup.h; sourceTree = "<group>"; };
 		AA8582771C9379F40066FAF1 /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxToggle.cpp; sourceTree = "<group>"; };
 		AA8582781C9379F40066FAF1 /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxToggle.h; sourceTree = "<group>"; };
+		AAB3C35E1CB1CD2000E47D55 /* physicsTest.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = physicsTest.ls; sourceTree = "<group>"; };
+		AAB3C3601CB1DD0C00E47D55 /* ofxBulletLSystemNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxBulletLSystemNode.cpp; path = lsystem/ofxBulletLSystemNode.cpp; sourceTree = "<group>"; };
+		AAB3C3611CB1DD0C00E47D55 /* ofxBulletLSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxBulletLSystemNode.h; path = lsystem/ofxBulletLSystemNode.h; sourceTree = "<group>"; };
 		AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystemNode.cpp; path = lsystem/ofxLSystemNode.cpp; sourceTree = "<group>"; };
 		AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystemNode.h; path = lsystem/ofxLSystemNode.h; sourceTree = "<group>"; };
 		AACA91DC1C974FD30059190F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -750,6 +754,8 @@
 				7A0E32A6126E0A9C6C39C6E9 /* lsystem.h */,
 				AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */,
 				AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */,
+				AAB3C3601CB1DD0C00E47D55 /* ofxBulletLSystemNode.cpp */,
+				AAB3C3611CB1DD0C00E47D55 /* ofxBulletLSystemNode.h */,
 				AA3477111C991050006342B9 /* ofxThreadedLSystem.cpp */,
 				AA3477121C991050006342B9 /* ofxThreadedLSystem.h */,
 				4273183C29A4430F22FA560A /* predicate.cpp */,
@@ -875,6 +881,7 @@
 		AA3534BF1CA1BE2600218A5C /* systems */ = {
 			isa = PBXGroup;
 			children = (
+				AAB3C35E1CB1CD2000E47D55 /* physicsTest.ls */,
 				AA3534C01CA1BE2600218A5C /* box.ls */,
 				AA3534C11CA1BE2600218A5C /* bush.ls */,
 				AA3534C21CA1BE2600218A5C /* conditionalTest.ls */,
@@ -1366,6 +1373,7 @@
 				AA85827F1C9379F40066FAF1 /* ofxSliderGroup.cpp in Sources */,
 				AAF5AB731CA08FCA00D723D4 /* result.cpp in Sources */,
 				AAECAA0C1CAA379A00F93E85 /* ofxBulletSoftTriMesh.cpp in Sources */,
+				AAB3C3621CB1DD0C00E47D55 /* ofxBulletLSystemNode.cpp in Sources */,
 				AAECAA041CAA379A00F93E85 /* ofxBulletConvexShape.cpp in Sources */,
 				AAECA9FE1CAA379A00F93E85 /* ofxBulletWorldSoft.cpp in Sources */,
 				AAECAA071CAA379A00F93E85 /* ofxBulletEllipsoid.cpp in Sources */,
@@ -1650,6 +1658,7 @@
 					"$(OF_CORE_LIBS)",
 					../of_latest_osx_release/addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a,
 					../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
+					"$(LIB_BULLET_ALL_RELEASE)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
 				WRAPPER_EXTENSION = app;
@@ -1727,6 +1736,7 @@
 					"$(OF_CORE_LIBS)",
 					../of_latest_osx_release/addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a,
 					../of_latest_osx_release/addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
+					"$(LIB_BULLET_ALL_RELEASE)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

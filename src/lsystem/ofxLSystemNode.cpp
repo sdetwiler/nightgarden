@@ -149,6 +149,10 @@ void ofxLSystemNode::update()
 			mLastStepDuration = afterStep - now;
 		}
 	}
+	else if(mCurrSteps == mMaxSteps)
+	{
+		mStepsComplete = true;
+	}
 
 	if(mSystem->isUpdateAvailable())
 	{
@@ -180,10 +184,10 @@ void ofxLSystemNode::clear()
 {
 	for(PrimitiveVec::iterator i = mPrimitives.begin(); i!=mPrimitives.end(); ++i)
 	{
-		delete(*i);
+		delete (*i);
 	}
 	
-	mPrimitives.clear();
+	mPrimitives.clear();	
 }
 
 //--------------------------------------------------------------
@@ -194,13 +198,16 @@ ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3
 	return u.cross(v).normalize();
 }
 
+
 //--------------------------------------------------------------
 void ofxLSystemNode::closeMesh()
 {
+	
 	if(mCurrMesh)
 	{
 		of3dPrimitive* prim = new of3dPrimitive(*mCurrMesh);
 		mPrimitives.push_back(prim);
+
 		delete mCurrMesh;
 		mCurrMesh = nullptr;
 	}
