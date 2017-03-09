@@ -309,6 +309,7 @@
 		AABCD39E1C8FECDC00110C5C /* ofxLSystemNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxLSystemNode.cpp; path = lsystem/ofxLSystemNode.cpp; sourceTree = "<group>"; };
 		AABCD39F1C8FECDC00110C5C /* ofxLSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxLSystemNode.h; path = lsystem/ofxLSystemNode.h; sourceTree = "<group>"; };
 		AACA91DC1C974FD30059190F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AAD0A08D1E70935D003B14B5 /* debug.ls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = debug.ls; sourceTree = "<group>"; };
 		AAECA8781CAA379900F93E85 /* ofxBulletCollisionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBulletCollisionData.h; sourceTree = "<group>"; };
 		AAECA8791CAA379900F93E85 /* ofxBulletMousePickEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBulletMousePickEvent.h; sourceTree = "<group>"; };
 		AAECA87A1CAA379900F93E85 /* ofxBulletRaycastData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBulletRaycastData.h; sourceTree = "<group>"; };
@@ -881,6 +882,7 @@
 		AA3534BF1CA1BE2600218A5C /* systems */ = {
 			isa = PBXGroup;
 			children = (
+				AAD0A08D1E70935D003B14B5 /* debug.ls */,
 				AAB3C35E1CB1CD2000E47D55 /* physicsTest.ls */,
 				AA3534C01CA1BE2600218A5C /* box.ls */,
 				AA3534C11CA1BE2600218A5C /* bush.ls */,

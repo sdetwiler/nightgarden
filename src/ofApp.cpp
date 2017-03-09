@@ -48,6 +48,7 @@ void ofApp::setup()
 	mWorld.enableGrabbing();
 	mWorld.setCamera(&mCamera);
 	mWorld.setGravity( ofVec3f(0, 25., 0) );
+    loadDebugIfExists();
 }
 
 //--------------------------------------------------------------
@@ -148,6 +149,17 @@ void ofApp::compileButtonPressed()
 			}
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::loadDebugIfExists()
+{
+    char const* debugSystemFilename = "/Users/steve/projects/nightgarden/bin/nightgardenDebug.app/Contents/Resources/data/systems/debug.ls";
+    if(std::filesystem::exists(debugSystemFilename))
+    {
+        mCompiled = false;
+        loadSystem(debugSystemFilename, mCompiled);
+    }
 }
 
 //--------------------------------------------------------------

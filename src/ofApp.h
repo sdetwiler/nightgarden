@@ -42,6 +42,8 @@ public:
 	void clearButtonPressed();
 	
 private:
+    
+    void loadDebugIfExists();
 	
 	ofxLSystemNode* loadSystem(char const* filename, bool isCompiled);
 	
