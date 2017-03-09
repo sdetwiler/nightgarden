@@ -22,7 +22,13 @@ ofxBulletLSystemNode::ofxBulletLSystemNode(char const* filename, bool isCompiled
 	mWorld = world;
 }
 
+//--------------------------------------------------------------
+ofxBulletLSystemNode::~ofxBulletLSystemNode()
+{
+	clear();
+}
 
+//--------------------------------------------------------------
 void ofxBulletLSystemNode::clear()
 {
 	for(BulletShapeVec::iterator i=mBulletShapes.begin(); i!=mBulletShapes.end(); ++i)
@@ -37,17 +43,20 @@ void ofxBulletLSystemNode::clear()
 	ofxLSystemNode::clear();
 }
 
-void ofxBulletLSystemNode::closeMesh()
+//--------------------------------------------------------------
+void ofxBulletLSystemNode::closeMesh(ofVec3f const& position)
 {
 	if(mCurrMesh)
 	{
+		float const n = getLSystem().getGlobalVariable("n", 5);
+
 		ofxBulletCustomShape* shape = new ofxBulletCustomShape();
 		ofVec3f scale(1,1,1);
-		shape->addMesh(*mCurrMesh, scale, true);
-		shape->create(mWorld->world);
+		shape->create(mWorld->world, getPosition()+position);//, getOrientationQuat());
+		shape->addMesh(*mCurrMesh, scale, false);
 		shape->add();
-		
 		mBulletShapes.push_back(shape);
+		
 		
 		delete mCurrMesh;
 		mCurrMesh = nullptr;

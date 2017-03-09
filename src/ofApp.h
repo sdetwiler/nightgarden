@@ -49,6 +49,8 @@ private:
 	
 	SystemVec mSystems;
 	ofxBulletWorldRigid mWorld;
+	ofxBulletBox mGround;
+
 	
 	ofEasyCam mCamera;
 	ofLight mSpotlight;

@@ -200,7 +200,7 @@ ofVec3f getSurfaceNormal(ofVec3f const& v1, ofVec3f const& v2, ofVec3f const& v3
 
 
 //--------------------------------------------------------------
-void ofxLSystemNode::closeMesh()
+void ofxLSystemNode::closeMesh(ofVec3f const& position)
 {
 	
 	if(mCurrMesh)
@@ -319,6 +319,7 @@ void ofxLSystemNode::buildMeshes()
 	
 	matrixStack.push(rootMatrix);
 	ofMatrix4x4 currMatrix = matrixStack.top();
+	ofVec3f currPosition = currMatrix.getTranslation();
 	
 	SymbolList state;
 	getLSystem().getState(&state);
@@ -480,14 +481,16 @@ void ofxLSystemNode::buildMeshes()
 		
 		else if(s.value == "[")
 		{
-			closeMesh();
+			closeMesh(currPosition);
 			matrixStack.push(currMatrix);
+			currPosition = currMatrix.getTranslation();
 		}
 		
 		else if(s.value == "]")
 		{
-			closeMesh();
+			closeMesh(currPosition);
 			currMatrix = matrixStack.top();
+			currPosition = currMatrix.getTranslation();
 			matrixStack.pop();
 		}
 		
@@ -557,5 +560,5 @@ void ofxLSystemNode::buildMeshes()
 		}
 	}
 	
-	closeMesh();
+	closeMesh(currPosition);
 }

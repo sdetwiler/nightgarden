@@ -18,11 +18,12 @@ class ofxBulletLSystemNode : public ofxLSystemNode
 public:
 	ofxBulletLSystemNode(ofxBulletWorldRigid* world);
 	ofxBulletLSystemNode(char const* filename, bool isCompiled, ofxBulletWorldRigid* world);
-		
+	virtual ~ofxBulletLSystemNode();
+	
 protected:
 	virtual void clear();
 	
-	virtual void closeMesh();
+	virtual void closeMesh(ofVec3f const& position);
 	
 private:
 	typedef std::vector<ofxBulletCustomShape*> BulletShapeVec;

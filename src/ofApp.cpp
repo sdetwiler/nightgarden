@@ -47,8 +47,14 @@ void ofApp::setup()
 	mWorld.setup();
 	mWorld.enableGrabbing();
 	mWorld.setCamera(&mCamera);
-	mWorld.setGravity( ofVec3f(0, 25., 0) );
+	mWorld.setGravity( ofVec3f(0, -9.8, 0) );
+	
+	mGround.create( mWorld.world, ofVec3f(0., -1, 0.), 0., 500.f, 1.f, 500.f );
+	mGround.setProperties(.25, .95);
+	mGround.add();
+    
     loadDebugIfExists();
+	
 }
 
 //--------------------------------------------------------------
@@ -171,7 +177,7 @@ void ofApp::fileButtonPressed()
 	{
 		mFilename =res.getPath();
 		mCompiled = false;
-//		loadSystem(res.getPath().c_str());
+		loadSystem(res.getPath().c_str(), false);
 	}
 }
 

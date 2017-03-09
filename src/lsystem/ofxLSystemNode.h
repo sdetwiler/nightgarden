@@ -46,7 +46,7 @@ protected:
 	virtual void clear();
 	virtual void buildMeshes();
 	
-	virtual void closeMesh();
+	virtual void closeMesh(ofVec3f const& position);
 	virtual float makeMeshFaces(float radius, ofColor color, ofMatrix4x4 const& currMatrix);
 
 	ofMesh* mCurrMesh;
